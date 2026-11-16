@@ -356,7 +356,8 @@ def stage_pdbe_interfaces(w: Writer, c: Path):
                 if r.get('indexType', 'UNIPROT') != 'UNIPROT':
                     continue
                 pdbs = sorted({e.get('pdbId') for e in r.get('interactingPDBEntries') or [] if e.get('pdbId')})
-                rows.append([acc, int(r['startIndex']), int(r['endIndex']), pacc, text(part.get('name')), pdbs])
+                # a double quote in a name (a peptide-like inhibitor's) would open a quoted field for the readers
+                rows.append([acc, int(r['startIndex']), int(r['endIndex']), pacc, text(part.get('name')).replace('"', "'"), pdbs])
     # one row per run of consecutive residues sharing the partner and the PDB entries (the API gives one per residue)
     rows.sort(key=lambda x: (x[0], x[3], x[4], x[5], x[1]))
     merged = []

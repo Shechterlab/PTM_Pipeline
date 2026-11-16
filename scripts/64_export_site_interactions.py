@@ -22,6 +22,10 @@ For the sites of the set it writes, in the columns of the methylarginine release
   nucleic_acid_proximal_sites.tsv  RNA or DNA within 8 Å of the side chain where none is within 4 Å (the near-site table
                                 leaves these sites out, so the tier is written too)
 
+  site_interaction_records.tsv  (--records) every PDB entry and study behind site_interactions, with its method, paper
+                                and what the entry models at the site (scripts/interaction_sources.py site_set_records,
+                                from the tables scripts/53 --site-sets staged)
+
 Left out, whatever the set: RBDmap fragments and pCLAP peptides (their extents are not republished), predicted
 interfaces and contacts, and IntAct features (scripts/37 computes those for methylarginines only).
 
@@ -497,6 +501,19 @@ def write_tables(d: dict, outdir: Path, prefix: str = '', suffix: str = '') -> d
     return out
 
 
+def write_records(tables: dict, outdir: Path, config: dict, letters, inputs: Path, prefix: str = '', suffix: str = '') -> Path:
+    """site_interaction_records for the site_interactions table just written (scripts/interaction_sources.py)."""
+    import pandas as pd
+    import interaction_sources
+    ev = pd.read_csv(tables['site_interactions'], sep='\t', dtype=str, keep_default_na=False)
+    entries = pd.read_csv(inputs / 'reference' / 'uniprot_human_reviewed_2026_03_entries.tsv', sep='\t', dtype=str, keep_default_na=False)
+    genes = {a: g.split(';')[0].strip() for a, g in zip(entries['Entry'], entries['Gene Names (primary)']) if g.strip()}
+    t = interaction_sources.site_set_records(ev, inputs, genes, config, letters)
+    path = outdir / f'{prefix}site_interaction_records{suffix}.tsv'
+    t[[c for c, *_ in interaction_sources.RECORD_COLUMNS]].to_csv(path, sep='\t', index=False, lineterminator='\n')
+    return path
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--site-set', required=True, help='a site set of --config')
@@ -509,6 +526,7 @@ def main():
     ap.add_argument('--workers', type=int, default=6)
     ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and protein partner (as scripts/37)')
     ap.add_argument('--na-contact-entries', type=int, default=0, help='PDB entries examined per site with RNA or DNA (0: every entry, as scripts/37)')
+    ap.add_argument('--records', action='store_true', help='also write site_interaction_records (needs the site_set_* tables of scripts/53 --site-sets)')
     ap.add_argument('--fetch-only', action='store_true', help='only fill --topup-cache')
     args = ap.parse_args()
     config = load_config(Path(args.config))
@@ -526,7 +544,10 @@ def main():
             + '. Stage them (scripts/37a_stage_interactions.py --topup) so the tables can be built again without it.')
     if args.fetch_only:
         return
-    out = write_tables(d, Path(args.out), f'{args.site_set}_' if args.version else '', f'_{args.version}' if args.version else '')
+    prefix, suffix = (f'{args.site_set}_', f'_{args.version}') if args.version else ('', '')
+    out = write_tables(d, Path(args.out), prefix, suffix)
+    if args.records:
+        out['site_interaction_records'] = write_records(out, Path(args.out), config, spec['residues'], Path(args.tables).parent, prefix, suffix)
     for name, path in out.items():
         log(f'{path}: {sum(1 for _ in open(path, encoding="utf-8")) - 1:,} rows')
 
