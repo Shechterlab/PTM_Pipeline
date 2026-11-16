@@ -514,14 +514,84 @@ def write_records(tables: dict, outdir: Path, config: dict, letters, inputs: Pat
     return path
 
 
+SOURCES = [   # source, what it gives, licence
+    ('PDBe-KB interface residues (PDBe-KB consortium, Nucleic Acids Res 50:D534, 2022)', 'the residues at protein, RNA and DNA interfaces in PDB entries', 'EMBL-EBI terms of use (free use with attribution)'),
+    ('SIFTS (Dana et al., Nucleic Acids Res 47:D482, 2019)', 'UniProt numbering of PDB chains', 'EMBL-EBI terms of use'),
+    ('PDB, read through the RCSB ModelServer and Data API and the PDBe API (Burley et al., Nucleic Acids Res 51:D488, 2023)', 'side-chain contacts, bound sequences, entry titles, methods and citations, the residue each entry models at a site', 'CC0 1.0'),
+    ('pepR-MS (Sha, Kuster & Trendel, bioRxiv 2025, doi:10.1101/2025.09.05.674461), a preprint that re-analyses Kramer 2014, XRNAX (Trendel 2019), RBS-ID (Bae 2020) and pRBS-ID (Bae 2021)', 'RNA-crosslinked residues', 'CC BY-NC'),
+    ('CAPRI (Panhale et al., Nat Commun 10:2682, 2019)', 'RNA-crosslinked peptides and the peptides next to them', 'CC BY 4.0'),
+    ('RBR-ID (Oksuz et al., Mol Cell 83:2449, 2023; PRIDE)', 'residues under RBR-ID+ peptides, regions of high residue score', 'CC0'),
+    ('Trendel et al., Cell 188:4424 (2025)', 'DNA-crosslinked residues and peptides', 'CC BY-NC 4.0'),
+    ('UniProt (UniProt Consortium, Nucleic Acids Res 53:D609, 2025)', 'DNA-binding regions; sequences and gene names', 'CC BY 4.0'),
+]
+
+
+def write_release_notes(folder: Path, version: str, config: dict) -> None:
+    """README.md and MD5SUMS of a release folder that holds the tables of the site sets (supporting/<set>_<table>_<version>.tsv)."""
+    import hashlib
+    import interaction_sources
+    files = sorted((folder / 'supporting').glob(f'*_{version}.tsv'))
+    def count(path, col=None):   # rows, or distinct values of a column
+        with open(path, encoding='utf-8') as fh:
+            return (len({line.split('\t')[col] for line in fh}) if col is not None else sum(1 for _ in fh)) - 1
+    sets = [n for n in config['site_sets'] if any(f.name.startswith(f'{n}_site_interactions_') for f in files)]
+    out = [f'# PTM_Pipeline {version}: site-level interaction evidence for the context marks', '',
+           f'Release {version} adds, for the site sets {", ".join(sets)}, the site-level interaction tables that the methylarginine release '
+           'has. Everything else is release v1.5.0, unchanged and not repeated here; the methylarginine tables stay '
+           'those of v1.4.3 and v1.5.0.', '',
+           'The tables are made by `scripts/64_export_site_interactions.py`, which runs the interface, crosslink and structure-contact '
+           'steps of the methylarginine pipeline (`scripts/37_export_interaction_data.py`) with the modified residue as a parameter '
+           '(`config/site_sets.json`). Run on the methylarginines it gives the methylarginine release tables '
+           '(`tests/test_site_interactions.py`).', '',
+           '## Site sets', '', '| Site set | Residues | Sites from | Sites | with a PDB interface | with RNA or DNA within 4 Å in a structure | with evidence from cells |', '|---|---|---|---|---|---|---|']
+    for n in sets:
+        spec = config['site_sets'][n]
+        ev = [line.rstrip('\n').split('\t') for line in open(folder / 'supporting' / f'{n}_site_interactions_{version}.tsv', encoding='utf-8')][1:]
+        pdb = {r[0] for r in ev if r[1].startswith('pdb_')}
+        cells = {r[0] for r in ev if not r[1].startswith('pdb_') and r[1] != 'dna_binding_region'}
+        na = count(folder / 'supporting' / f'{n}_nucleic_acid_contacts_{version}.tsv', 0)
+        out.append(f'| {n} | {", ".join(spec["residues"])} | {"; ".join("`" + t + "`" for t in spec["tables"])} | {len(read_sites(config, n)):,} | {len(pdb):,} | {na:,} | {len(cells):,} |')
+    out += ['', '## Tables', '', 'One file per site set and table, `supporting/<site set>_<table>_' + version + '.tsv`, in the columns of the methylarginine '
+            'tables of the same name (`releases/v1.5.0/data_dictionary.tsv`). A site is `<accession>:<residue><position>`.', '',
+            '| Table | One row per |', '|---|---|',
+            '| `site_interactions` | piece of evidence at a site: a PDB interface with a protein, RNA, DNA or another copy of the protein (PDBe-KB), an RNA or DNA crosslink, a CAPRI peptide, an RBR-ID residue, a UniProt DNA-binding region |',
+            '| `site_interaction_records` | site and record: each PDB entry or study behind `site_interactions`, with its method, paper and what the entry models at the site |',
+            '| `nucleic_acid_contacts` | site and RNA or DNA chain within 4 Å of its side chain in a PDB entry: the contacted nucleotides and the bound sequence around them |',
+            '| `nucleic_acid_proximal_sites` | site and complex with RNA or DNA within 8 Å of the side chain and none within 4 Å |',
+            '| `nucleic_acid_near_sites` | site and complex in which a residue at i ± 1–5, not the site, is within 4 Å of RNA or DNA (the side chain not within 8 Å) |',
+            '| `residue_evidence` | run of residues of a protein of the set with the same evidence |', '',
+            'Side-chain distances are measured from the atoms that carry the modification and the carbons next to them: '
+            + '; '.join(f'{v["name"]} {", ".join(v["side_chain_atoms"])}' for k, v in sorted(config['residues'].items()) if any(k in config['site_sets'][n]['residues'] for n in sets)) + '.', '',
+            '### record_class', '', '| Code | Meaning |', '|---|---|']
+    out += [f'| `{k}` | {v} |' for k, v in interaction_sources.SITE_SET_CLASSES.items()]
+    letters = sorted({r for n in sets for r in config['site_sets'][n]['residues']})
+    out += ['', '### site_state', '', '| Code | Meaning |', '|---|---|']
+    out += [f'| `{k}` | {v} |' for k, v in interaction_sources.site_set_state_vocabulary(config, letters).items()]
+    out += ['', '## Not in these tables', '',
+            '- RBDmap fragments and pCLAP peptides: their extents are not republished.',
+            '- Predicted interfaces and contacts (ProtVar, AlphaFold DB) and IntAct features: the pipeline computes them for methylarginines only.',
+            '- Enzyme-substrate records (kinases, writers and erasers).',
+            '- Statistics: no test is run on these tables.', '',
+            '## Sources and licences', '', '| Source | Gives | Licence |', '|---|---|---|']
+    out += [f'| {a} | {b} | {c} |' for a, b, c in SOURCES]
+    out += ['', 'The tables are under CC BY-NC-SA 4.0, as the release. Cite the sources of the evidence used.', '',
+            '## Files', '', '| File | Rows |', '|---|---|']
+    out += [f'| `supporting/{f.name}` | {count(f):,} |' for f in files]
+    (folder / 'README.md').write_text('\n'.join(out) + '\n', encoding='utf-8')
+    with open(folder / 'MD5SUMS', 'w', encoding='utf-8', newline='\n') as fh:
+        for f in [folder / 'README.md', *files]:
+            fh.write(f'{hashlib.md5(f.read_bytes()).hexdigest()}  {f.relative_to(folder)}\n')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--site-set', required=True, help='a site set of --config')
+    ap.add_argument('--site-set', default='', help='a site set of --config')
+    ap.add_argument('--release-notes', default='', help='write README.md and MD5SUMS of this release folder from the tables in its supporting/ (with --version) and stop')
     ap.add_argument('--config', default=str(ROOT / 'config' / 'site_sets.json'))
     ap.add_argument('--tables', default=str(ROOT / 'inputs' / 'interactions'), help='the staged tables')
     ap.add_argument('--topup-cache', default='PTM_data/site_interactions_topup', help='where to save what the staged tables do not cover')
     ap.add_argument('--reference-fasta', default=str(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta'))
-    ap.add_argument('--out', required=True, help='folder for the tables')
+    ap.add_argument('--out', default='', help='folder for the tables')
     ap.add_argument('--version', default='', help='name the tables <site set>_<table>_<version>.tsv (a release); default <table>.tsv')
     ap.add_argument('--workers', type=int, default=6)
     ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and protein partner (as scripts/37)')
@@ -530,6 +600,11 @@ def main():
     ap.add_argument('--fetch-only', action='store_true', help='only fill --topup-cache')
     args = ap.parse_args()
     config = load_config(Path(args.config))
+    if args.release_notes:
+        write_release_notes(Path(args.release_notes), args.version, config)
+        return
+    if not args.out:
+        raise SystemExit('--out is required')
     if args.site_set not in config['site_sets']:
         raise SystemExit(f'--site-set: one of {", ".join(config["site_sets"])}')
     spec = config['site_sets'][args.site_set]
