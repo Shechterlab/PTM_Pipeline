@@ -35,6 +35,14 @@ inputs/interactions/raw_cache_files.tsv.
 
     python scripts/53_stage_interaction_sources.py --release releases/v1.4.2 --cache PTM_data/interactions_cache \
         --outdir /tmp/sources [--install]
+
+With --site-sets NAME [NAME ...] (config/site_sets.json) it stages the PDB tables alone for the sites of those sets, for
+scripts/64 (interaction_sources.site_set_records): the entries with a PDBe-KB interface range holding a site, their
+entities and the residue each entity models at a site (the site_set_pdb_* tables), and the names of the partners that are not
+reviewed human entries. No methylarginine matching, ModelServer, IntAct, OLS or PubMed.
+
+    python scripts/53_stage_interaction_sources.py --site-sets methyllysine lysine phospho --cache PTM_data/interactions_cache \
+        --outdir /tmp/site_set_sources [--install]
 """
 from __future__ import annotations
 
@@ -51,7 +59,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -89,6 +97,10 @@ CONTACT_CUTOFF = 4.0                   # Å from the side chain, as scripts/37 (
 FLANK = 5                              # residues each side of a site checked against the human sequence
 BACKBONE = {'N', 'CA', 'C', 'O', 'OXT'}
 WATERS = {'HOH', 'WAT', 'DOD'}
+PDB_ENTRY_COLUMNS = ['pdb_id', 'title', 'method', 'resolution_a', 'release_date', 'pubmed', 'doi', 'first_author', 'authors', 'year', 'journal', 'citation_title', 'ligands']
+PDB_ENTITY_COLUMNS = ['pdb_id', 'entity_id', 'type', 'description', 'uniprot_accessions', 'organisms', 'taxids']
+SITE_RESIDUE_COLUMNS = ['pdb_id', 'entity_id', 'uniprot_accession', 'position', 'residue', 'residue_name', 'residue_parent', 'entity_position', 'context_check',
+                        'other_modified_residues']
 
 
 def rd(path) -> pd.DataFrame:
@@ -142,7 +154,8 @@ def spans(ranges: str) -> list[tuple[int, int]]:
 
 # ---- PDB ---------------------------------------------------------------------------------------------------------
 
-def pdb_entries(inputs: Path, S) -> list[str]:
+def pdbe_kb_entries(inputs: Path, S) -> set[str]:
+    """The PDB entries with a PDBe-KB interface range that holds a site."""
     ent = set()
     for f in sorted(glob.glob(str(inputs / 'interactions' / 'pdbe_kb_interface_residues_*.tsv'))):
         t = rd(f)
@@ -150,6 +163,11 @@ def pdb_entries(inputs: Path, S) -> list[str]:
         for a, s, e, pe in zip(t['uniprot_accession'], t['start'].astype(int), t['end'].astype(int), t['pdb_entries']):
             if any(s <= p <= e for p in S[a]):
                 ent |= {x.strip().upper() for x in pe.replace(';', ',').split(',') if x.strip()}
+    return ent
+
+
+def pdb_entries(inputs: Path, S) -> list[str]:
+    ent = pdbe_kb_entries(inputs, S)
     for f in sorted(glob.glob(str(inputs / 'interactions' / 'pdb_arginine_contacts_*.tsv'))) + \
             sorted(glob.glob(str(inputs / 'interactions' / 'pdb_methylarginine_residues_*.tsv'))):
         ent |= set(rd(f)['pdb_id'].str.upper())
@@ -306,9 +324,11 @@ def tokens(seq: str) -> list[str]:
     return [a or b for a, b in re.findall(r'\(([A-Za-z0-9]+)\)|([A-Za-z])', seq.replace('\n', ''))]
 
 
-def stage_pdb(inputs: Path, cache: Path, S, seqs: dict[str, str]) -> tuple[dict[str, pd.DataFrame], dict]:
-    ids = pdb_entries(inputs, S)
-    proteome = Proteome(seqs)
+def stage_pdb(inputs: Path, cache: Path, S, seqs: dict[str, str], ids: list[str] | None = None, methylarginine: bool = True) -> tuple[dict[str, pd.DataFrame], dict]:
+    """ids: the PDB entries (default pdb_entries). methylarginine False (site sets): the entry, entity and site-residue tables only, no
+    methylarginine matching and no ModelServer calls."""
+    ids = pdb_entries(inputs, S) if ids is None else ids
+    proteome = Proteome(seqs) if methylarginine else None
     print(f'PDB: {len(ids):,} entries', flush=True)
     entries = []
     qkey = hashlib.md5(ENTRY_QUERY.encode()).hexdigest()[:6]
@@ -386,6 +406,8 @@ def stage_pdb(inputs: Path, cache: Path, S, seqs: dict[str, str]) -> tuple[dict[
                     sites.append({'pdb_id': e['rcsb_id'].lower(), 'entity_id': ent_id, 'uniprot_accession': acc, 'position': str(p),
                                   'residue': code, 'residue_name': name, 'residue_parent': parent or (code if len(t) == 1 else ''),
                                   'entity_position': str(k), 'context_check': check, 'other_modified_residues': '; '.join(others)})
+            if not methylarginine:
+                continue
             # A methylarginine the entity models: the human sites it is, by the UniProt alignment of the entity or else
             # by sequence (orthologues, synthetic peptides and peptides without an alignment)
             own = sorted({a for a, *_ in al})
@@ -409,6 +431,13 @@ def stage_pdb(inputs: Path, cache: Path, S, seqs: dict[str, str]) -> tuple[dict[
     # what each methylarginine at a site touches: the residues of other chains within CONTACT_CUTOFF of its side chain
     ent_of = {(e['rcsb_id'].lower(), (i.get('rcsb_polymer_entity_instance_container_identifiers') or {}).get('auth_asym_id')): pe['rcsb_id'].split('_')[-1]
               for e in entries for pe in e.get('polymer_entities') or [] for i in pe.get('polymer_entity_instances') or [] if i}
+    if not methylarginine:
+        pdb, ent = pd.DataFrame(rows, columns=PDB_ENTRY_COLUMNS).sort_values('pdb_id'), pd.DataFrame(ents, columns=PDB_ENTITY_COLUMNS).sort_values(['pdb_id', 'entity_id'])
+        st = pd.DataFrame(sites, columns=SITE_RESIDUE_COLUMNS).drop_duplicates().sort_values(['uniprot_accession', 'position', 'pdb_id', 'entity_id'],
+                                                                                         key=lambda s: s.map(lambda x: int(x) if str(x).isdigit() else x) if s.name == 'position' else s)
+        info = {'entries_asked': len(ids), 'entries_answered': len(rows), 'entities': len(ent), 'site_residues': len(st), 'chemical_components': len(chem),
+                'site_residues_by_parent': dict(sorted(Counter(st['residue_parent']).items()))}
+        return {'pdb_entries': pdb, 'pdb_entities': ent, 'pdb_site_residues': st}, info
     contacts = []
     for pid, ch, k in sorted(set(jobs)):
         res = residue_contacts(cache, pid, ch, k)
@@ -602,6 +631,82 @@ def stage_names(cache: Path, accs: list[str]) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=['accession', 'gene', 'organism', 'protein_name']).drop_duplicates('accession').sort_values('accession')
 
 
+# ---- Site sets ---------------------------------------------------------------------------------------------------
+
+def site_set_positions(config_path: Path, names: list[str]) -> tuple[dict[str, set[int]], dict]:
+    """accession -> positions of the sites of the named site sets (scripts/64 read_sites), and the configuration."""
+    import importlib.util
+    here = Path(__file__).resolve().parent
+    spec = importlib.util.spec_from_file_location('export64', here / '64_export_site_interactions.py')
+    x64 = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(x64)   # imports scripts/37 (scipy)
+    config = x64.load_config(config_path)
+    unknown = [n for n in names if n not in config['site_sets']]
+    if unknown:
+        raise SystemExit(f'unknown site set {unknown}: {sorted(config["site_sets"])}')
+    out = defaultdict(set)
+    for n in names:
+        for acc, pos, _ in x64.read_sites(config, n, config_path.resolve().parent.parent):
+            out[acc.split('-')[0]].add(pos)
+    return out, config
+
+
+SITE_SET_DESCR = {
+    'pdb_entries': 'PDB entries with a PDBe-KB interface range that holds a site of the site sets {sets}: title, method, resolution, release date, primary citation and non-polymer ligands',
+    'pdb_entities': 'the polymer entities of those PDB entries: type, description, UniProt accessions they align to, source organisms',
+    'pdb_site_residues': 'for each entity of those entries aligned to a site\'s protein of the site sets {sets}: the residue modelled at the site (a chemical component code: the unmodified residue, a modified form such as SEP, ALY or MLY, or another residue where the construct differs), its entity position, whether the 5 residues on each side match the human sequence (matches; realigned; differs), and the other modified residues of the entity (UniProt numbering where it aligns)',
+    'uniprot_partner_names': 'primary gene, organism and recommended name of the UniProt accessions those PDB entities name that are not reviewed human entries of the release\'s reference (other species, unreviewed entries)',
+}
+
+
+def main_site_sets(args) -> None:
+    inputs, cache, out = Path(args.inputs), Path(args.cache), Path(args.outdir)
+    out.mkdir(parents=True, exist_ok=True)
+    sets = ', '.join(args.site_sets)
+    S, _ = site_set_positions(Path(args.config), args.site_sets)
+    print(f'sites: {sum(map(len, S.values())):,} on {len(S):,} proteins ({sets})', flush=True)
+    seqs = {a: q for a, q in read_fasta(Path(args.fasta)).items() if a in S}
+    tables, pinfo = stage_pdb(inputs, cache, S, seqs, ids=sorted(pdbe_kb_entries(inputs, S)), methylarginine=False)
+    human = set(rd(inputs / 'reference' / 'uniprot_human_reviewed_2026_03_entries.tsv')['Entry'])
+    others = {a for v in tables['pdb_entities']['uniprot_accessions'] for a in v.split('; ') if a}
+    tables['uniprot_partner_names'] = stage_names(cache, sorted(a for a in others - human if re.fullmatch(r'[A-Z0-9]{6,10}', a)))
+    names = {k: f'site_set_{k}_{args.date}.tsv' for k in tables}
+    for k, t in tables.items():
+        t = t.apply(lambda c: c.str.replace(r'[\t\r\n]+', ' ', regex=True).str.replace('"', "'").str.strip() if c.dtype == object else c)
+        tables[k] = t
+        t.to_csv(out / names[k], sep='\t', index=False, lineterminator='\n')
+    summary = {'site_sets': args.site_sets, 'date': args.date, 'sites': sum(map(len, S.values())), 'proteins': len(S), 'pdb': pinfo}
+    s = out / f'site_set_interaction_sources_summary_{args.date}.json'
+    s.write_text(json.dumps(summary, indent=1, sort_keys=True) + '\n', encoding='utf-8')
+    print(json.dumps(summary, indent=1)[:3000])
+    raw = [{'path': str(p.relative_to(cache)), 'bytes': str(p.stat().st_size), 'md5': md5_file(p), 'saved': dt.date.fromtimestamp(p.stat().st_mtime).isoformat()}
+           for p in sorted(cache.rglob('*.json')) if p.relative_to(cache).parts[0] in ('rcsb', 'uniprot')]
+    mcols = (inputs / 'MANIFEST.tsv').read_text().split('\n')[0].split('\t')
+    mrows = []
+    for k, t in tables.items():
+        _, src, ver, cite, lic = DESCR[k]
+        p = out / names[k]
+        mrows.append({'file': f'interactions/{names[k]}', 'bytes': str(p.stat().st_size), 'md5': md5_file(p), 'rows': str(len(t)), 'redistribution': 'git',
+                      'content': SITE_SET_DESCR[k].format(sets=sets), 'source': src, 'version_or_date': f'{ver}, answers saved {args.date}', 'citation': cite, 'licence': lic,
+                      'derived_from': f'{CACHE_OF[k]}/*.json in the interaction cache ({sum(1 for r in raw if r["path"].startswith(CACHE_OF[k] + "/"))} files)',
+                      'how_made_or_checked': f'scripts/53_stage_interaction_sources.py --site-sets {" ".join(args.site_sets)}: the PDB entries at the sites of the site sets {sets}',
+                      'original_name': ''})
+    mrows.append({'file': f'interactions/{s.name}', 'bytes': str(s.stat().st_size), 'md5': md5_file(s), 'rows': '', 'redistribution': 'git',
+                  'content': f'counts of the PDB staging for the site sets {sets}: entries asked and answered, entities, site residues by parent residue',
+                  'source': 'scripts/53_stage_interaction_sources.py', 'version_or_date': args.date, 'citation': '', 'licence': 'CC0 1.0',
+                  'derived_from': '', 'how_made_or_checked': 'written with the tables', 'original_name': ''})
+    pd.DataFrame(mrows)[mcols].to_csv(out / 'manifest_rows.tsv', sep='\t', index=False, lineterminator='\n')
+    pd.DataFrame(raw).to_csv(out / 'raw_cache_rows.tsv', sep='\t', index=False, lineterminator='\n')
+    if args.install:
+        dest = inputs / 'interactions'
+        for n in list(names.values()) + [s.name]:
+            shutil.copy2(out / n, dest / n)
+        update_manifest(inputs / 'MANIFEST.tsv', mrows)
+        upsert_tsv_rows(dest / 'raw_cache_files.tsv', raw)
+        refresh_manifest_row(inputs / 'MANIFEST.tsv', dest / 'raw_cache_files.tsv', 'interactions/raw_cache_files.tsv')
+        print(f'installed {len(names) + 1} files into {dest}')
+
+
 # ---- Main --------------------------------------------------------------------------------------------------------
 
 DESCR = {
@@ -642,7 +747,11 @@ def main() -> None:
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--date', default=dt.date.today().isoformat())
     ap.add_argument('--install', action='store_true')
+    ap.add_argument('--site-sets', nargs='+', metavar='NAME', help='stage the PDB tables of the sites of these site sets (config/site_sets.json) instead')
+    ap.add_argument('--config', default='config/site_sets.json')
     args = ap.parse_args()
+    if args.site_sets:
+        return main_site_sets(args)
     inputs, cache, out = Path(args.inputs), Path(args.cache), Path(args.outdir)
     out.mkdir(parents=True, exist_ok=True)
     S = site_positions(Path(args.release))

@@ -36,6 +36,7 @@ import json
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
+from typing import NamedTuple
 
 import pandas as pd
 
@@ -103,12 +104,46 @@ FLAGS = {
     'no_publication': 'the record gives no PubMed or DOI',
     'negative': 'IntAct records the interaction as not observed',
 }
+# the records of the other site sets (site_set_records): binding evidence from PDB only, and the nucleic-acid evidence of scripts/64
+SITE_SET_CLASSES = {
+    'binds_modified': 'binds with the site modified in the experiment: a PDB structure modelling a modified residue there (the components of '
+                      'config/site_sets.json modified_components)',
+    'binds_unmodified': 'binds with the unmodified residue at the site: a PDB structure modelling it there',
+    'binds_other_residue': 'binds with another residue at the site: a PDB structure of a mutated or variant construct (state_detail names it)',
+    'binds_state_not_read': 'a PDB interface at the site whose residue there could not be read (no entity of the entry aligns to the site)',
+    'nucleic_acid': 'RNA or DNA: contact in a PDB structure, a crosslink or RNA-bound peptide in cells, an RBR-ID residue, or a UniProt DNA-binding '
+                    'region (annotation)',
+    'self': 'another copy of the same protein in a PDB structure',
+}
+SITE_SET_EVIDENCE = ('pdb_protein', 'pdb_rna', 'pdb_dna', 'pdb_self', 'rna_crosslink', 'dna_crosslink', 'capri_xl_peptide', 'capri_adj_peptide',
+                     'rbrid_residue', 'dna_binding_region')
 PARTNER_KINDS = {'protein': 'a protein', 'self': 'another copy of the site\'s protein', 'rna': 'RNA', 'dna': 'DNA',
                  'peptide': 'a peptide or complex without a UniProt entry (IntAct: a synthetic peptide, a Complex Portal complex)',
                  'gene': 'a gene locus (IntAct participant type gene, from chromatin immunoprecipitation)',
                  'small_molecule': 'a small molecule', 'other': 'another participant type'}
 
 PDB_STATE = {'ARG': 'arginine', 'NMM': 'Rme1', 'DA2': 'Rme2a', '2MR': 'Rme2s'}
+
+
+class ResidueStates(NamedTuple):
+    """What a site's residue is in a PDB entry: the state code of each component that stands for it, the unmodified component, and
+    the record class of a protein partner bound with the site modified."""
+    states: dict
+    unmodified: str
+    bound_class: str
+
+
+ARGININE = ResidueStates(PDB_STATE, 'ARG', 'binds_methylated')   # the methylarginine release
+SITE_ID = re.compile(r'([^:]+):([A-Z])(\d+)')
+METHYL_LETTER = 'R'   # scripts/53 pdb_methylated_sites hold methylarginines only
+
+
+def parse_site(site_id: str) -> tuple[str, str, int]:
+    """'P12345:K27' -> ('P12345', 'K', 27)."""
+    m = SITE_ID.fullmatch(site_id)
+    if not m:
+        raise SystemExit(f'site id {site_id!r} is not accession:letter+position')
+    return m.group(1), m.group(2), int(m.group(3))
 METHYL_LABEL = {'me1arg': 'Rme1', 'nonome2arg': 'Rme2a', "nono'me2arg": 'Rme2s', 'nnme2arg': 'Rme2', 'mearg': 'Rme'}
 # residue marks shown beside a record: PDB chemical components (residue, suffix) and IntAct feature labels (PSI-MOD).
 # Others the entries model (selenomethionine, oxidised or alkylated cysteines, caps, cofactors) are not marks.
@@ -184,6 +219,46 @@ SITE_COLUMNS = [
 
 def read(inputs, name: str) -> pd.DataFrame:
     return pd.read_csv(Path(inputs) / 'interactions' / f'{name}_{DATE}.tsv', sep='\t', dtype=str, keep_default_na=False)
+
+
+def read_site_set(inputs, name: str, date: str | None = None) -> pd.DataFrame:
+    """inputs/interactions/site_set_<name>_<date>.tsv of scripts/53 --site-sets: the latest date present, or date."""
+    folder = Path(inputs) / 'interactions'
+    if date:
+        path = folder / f'site_set_{name}_{date}.tsv'
+    else:
+        found = sorted(f for f in folder.glob(f'site_set_{name}_*.tsv') if re.fullmatch(r'\d{4}-\d{2}-\d{2}(_\d+)?', f.stem[len(f'site_set_{name}_'):]))
+        if not found:
+            raise SystemExit(f'no site_set_{name}_<date>.tsv in {folder}: run scripts/53_stage_interaction_sources.py --site-sets')
+        path = found[-1]
+    return pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+
+
+def site_states(config: dict, letters) -> dict[str, ResidueStates]:
+    """The ResidueStates of each residue letter of a site set (config/site_sets.json residues): the unmodified component and
+    its modified forms, class binds_modified. Per letter, so that another residue at the site (a threonine at a serine) is
+    another residue and not an unmodified one."""
+    out = {}
+    for letter in letters:
+        spec = config['residues'][letter]
+        out[letter] = ResidueStates({spec['component']: spec['unmodified_state'], **spec['modified_components']}, spec['component'], 'binds_modified')
+    return out
+
+
+def site_set_state_vocabulary(config: dict, letters) -> dict[str, str]:
+    """The site states of a site set's records with a plain-language description each (for a README)."""
+    out = {}
+    for letter in letters:
+        spec = config['residues'][letter]
+        out[spec['unmodified_state']] = f'an unmodified {spec["name"]} (PDB residue {spec["component"]})'
+    for letter in letters:
+        spec = config['residues'][letter]
+        for comp, state in spec['modified_components'].items():
+            out[state] = f'{spec["name"]} modified, state {state} (PDB component {comp})'
+    out['other_residue'] = 'another residue in the construct (state_detail names it)'
+    out['not_read'] = 'a structure whose residue at the site could not be read'
+    out['not_recorded'] = 'not recorded: a crosslink, RNA-bound peptide or annotation'
+    return out
 
 
 def ordered(values, order) -> list:
@@ -297,19 +372,23 @@ def degree_flag(state: str, site_states: set) -> bool:
 class Sources:
     """The staged provenance tables, indexed."""
 
-    def __init__(self, inputs, genes: dict[str, str]):
+    def __init__(self, inputs, genes: dict[str, str], site_set: bool = False, date: str | None = None):
+        """site_set: the PDB tables alone, as scripts/53 --site-sets staged them (site_set_*, the latest date or date)."""
+        get = (lambda name: read_site_set(inputs, name, date)) if site_set else (lambda name: read(inputs, name))
         # the gene of a partner: the release's reference for human reviewed entries, else UniProt (other species)
-        names = read(inputs, 'uniprot_partner_names')
+        names = get('uniprot_partner_names')
         self.genes = {**{a: g or n for a, g, n in zip(names['accession'], names['gene'], names['protein_name'])}, **genes}
-        self.entries = read(inputs, 'pdb_entries').set_index('pdb_id')
-        ent = read(inputs, 'pdb_entities')
+        self.entries = get('pdb_entries').set_index('pdb_id')
+        ent = get('pdb_entities')
         self.entities = defaultdict(list)          # pdb -> rows
         for r in ent.itertuples():
             self.entities[r.pdb_id].append(r)
-        st = read(inputs, 'pdb_site_residues')
+        st = get('pdb_site_residues')
         self.site_res = defaultdict(list)          # (pdb, acc, pos) -> rows
         for r in st.itertuples():
             self.site_res[(r.pdb_id, r.uniprot_accession, int(r.position))].append(r)
+        if site_set:
+            return
         self.methyl = read(inputs, 'pdb_methylated_sites')
         mc = read(inputs, 'pdb_methylated_site_contacts')
         self.contacts = defaultdict(list)          # (pdb, chain, entity position) -> rows
@@ -353,17 +432,17 @@ class Sources:
         meth = e['method'].lower().replace('x-ray diffraction', 'X-ray crystallography').replace('electron microscopy', 'cryo-EM').replace('solution nmr', 'solution NMR')
         return meth + (f', {e["resolution_a"]} Å' if e['resolution_a'] else ''), e['title']
 
-    def site_state(self, pdb: str, acc: str, pos: int):
+    def site_state(self, pdb: str, acc: str, pos: int, residue: ResidueStates = ARGININE):
         """(state code, detail, other marks, species) of the site in an entry, from the entities aligned to it."""
         found = self.site_res.get((pdb, acc, pos), [])
-        # an entity whose residues around the site differ from the human sequence places nothing there but an arginine
-        rows = [r for r in found if r.context_check != 'differs' or r.residue in PDB_STATE]
+        # an entity whose residues around the site differ from the human sequence places nothing there but the residue itself or a modified form
+        rows = [r for r in found if r.context_check != 'differs' or r.residue in residue.states]
         if not rows:
             return 'not_read', 'the residues around the site differ from the human sequence' if found else '', [], ''
         codes = Counter(r.residue for r in rows)
-        meth = [c for c in codes if c in ('NMM', 'DA2', '2MR')]
-        code = meth[0] if meth else 'ARG' if 'ARG' in codes else sorted(codes)[0]
-        state = PDB_STATE.get(code, 'other_residue')
+        meth = [c for c in codes if c in residue.states and c != residue.unmodified]
+        code = meth[0] if meth else residue.unmodified if residue.unmodified in codes else sorted(codes)[0]
+        state = residue.states.get(code, 'other_residue')
         detail = f'{code} modelled' + (f' (other copies: {", ".join(f"{c}" for c in sorted(codes) if c != code)})' if len(codes) > 1 else '') \
             + ('; the site found by its neighbours (the RCSB alignment is shifted, as for another isoform)' if any(r.context_check == 'realigned' and r.residue == code for r in rows) else '')
         marks = sorted({m for r in rows for x in r.other_modified_residues.split('; ') if x for m in [mark_text(x)] if m},
@@ -381,12 +460,17 @@ class Sources:
         return '; '.join(names[:3]) + ('; …' if len(names) > 3 else '')
 
 
-def pdb_records(ev: pd.DataFrame, src: Sources, site_states: dict) -> list[dict]:
+def pdb_records(ev: pd.DataFrame, src: Sources, site_states: dict, residue=ARGININE) -> list[dict]:
+    """residue: a ResidueStates, or one per residue letter of the site ids (site_states(config, letters))."""
     out = []
     for r in ev[ev['evidence_type'].isin(['pdb_protein', 'pdb_rna', 'pdb_dna', 'pdb_self'])].itertuples():
-        acc, pos = r.site_id.split(':R')[0], int(r.site_id.split(':R')[1])
+        acc, letter, pos = parse_site(r.site_id)
+        if isinstance(residue, dict):
+            if letter not in residue:
+                raise SystemExit(f'{r.site_id}: residue {letter} is not one of the site set\'s ({", ".join(residue)})')
+        res = residue[letter] if isinstance(residue, dict) else residue
         for pdb in [x for x in r.structures.split('; ') if x]:
-            state, detail, marks, site_org = src.site_state(pdb, acc, pos)
+            state, detail, marks, site_org = src.site_state(pdb, acc, pos, res)
             meth, title = src.method(pdb)
             rec = {'site_id': r.site_id, 'evidence_types': r.evidence_type, 'source': 'PDB', 'source_id': pdb, 'method': meth, 'context': title,
                    'site_state': state, 'state_detail': detail, 'other_marks': '; '.join(marks), 'site_species': site_org, 'detail': '',
@@ -394,7 +478,8 @@ def pdb_records(ev: pd.DataFrame, src: Sources, site_states: dict) -> list[dict]
             if r.evidence_type == 'pdb_protein':
                 org, name = src.partner_species(pdb, r.partner_accession)
                 rec.update(partner_kind='protein', partner_accession=r.partner_accession, partner_gene=r.partner_gene or src.genes.get(r.partner_accession, ''), partner_name=name, partner_species=org,
-                           record_class={'arginine': 'binds_unmodified', 'other_residue': 'binds_other_residue', 'not_read': 'binds_state_not_read'}.get(state, 'binds_methylated'))
+                           record_class={res.states[res.unmodified]: 'binds_unmodified', 'other_residue': 'binds_other_residue',
+                                         'not_read': 'binds_state_not_read'}.get(state, res.bound_class))
             elif r.evidence_type == 'pdb_self':
                 rec.update(partner_kind='self', partner_accession=acc, partner_gene='', partner_name='', partner_species=site_org, record_class='self')
             else:
@@ -408,9 +493,9 @@ def methylated_records(src: Sources, sites: set, have: set) -> tuple[list[dict],
     """Records of the entries modelling a site methylated: the contact rows join the PDBe-KB record of the same entry and
     partner (detail), and the others become records of their own (pdb_methylated_contact)."""
     extra, contact_detail = [], {}
-    ms = src.methyl[(src.methyl['uniprot_accession'] + ':R' + src.methyl['position']).isin(sites)]
+    ms = src.methyl[(src.methyl['uniprot_accession'] + ':' + METHYL_LETTER + src.methyl['position']).isin(sites)]
     for r in ms.itertuples():
-        site = f'{r.uniprot_accession}:R{r.position}'
+        site = f'{r.uniprot_accession}:{METHYL_LETTER}{r.position}'
         meth, title = src.method(r.pdb_id)
         by_partner = defaultdict(lambda: {'chains': set(), 'residues': set(), 'd': None})
         for ch in [c for c in r.chains.split('; ') if c][:2]:
@@ -495,7 +580,7 @@ def intact_records(ev: pd.DataFrame, src: Sources) -> list[dict]:
     by = {}   # (site, ac, partner) -> record; the strongest class when an interaction gives several rows
     order = list(CLASSES)
     for r in ev[ev['evidence_type'].str.startswith('intact_')].itertuples():
-        acc, pos = r.site_id.split(':R')[0], int(r.site_id.split(':R')[1])
+        acc, _, pos = parse_site(r.site_id)
         pkey = r.partner_accession if r.partner_kind == 'protein' else r.partner_kind
         for ac in re.findall(r'EBI-\d+', r.detail):
             binaries = src.intact.get(ac, [])
@@ -638,11 +723,21 @@ def records(ev: pd.DataFrame, sites: pd.DataFrame, inputs, genes: dict[str, str]
         k = (x['site_id'], x['source_id'], x['partner_accession'] if x['partner_kind'] == 'protein' else x['partner_kind'])
         if k in contact_detail and not x['detail']:
             x['detail'] = contact_detail[k]
-        if x['partner_kind'] == 'protein' and x['partner_species'] and HUMAN not in x['partner_species'].split('; '):
-            x['_flags'].append('partner_other_species')
-        if x['site_species'] and HUMAN not in x['site_species'].split('; '):
-            x['_flags'].append('site_protein_other_species')
+        species_flags(x)
     rows += extra + intact_records(ev, src) + other_records(ev)
+    return finish_records(rows, genes, states, CLASSES)
+
+
+def species_flags(x: dict) -> None:
+    """The flags of a PDB record whose partner or site protein is from another species."""
+    if x['partner_kind'] == 'protein' and x['partner_species'] and HUMAN not in x['partner_species'].split('; '):
+        x['_flags'].append('partner_other_species')
+    if x['site_species'] and HUMAN not in x['site_species'].split('; '):
+        x['_flags'].append('site_protein_other_species')
+
+
+def finish_records(rows: list[dict], genes: dict[str, str], states: dict, classes: dict) -> pd.DataFrame:
+    """The flags, cleaning and sort of the records tables (states: site -> the release's methylation states)."""
     all_genes = set(genes.values())
     for x in rows:
         fl = x.pop('_flags')
@@ -661,9 +756,25 @@ def records(ev: pd.DataFrame, sites: pd.DataFrame, inputs, genes: dict[str, str]
     for c, kind, *_ in RECORD_COLUMNS:
         clean = lambda v: re.sub(r'\s*;\s*', ', ', re.sub(r'[\t\r\n]+', ' ', str(v))).strip()  # noqa: E731
         t[c] = t[c].map(lambda v: '; '.join(x for x in (clean(i) for i in str(v).split('; ')) if x) if kind.startswith('list') else clean(v))
-    t['_c'] = t['record_class'].map(list(CLASSES).index)
+    t['_c'] = t['record_class'].map(list(classes).index)
     t = t.sort_values(['site_id', '_c', 'partner_gene', 'partner_name', 'source', 'source_id'], kind='stable').drop(columns='_c').reset_index(drop=True)
     return t
+
+
+def site_set_records(ev: pd.DataFrame, inputs, genes: dict[str, str], config: dict, letters, date: str | None = None) -> pd.DataFrame:
+    """supporting/site_interaction_records for a site set other than the methylarginines (scripts/64): the PDB records and the
+    nucleic-acid evidence of ev, with the PDB tables of scripts/53 --site-sets (inputs/interactions/site_set_*). letters: the
+    residue letters of the set (config/site_sets.json)."""
+    bad = sorted(set(ev['evidence_type']) - set(SITE_SET_EVIDENCE))
+    if bad:
+        raise SystemExit(f'site_set_records: evidence types {bad} are not published for site sets (allowed: {", ".join(SITE_SET_EVIDENCE)})')
+    src = Sources(inputs, genes, site_set=True, date=date)
+    rows = pdb_records(ev, src, {}, site_states(config, letters))
+    for x in rows:
+        x['_flags'] = []
+        species_flags(x)
+    rows += other_records(ev)
+    return finish_records(rows, genes, {}, SITE_SET_CLASSES)
 
 
 def label(r) -> str:
