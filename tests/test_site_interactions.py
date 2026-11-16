@@ -44,6 +44,38 @@ def write_tsv(path, header, rows):
 
 
 # ----------------------------------------------------------------------------------------------------- 1. the release
+def test_methyllysine_release_rebuilds_from_the_staged_tables(tmp_path):
+    """releases/v1.5.1: the methyllysine tables, records included, come from the staged tables alone, byte for byte."""
+    config = s64.load_config()
+    spec = config['site_sets']['methyllysine']
+    residues, tables = s64.residues_of(config, spec['residues'])
+    topup = tmp_path / 'topup'
+    src = s64.Source(ROOT / 'inputs' / 'interactions', topup, residues, tables, 2)
+    proteome = s64.reference_proteome(src, ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    d = s64.compute(s64.read_sites(config, 'methyllysine'), src, proteome, spec['noun'], 2, 0, False)
+    out = s64.write_tables(d, tmp_path / 'out', 'methyllysine_', '_v1.5.1')
+    out['site_interaction_records'] = s64.write_records(out, tmp_path / 'out', config, spec['residues'], ROOT / 'inputs', 'methyllysine_', '_v1.5.1')
+    assert not src.fetched and not any(p.is_file() for p in topup.rglob('*'))
+    release = ROOT / 'releases' / 'v1.5.1' / 'supporting'
+    for name, path in out.items():
+        assert path.read_bytes() == (release / path.name).read_bytes(), name
+
+
+def test_release_v1_5_1_holds_nothing_that_is_not_republished():
+    """No RBDmap, pCLAP, predicted or IntAct evidence in any table of the site sets; MD5SUMS matches the files."""
+    import hashlib
+    release = ROOT / 'releases' / 'v1.5.1'
+    files = sorted((release / 'supporting').glob('*_v1.5.1.tsv'))
+    assert len(files) == 18
+    for f in files:
+        text = f.read_text(encoding='utf-8')
+        for word in ('rbdmap', 'pclap', 'RBDmap', 'pCLAP', 'predicted_', 'intact_', 'IntAct', 'ProtVar'):
+            assert word not in text, (f.name, word)
+    sums = dict(reversed(line.split('  ')) for line in (release / 'MD5SUMS').read_text().splitlines())
+    for f in files:
+        assert sums[f'supporting/{f.name}'] == hashlib.md5(f.read_bytes()).hexdigest(), f.name
+
+
 def test_methylarginine_reproduces_v1_4_3(tmp_path):
     config = s64.load_config()
     spec = config['site_sets']['methylarginine']

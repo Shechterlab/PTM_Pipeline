@@ -1,4 +1,10 @@
-2d8275e01134096d0a3d26922d77fb91  README.md
+b3a5867d5d5fadc9d97e993cdad1449d  README.md
+106c32ff1ae9ed0812545151a35a01d2  supporting/lysine_nucleic_acid_contacts_v1.5.1.tsv
+e582a2b014743693e2a613c6ecb51a47  supporting/lysine_nucleic_acid_near_sites_v1.5.1.tsv
+6b3dc76ad7d3327202c2b2bc54fd75cf  supporting/lysine_nucleic_acid_proximal_sites_v1.5.1.tsv
+7b892ee0093145470f0c76769af19de2  supporting/lysine_residue_evidence_v1.5.1.tsv
+34133ddb60c402b8155e2a7a93aa3b5b  supporting/lysine_site_interaction_records_v1.5.1.tsv
+3a50fc39674694295d71aa537d16bfcd  supporting/lysine_site_interactions_v1.5.1.tsv
 d384f2fc1e43ff93b3a14d05b8c1fad1  supporting/methyllysine_nucleic_acid_contacts_v1.5.1.tsv
 bcfbe0c5449e00b6a1c553ca4b908e9e  supporting/methyllysine_nucleic_acid_near_sites_v1.5.1.tsv
 bb78d3d17cde8ab7bb998aa7348e7c9e  supporting/methyllysine_nucleic_acid_proximal_sites_v1.5.1.tsv

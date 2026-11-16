@@ -121,6 +121,35 @@ kinds dated 2026-10-20. scripts/37 reads every dated table of a kind together.
 
 A build from these tables needs no network: `hpc/build_release.sh` stops if scripts/37 would have to fetch anything.
 
+### Site sets other than the methylarginines (16 November 2026)
+
+`scripts/64_export_site_interactions.py` runs the interface, crosslink and structure-contact steps of scripts/37 for the
+site sets of `config/site_sets.json` (methyllysine; lysine: acetylation, other acylations, ubiquitination and
+SUMOylation; phospho), from the sites of release v1.5.0. What the tables above lacked for them was fetched with scripts/37's
+own functions and staged by `scripts/37a_stage_interactions.py --topup` as dated tables. The measurements of residues other
+than arginine have tables of their own, in the columns of the arginine tables. The side-chain atoms a distance is measured
+from are in `config/site_sets.json`. `scripts/53_stage_interaction_sources.py --site-sets methyllysine lysine phospho`
+staged the provenance of the PDB entries (`site_set_*`). The crosslink tables (pepR-MS, CAPRI, RBR-ID, Trendel 2025,
+UniProt DNA-binding regions) cover every residue and are read as they are. RBDmap and pCLAP are not read for these sets.
+
+| File | Rows | What it holds |
+|---|---:|---|
+| `pdbe_kb_interface_residues_2026-11-16.tsv` | 266,296 | PDBe-KB interface residues of the 11,410 proteins of the three site sets not looked up before |
+| `pdbe_kb_interface_queries_2026-11-16.tsv` | 11,410 | Those look-ups |
+| `pdb_residue_contacts_2026-11-16.tsv` | 226,899 | Residues of other chains within 4 Å of the side chain of an interface lysine, serine, threonine or tyrosine of the site sets (first model), in the columns of `pdb_arginine_contacts` |
+| `pdb_chain_residues_2026-11-16.tsv` | 18,122 | The lysines, serines, threonines and tyrosines modelled in each protein chain read against RNA and DNA (modified forms under their PDB component), as `pdb_chain_arginines` |
+| `pdb_residue_nucleic_acid_distances_2026-11-16.tsv` | 312,665 | Their side-chain distance to the RNA and DNA chains within 8 Å, as `pdb_arginine_nucleic_acid_distances` |
+| `pdb_nucleic_acid_chains_2026-11-16.tsv` | 4,247 | The RNA and DNA chains of the PDB entries not read before |
+| `pdb_nucleic_acid_residue_contacts_2026-11-16.tsv` | 102,398 | Residues within 4 Å of RNA or DNA in the protein chains not read before |
+| `site_set_pdb_entries_2026-11-16.tsv` | 27,430 | The PDB entries with an interface at a site of the three sets: title, method, resolution, primary citation |
+| `site_set_pdb_entities_2026-11-16.tsv` | 90,032 | Their polymer entities: type, description, UniProt accessions, organisms |
+| `site_set_pdb_site_residues_2026-11-16.tsv` | 237,218 | The residue each entry models at a site that is at an interface in it |
+| `site_set_uniprot_partner_names_2026-11-16.tsv` | 2,098 | Gene, organism and name of the partners that are not reviewed human entries |
+| `raw_topup_files_2026-11-16.tsv` | 11,410 | Every fetched PDBe-KB answer, with its size, MD5 and date |
+| `raw_topup_files_2026-11-16_2.tsv` | 162,872 | Every fetched structure answer, with its size, MD5 and date |
+
+`releases/v1.5.1/` is built from these tables without the network (`tests/test_site_interactions.py`).
+
 ### Curated interaction features (IntAct)
 
 | File | Rows | What it holds |

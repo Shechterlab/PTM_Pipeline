@@ -1,6 +1,6 @@
 # PTM_Pipeline v1.5.1: site-level interaction evidence for the context marks
 
-Release v1.5.1 adds, for the site sets methyllysine, phospho, the site-level interaction tables that the methylarginine release has. Everything else is release v1.5.0, unchanged and not repeated here; the methylarginine tables stay those of v1.4.3 and v1.5.0.
+Release v1.5.1 adds, for the site sets methyllysine, lysine, phospho, the site-level interaction tables that the methylarginine release has. Everything else is release v1.5.0, unchanged and not repeated here; the methylarginine tables stay those of v1.4.3 and v1.5.0.
 
 The tables are made by `scripts/64_export_site_interactions.py`, which runs the interface, crosslink and structure-contact steps of the methylarginine pipeline (`scripts/37_export_interaction_data.py`) with the modified residue as a parameter (`config/site_sets.json`). Run on the methylarginines it gives the methylarginine release tables (`tests/test_site_interactions.py`).
 
@@ -9,6 +9,7 @@ The tables are made by `scripts/64_export_site_interactions.py`, which runs the 
 | Site set | Residues | Sites from | Sites | with a PDB interface | with RNA or DNA within 4 Å in a structure | with evidence from cells |
 |---|---|---|---|---|---|---|
 | methyllysine | K | `releases/v1.5.0/human_methyllysine_sites_v1.5.0.tsv` | 10,040 | 954 | 229 | 338 |
+| lysine | K | `releases/v1.5.0/human_acetylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_lysine_acylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_ubiquitination_sites_v1.5.0.tsv`; `releases/v1.5.0/human_sumoylation_sites_v1.5.0.tsv` | 172,015 | 17,084 | 3,039 | 3,978 |
 | phospho | S, T, Y | `releases/v1.5.0/human_phosphorylation_sites_v1.5.0.tsv` | 142,415 | 6,635 | 585 | 5,042 |
 
 ## Tables
@@ -82,6 +83,12 @@ The tables are under CC BY-NC-SA 4.0, as the release. Cite the sources of the ev
 
 | File | Rows |
 |---|---|
+| `supporting/lysine_nucleic_acid_contacts_v1.5.1.tsv` | 46,402 |
+| `supporting/lysine_nucleic_acid_near_sites_v1.5.1.tsv` | 12,243 |
+| `supporting/lysine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 15,933 |
+| `supporting/lysine_residue_evidence_v1.5.1.tsv` | 206,810 |
+| `supporting/lysine_site_interaction_records_v1.5.1.tsv` | 190,457 |
+| `supporting/lysine_site_interactions_v1.5.1.tsv` | 32,798 |
 | `supporting/methyllysine_nucleic_acid_contacts_v1.5.1.tsv` | 5,682 |
 | `supporting/methyllysine_nucleic_acid_near_sites_v1.5.1.tsv` | 1,178 |
 | `supporting/methyllysine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 2,402 |
