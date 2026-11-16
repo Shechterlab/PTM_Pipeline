@@ -224,6 +224,20 @@ GUANIDINO_N = {'NE', 'NH1', 'NH2'}
 HBOND = 3.5
 LEVY = ['none', 'support', 'rim', 'core']
 
+
+
+class Residues:
+    """The residue(s) a structure step reads: for each PDB component (the residue and its modified forms), the side-chain
+    atoms whose distances count, and the cache folders of the two per-residue steps. scripts/64 builds one from
+    config/site_sets.json for any modified residue; ARGININE is the one this script's own analyses read."""
+
+    def __init__(self, atoms: dict, contacts_folder: str, proximity_folder: str, letters: str = ''):
+        self.atoms = {comp: frozenset(names) for comp, names in atoms.items()}
+        self.contacts_folder, self.proximity_folder, self.letters = contacts_folder, proximity_folder, letters
+
+
+ARGININE = Residues({comp: SIDE_CHAIN for comp in {'ARG'} | METHYL_R}, 'contacts_seqres', 'na_arginines', 'R')
+
 ACC_RE = re.compile(r'^(?:[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})$')
 UA = 'PTM_Pipeline-site-explorer/1.0 (https://github.com/Shechterlab/PTM_Pipeline)'
 
@@ -838,12 +852,13 @@ def parse_cif_atoms(text: str):
     return atoms
 
 
-def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
-    """Residues of other chains within CONTACT_CUTOFF of an arginine side chain, cached as JSON.
+def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool, residues: Residues = ARGININE):
+    """Residues of other chains within CONTACT_CUTOFF of the side chain of a residue (an arginine unless residues says
+    otherwise), cached as JSON.
 
     The residue is addressed by author chain and SEQRES index (label_seq_id). Hits are
     [author chain, label_seq_id, author residue number, residue name, distance]."""
-    folder = cache / 'contacts_seqres'
+    folder = cache / residues.contacts_folder
     folder.mkdir(parents=True, exist_ok=True)
     dest = folder / f'{pdb}_{chain}_{label}.json'
     if dest.exists() and not refresh:
@@ -872,9 +887,9 @@ def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
     atoms = parse_cif_atoms(text)
     me = [a for a in atoms if a.get('auth_asym_id') == chain and a.get('label_seq_id') == str(label)]
     resn = me[0].get('label_comp_id') if me else ''
-    side = [(float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z'])) for a in me if a.get('label_atom_id') in SIDE_CHAIN]
+    side = [(float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z'])) for a in me if a.get('label_atom_id') in residues.atoms.get(resn, ())]
     out = {'resn': resn, 'hits': []}
-    if side and resn in ({'ARG'} | METHYL_R):
+    if side and resn in residues.atoms:
         seen = {}
         for a in atoms:
             ch, comp = a.get('auth_asym_id'), a.get('label_comp_id')
@@ -892,13 +907,13 @@ def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
     return out
 
 
-def chain_na_proximity(cache: Path, pdb: str, chain: str, na_chains: set, refresh: bool):
-    """Every arginine of a protein chain modelled in the first model, and for each its distance to the entry's RNA and
+def chain_na_proximity(cache: Path, pdb: str, chain: str, na_chains: set, refresh: bool, residues: Residues = ARGININE):
+    """Every arginine (or residue of residues) of a protein chain modelled in the first model, and for each its distance to the entry's RNA and
     DNA chains within PROXIMAL_CUTOFF (RCSB ModelServer residueInteraction of the chain; symmetry copies left out),
     cached as JSON: {'args': [[SEQRES index, author number, residue]], 'hits': [[SEQRES index, nucleic-acid chain, its
     closest nucleotide's SEQRES index, nucleotide, side-chain distance, [SEQRES indices within PROXIMAL_CUTOFF]]]}.
-    The distance is the minimum distance from a side-chain heavy atom (CD, NE, CZ, NH1, NH2) to any heavy atom of the chain."""
-    dest = cache / 'na_arginines' / f'{pdb}_{chain}.json'
+    The distance is the minimum distance from a side-chain heavy atom (arginine: CD, NE, CZ, NH1, NH2) to any heavy atom of the chain."""
+    dest = cache / residues.proximity_folder / f'{pdb}_{chain}.json'
     if dest.exists() and not refresh:
         try:
             return json.loads(dest.read_text())
@@ -935,9 +950,9 @@ def chain_na_proximity(cache: Path, pdb: str, chain: str, na_chains: set, refres
             continue
         q = (float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z']))
         lab, comp = int(a['label_seq_id']), a.get('label_comp_id', '')
-        if ch == chain and comp in ({'ARG'} | METHYL_R):
+        if ch == chain and comp in residues.atoms:
             args[lab] = (a.get('auth_seq_id', ''), comp)
-            if a.get('label_atom_id') in SIDE_CHAIN:
+            if a.get('label_atom_id') in residues.atoms[comp]:
                 side[lab].append(q)
         elif ch in na_chains:
             grid[cell(q)].append((ch, lab, comp, q))
@@ -2289,16 +2304,21 @@ def runs(positions):
     return out
 
 
-def write_release_tables(outdir: Path, d: dict):
+def write_release_tables(outdir: Path, d: dict, only=None):
     """The interaction tables of a release, from what main() computed: site_interactions, residue_evidence,
     protein_partners, complexes, interaction_statistics and protein_interaction_summary (one row per protein: GO
-    binding, partners, complexes). Written in the release's conventions; scripts/build_release.py adds them."""
+    binding, partners, complexes). Written in the release's conventions; scripts/build_release.py adds them.
+    d['site_residues'] gives each site's residue letter where the sites are not arginines (scripts/64); only: write
+    just these files."""
     outdir.mkdir(parents=True, exist_ok=True)
     prots, sites, vocab, gene_of = d['prots'], d['sites'], d['vocab'], d['gene_of']
-    sid = lambda j: f'{prots[sites[j][0]][0]}:R{sites[j][1]}'  # noqa: E731
+    letters = d.get('site_residues')
+    sid = lambda j: f'{prots[sites[j][0]][0]}:{letters[j] if letters else ARGININE.letters}{sites[j][1]}'  # noqa: E731
     gene = lambda a: (gene_of.get(base_acc(a), '') or '').split(';')[0].strip()  # noqa: E731
 
     def write(name, header, rows):
+        if only is not None and name not in only:
+            return
         with open(outdir / name, 'w', encoding='utf-8', newline='') as fh:
             w = csv.writer(fh, delimiter='\t', lineterminator='\n')
             w.writerow(header)

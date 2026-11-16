@@ -472,8 +472,11 @@ def stage_modelled(w: Writer, c: Path):
             how='scripts/37a_stage_interactions.py stage_modelled', derived=[f'modelled_methyl_r/ ({len(files)} files)'])
 
 
-def stage_contacts(w: Writer, c: Path):
-    folder = c / 'contacts_seqres'
+def stage_contacts(w: Writer, c: Path, folder_name: str = 'contacts_seqres', table: str = 'pdb_arginine_contacts',
+                   what: str = 'the side chain (CD, NE, CZ, NH1, NH2) of an arginine', one: str = 'an arginine'):
+    """The residue neighbourhoods scripts/37 site_contacts read: an arginine's, or (scripts/64: folder residue_contacts,
+    table pdb_residue_contacts) those of the other modified residues of config/site_sets.json."""
+    folder = c / folder_name
     files = sorted(folder.glob('*.json'))
     rows = []
     for p in files:
@@ -490,14 +493,14 @@ def stage_contacts(w: Writer, c: Path):
             rows.append([pdb, chain, int(label), d.get('resn', ''), ch, lab, seq, comp, dist])
     rows.sort(key=lambda x: (x[0], x[1], x[2], x[8] if x[8] != '' else 0))
     d = dates_of(files)
-    w.table(f'pdb_arginine_contacts_{d[:10]}.tsv',
+    w.table(f'{table}_{d[:10]}.tsv',
             ['pdb_id', 'chain', 'seqres_index', 'residue', 'contact_chain', 'contact_seqres_index', 'contact_author_number',
              'contact_residue', 'distance_a'], rows,
-            content='Residues of other chains within 4 Å of the side chain (CD, NE, CZ, NH1, NH2) of an arginine at a PDB interface, in the '
-                    'first model; a row with empty contact columns is an arginine that was examined and touches nothing within 4 Å',
+            content=f'Residues of other chains within 4 Å of {what} at a PDB interface, in the '
+                    f'first model; a row with empty contact columns is {one} that was examined and touches nothing within 4 Å',
             source=x37.MODELSERVER, version=f'RCSB ModelServer, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
             licence='CC0 (PDB data)', how='scripts/37 site_contacts (distances from the residue neighbourhoods it read); collected here',
-            derived=[f'contacts_seqres/<pdb>_<chain>_<seqres index>.json ({len(files):,} files)'])
+            derived=[f'{folder_name}/<pdb>_<chain>_<seqres index>.json ({len(files):,} files)'])
 
 
 def stage_nucleic_chains(w: Writer, c: Path):
@@ -526,10 +529,23 @@ def stage_nucleic_chains(w: Writer, c: Path):
             derived=[f'pdbe_molecules/<pdb>.json ({len(files):,} files)'])
 
 
-def stage_na_arginines(w: Writer, c: Path):
+def stage_na_residues(w: Writer, c: Path):
+    """scripts/64: as stage_na_arginines, for the other modified residues of config/site_sets.json (lysine, serine,
+    threonine, tyrosine and their modified forms), read in one request per chain."""
+    side = json.loads((HERE.parent / 'config' / 'site_sets.json').read_text(encoding='utf-8'))['residues']
+    atoms = '; '.join(f"{v['name']}: {', '.join(v['side_chain_atoms'])}" for k, v in sorted(side.items()) if k not in x37.ARGININE.letters)
+    stage_na_arginines(w, c, 'na_residues', 'pdb_chain_residues', 'residues', 'pdb_residue_nucleic_acid_distances',
+                       'lysines, serines, threonines and tyrosines', 'modified forms under their PDB component', f'({atoms})',
+                       'protein of a site set', 'scripts/37 chain_na_proximity, called by scripts/64 with those residues')
+
+
+def stage_na_arginines(w: Writer, c: Path, folder_name: str = 'na_arginines', chains_table: str = 'pdb_chain_arginines', column: str = 'arginines',
+                       distances_table: str = 'pdb_arginine_nucleic_acid_distances', many: str = 'arginines',
+                       modified: str = 'methylated arginines as 2MR, DA2, NMM', atoms: str = '(CD, NE, CZ, NH1, NH2)',
+                       whose: str = 'methylated protein', how: str = 'scripts/37 chain_na_proximity'):
     """Every arginine modelled in the protein chains read against RNA and DNA (every entry with the protein and nucleic
     acid), and the distance of each side chain to the RNA and DNA chains within 8 Å."""
-    files = sorted((c / 'na_arginines').glob('*.json'))
+    files = sorted((c / folder_name).glob('*.json'))
     chains, dists = [], []
     for p in files:
         pdb, chain = p.stem.split('_', 1)
@@ -543,15 +559,15 @@ def stage_na_arginines(w: Writer, c: Path):
     dists.sort(key=lambda x: (x[0], x[1], x[2], x[3]))
     d = dates_of(files)
     common = dict(source=x37.MODELSERVER_INTERACTION, version=f'RCSB ModelServer, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
-                  licence='CC0 (PDB data)', how='scripts/37 chain_na_proximity; collected here',
-                  derived=[f'na_arginines/<pdb>_<chain>.json ({len(files):,} files)'])
-    w.table(f'pdb_chain_arginines_{d[:10]}.tsv', ['pdb_id', 'chain', 'n_arginines', 'arginines'], chains,
-            content='The arginines modelled (first model) in each protein chain read against RNA and DNA: every chain of a '
-                    'methylated protein (up to two copies) in every PDB entry where PDBe-KB lists the protein with RNA or DNA, '
-                    'as SEQRES index:author number:residue (methylated arginines as 2MR, DA2, NMM)', **common)
-    w.table(f'pdb_arginine_nucleic_acid_distances_{d[:10]}.tsv',
+                  licence='CC0 (PDB data)', how=f'{how}; collected here',
+                  derived=[f'{folder_name}/<pdb>_<chain>.json ({len(files):,} files)'])
+    w.table(f'{chains_table}_{d[:10]}.tsv', ['pdb_id', 'chain', f'n_{column}', column], chains,
+            content=f'The {many} modelled (first model) in each protein chain read against RNA and DNA: every chain of a '
+                    f'{whose} (up to two copies) in every PDB entry where PDBe-KB lists the protein with RNA or DNA, '
+                    f'as SEQRES index:author number:residue ({modified})', **common)
+    w.table(f'{distances_table}_{d[:10]}.tsv',
             ['pdb_id', 'chain', 'seqres_index', 'na_chain', 'closest_na_seqres_index', 'closest_nucleotide', 'side_chain_distance_a', 'na_seqres_within_8a'], dists,
-            content='For each arginine of those chains with a side-chain atom (CD, NE, CZ, NH1, NH2) within 8 Å of an RNA or DNA '
+            content=f'For each of the {many} of those chains with a side-chain atom {atoms} within 8 Å of an RNA or DNA '
                     'chain of the entry: the closest nucleotide, its distance and every nucleotide of that chain within 8 Å', **common)
 
 
@@ -1051,6 +1067,10 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_pdbe_interfaces(w, c)
     if (c / 'contacts_seqres').is_dir():
         stage_contacts(w, c)
+    if any((c / 'residue_contacts').glob('*.json')):   # scripts/64: the modified residues other than arginine
+        side = json.loads((HERE.parent / 'config' / 'site_sets.json').read_text(encoding='utf-8'))['residues']
+        atoms = '; '.join(f"{v['name']}: {', '.join(v['side_chain_atoms'])}" for k, v in sorted(side.items()) if k not in x37.ARGININE.letters)
+        stage_contacts(w, c, 'residue_contacts', 'pdb_residue_contacts', f'the side chain of a modified residue of a site set ({atoms})', 'a residue')
     if (c / 'environments').is_dir():
         stage_environments(w, c, workers)
     if any((c / 'pdbe_molecules').glob('*.json')):
@@ -1059,6 +1079,8 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_na_regions(w, c)
     if any((c / 'na_arginines').glob('*.json')):
         stage_na_arginines(w, c)
+    if any((c / 'na_residues').glob('*.json')):
+        stage_na_residues(w, c)
     # scripts/37 makes these folders before it knows whether a model needs measuring: stage only what holds files
     if any(p.is_file() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex') for p in (c / x).glob('*')):
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)
