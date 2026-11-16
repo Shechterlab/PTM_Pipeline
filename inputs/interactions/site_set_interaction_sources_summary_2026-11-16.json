@@ -6,6 +6,7 @@
   "entries_answered": 27308,
   "entries_asked": 27308,
   "site_residues": 1278091,
+  "site_residues_at_an_interface": 237218,
   "site_residues_by_parent": {
    "": 414,
    "ALA": 817,

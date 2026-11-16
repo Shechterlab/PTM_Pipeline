@@ -166,6 +166,19 @@ def pdbe_kb_entries(inputs: Path, S) -> set[str]:
     return ent
 
 
+def pdbe_kb_site_entries(inputs: Path, S) -> set[tuple[str, str, int]]:
+    """(PDB entry, accession, position) of each site inside a PDBe-KB interface range, with the entries of that range."""
+    out = set()
+    for f in sorted(glob.glob(str(inputs / 'interactions' / 'pdbe_kb_interface_residues_*.tsv'))):
+        t = rd(f)
+        t = t[t['uniprot_accession'].isin(S)]
+        for a, s, e, pe in zip(t['uniprot_accession'], t['start'].astype(int), t['end'].astype(int), t['pdb_entries']):
+            at = [p for p in S[a] if s <= p <= e]
+            if at:
+                out |= {(x.strip().lower(), a, p) for x in pe.replace(';', ',').split(',') if x.strip() for p in at}
+    return out
+
+
 def pdb_entries(inputs: Path, S) -> list[str]:
     ent = pdbe_kb_entries(inputs, S)
     for f in sorted(glob.glob(str(inputs / 'interactions' / 'pdb_arginine_contacts_*.tsv'))) + \
@@ -654,7 +667,7 @@ def site_set_positions(config_path: Path, names: list[str]) -> tuple[dict[str, s
 SITE_SET_DESCR = {
     'pdb_entries': 'PDB entries with a PDBe-KB interface range that holds a site of the site sets {sets}: title, method, resolution, release date, primary citation and non-polymer ligands',
     'pdb_entities': 'the polymer entities of those PDB entries: type, description, UniProt accessions they align to, source organisms',
-    'pdb_site_residues': 'for each entity of those entries aligned to a site\'s protein of the site sets {sets}: the residue modelled at the site (a chemical component code: the unmodified residue, a modified form such as SEP, ALY or MLY, or another residue where the construct differs), its entity position, whether the 5 residues on each side match the human sequence (matches; realigned; differs), and the other modified residues of the entity (UniProt numbering where it aligns)',
+    'pdb_site_residues': 'for each entity of those entries aligned to a site\'s protein of the site sets {sets}, where the site is at a PDBe-KB interface in the entry: the residue modelled at the site (a chemical component code: the unmodified residue, a modified form such as SEP, ALY or MLY, or another residue where the construct differs), its entity position, whether the 5 residues on each side match the human sequence (matches; realigned; differs), and the other modified residues of the entity (UniProt numbering where it aligns)',
     'uniprot_partner_names': 'primary gene, organism and recommended name of the UniProt accessions those PDB entities name that are not reviewed human entries of the release\'s reference (other species, unreviewed entries)',
 }
 
@@ -667,6 +680,11 @@ def main_site_sets(args) -> None:
     print(f'sites: {sum(map(len, S.values())):,} on {len(S):,} proteins ({sets})', flush=True)
     seqs = {a: q for a, q in read_fasta(Path(args.fasta)).items() if a in S}
     tables, pinfo = stage_pdb(inputs, cache, S, seqs, ids=sorted(pdbe_kb_entries(inputs, S)), methylarginine=False)
+    # the residue an entry models at a site is read only where the site is at an interface in that entry
+    at = pdbe_kb_site_entries(inputs, S)
+    st = tables['pdb_site_residues']
+    tables['pdb_site_residues'] = st[[k in at for k in zip(st['pdb_id'], st['uniprot_accession'], st['position'].astype(int))]]
+    pinfo['site_residues_at_an_interface'] = len(tables['pdb_site_residues'])
     human = set(rd(inputs / 'reference' / 'uniprot_human_reviewed_2026_03_entries.tsv')['Entry'])
     others = {a for v in tables['pdb_entities']['uniprot_accessions'] for a in v.split('; ') if a}
     tables['uniprot_partner_names'] = stage_names(cache, sorted(a for a in others - human if re.fullmatch(r'[A-Z0-9]{6,10}', a)))
