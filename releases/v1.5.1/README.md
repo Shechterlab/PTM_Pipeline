@@ -1,6 +1,6 @@
 # PTM_Pipeline v1.5.1: site-level interaction evidence for the context marks
 
-Release v1.5.1 adds, for the site sets methyllysine, the site-level interaction tables that the methylarginine release has. Everything else is release v1.5.0, unchanged and not repeated here; the methylarginine tables stay those of v1.4.3 and v1.5.0.
+Release v1.5.1 adds, for the site sets methyllysine, phospho, the site-level interaction tables that the methylarginine release has. Everything else is release v1.5.0, unchanged and not repeated here; the methylarginine tables stay those of v1.4.3 and v1.5.0.
 
 The tables are made by `scripts/64_export_site_interactions.py`, which runs the interface, crosslink and structure-contact steps of the methylarginine pipeline (`scripts/37_export_interaction_data.py`) with the modified residue as a parameter (`config/site_sets.json`). Run on the methylarginines it gives the methylarginine release tables (`tests/test_site_interactions.py`).
 
@@ -9,6 +9,7 @@ The tables are made by `scripts/64_export_site_interactions.py`, which runs the 
 | Site set | Residues | Sites from | Sites | with a PDB interface | with RNA or DNA within 4 Å in a structure | with evidence from cells |
 |---|---|---|---|---|---|---|
 | methyllysine | K | `releases/v1.5.0/human_methyllysine_sites_v1.5.0.tsv` | 10,040 | 954 | 229 | 338 |
+| phospho | S, T, Y | `releases/v1.5.0/human_phosphorylation_sites_v1.5.0.tsv` | 142,415 | 6,635 | 585 | 5,042 |
 
 ## Tables
 
@@ -23,7 +24,7 @@ One file per site set and table, `supporting/<site set>_<table>_v1.5.1.tsv`, in 
 | `nucleic_acid_near_sites` | site and complex in which a residue at i ± 1–5, not the site, is within 4 Å of RNA or DNA (the side chain not within 8 Å) |
 | `residue_evidence` | run of residues of a protein of the set with the same evidence |
 
-Side-chain distances are measured from the atoms that carry the modification and the carbons next to them: lysine CD, CE, NZ.
+Side-chain distances are measured from the atoms that carry the modification and the carbons next to them: lysine CD, CE, NZ; serine CB, OG; threonine CB, OG1, CG2; tyrosine CE1, CE2, CZ, OH.
 
 ### record_class
 
@@ -41,10 +42,16 @@ Side-chain distances are measured from the atoms that carry the modification and
 | Code | Meaning |
 |---|---|
 | `lysine` | an unmodified lysine (PDB residue LYS) |
+| `serine` | an unmodified serine (PDB residue SER) |
+| `threonine` | an unmodified threonine (PDB residue THR) |
+| `tyrosine` | an unmodified tyrosine (PDB residue TYR) |
 | `Kac` | lysine modified, state Kac (PDB component ALY) |
 | `Kme1` | lysine modified, state Kme1 (PDB component MLZ) |
 | `Kme2` | lysine modified, state Kme2 (PDB component MLY) |
 | `Kme3` | lysine modified, state Kme3 (PDB component M3L) |
+| `Sph` | serine modified, state Sph (PDB component SEP) |
+| `Tph` | threonine modified, state Tph (PDB component TPO) |
+| `Yph` | tyrosine modified, state Yph (PDB component PTR) |
 | `other_residue` | another residue in the construct (state_detail names it) |
 | `not_read` | a structure whose residue at the site could not be read |
 | `not_recorded` | not recorded: a crosslink, RNA-bound peptide or annotation |
@@ -81,3 +88,9 @@ The tables are under CC BY-NC-SA 4.0, as the release. Cite the sources of the ev
 | `supporting/methyllysine_residue_evidence_v1.5.1.tsv` | 95,029 |
 | `supporting/methyllysine_site_interaction_records_v1.5.1.tsv` | 19,237 |
 | `supporting/methyllysine_site_interactions_v1.5.1.tsv` | 2,973 |
+| `supporting/phospho_nucleic_acid_contacts_v1.5.1.tsv` | 14,030 |
+| `supporting/phospho_nucleic_acid_near_sites_v1.5.1.tsv` | 4,093 |
+| `supporting/phospho_nucleic_acid_proximal_sites_v1.5.1.tsv` | 4,954 |
+| `supporting/phospho_residue_evidence_v1.5.1.tsv` | 198,172 |
+| `supporting/phospho_site_interaction_records_v1.5.1.tsv` | 81,420 |
+| `supporting/phospho_site_interactions_v1.5.1.tsv` | 18,389 |
