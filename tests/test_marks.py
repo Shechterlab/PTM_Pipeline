@@ -6,6 +6,7 @@ import csv
 import importlib.util
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -123,12 +124,11 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 19 + len(cplm.ACYL_TYPES)
-    for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
-                          'marks/cplm_ptm_sites_summary.json', 'marks/cplm_ubiquitination_summary.json', 'marks/cplm_sumoylation_summary.json',
-                          *[f'marks/{c["summary"]}' for c in cplm.MODIFICATIONS.values() if c['mark'] == 'lysine_acylation']]:
+    assert len(tables) == 16 and not [f for f in rows if f.startswith('marks/cplm_')]   # CPLM 4.0 is not a source
+    for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json']:
         assert rows[name]['redistribution'] == 'git'
         assert build.md5_file(ROOT / 'inputs' / name) == rows[name]['md5']
+    assert not list((ROOT / 'inputs' / 'marks').glob('cplm_*')) and 'cplm' not in (ROOT / 'inputs' / 'marks' / 'raw_files.tsv').read_text().lower()
     for name in tables:
         row = rows[name]
         with open(ROOT / 'inputs' / name, encoding='utf-8') as fh:
@@ -149,9 +149,6 @@ def test_staged_tables_and_release_agree_with_manifest():
             assert ('Nat Struct Mol Biol 24:325' in row['citation'] and '10.1038/nsmb.3366' in row['citation']) if 'hendriks' in name else (
                 'Nat Struct Mol Biol 25:631' in row['citation'] and '10.1038/s41594-018-0084-y' in row['citation'])
             assert row['redistribution'] == 'git'
-        elif '/cplm_' in name:
-            assert row['licence'].startswith('none stated') and 'All Rights Reserved' in row['licence'] and 'pending' not in row['licence']
-            assert row['source'].startswith('https://cplm.biocuckoo.cn/') and 'Zhang W' in row['citation'] and 'gkab849' in row['citation']
         else:
             assert row['licence'].startswith('CC BY-NC-SA 4.0') and row['source'].startswith('https://research.bioinformatics.udel.edu/iptmnet_data/')
             assert 'iPTMnet' in row['citation']
@@ -281,7 +278,7 @@ def test_release_v1_5_0_is_consistent():
         if 'crosscheck' in path.name:
             assert header[11:] == ['in_methylarginine_release']
         else:       # the columns of the sources that contribute, then iPTMnet's score
-            own = {'acylation': ['cplm_evidence'], 'acetylation': ['cplm_evidence'], 'ubiquitination': ['cplm_evidence', 'akimov_localization_probability', 'akimov_cell_lines'], 'sumoylation': ['cplm_evidence', 'hendriks_localization_probability', 'hendriks_cell_lines'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
+            own = {'ubiquitination': ['akimov_localization_probability', 'akimov_cell_lines'], 'sumoylation': ['hendriks_localization_probability', 'hendriks_cell_lines'], 'methyllysine': ['berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
                    'phosphorylation': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']}
             assert header[11:] == next((v for k, v in own.items() if k in path.name), []) + ['iptmnet_score'], path.name
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
@@ -293,16 +290,17 @@ def test_release_v1_5_0_is_consistent():
 
 def test_release_license_covers_every_source():
     # the release is CC BY-NC-SA 4.0: every source must be CC BY, CC BY-NC-SA or as open
-    # (CPLM, Berryhill 2023, Ochoa 2020, Hendriks 2017 and Akimov 2018 are the exceptions, each stating its own terms in its license entry, with no word on how the decision was taken)
-    exceptions = {'CPLM', 'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018'}
+    # (Berryhill 2023, Ochoa 2020, Hendriks 2017 and Akimov 2018 are the exceptions, each stating its own terms in its license entry, with no word on how the decision was taken)
+    exceptions = {'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018'}
     assert {s['license'] for k, s in build.SOURCES.items() if k not in exceptions} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0'}
     assert all('owner' not in build.SOURCES[k]['license'] and 'pending' not in build.SOURCES[k]['license'] for k in exceptions)
-    assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018'} == set(build.SOURCE_ORDER)
+    assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018'} == set(build.SOURCE_ORDER)
     assert all('not open access' in build.SOURCES[s]['license'] and 'supplements carry no notice' in build.SOURCES[s]['license'] for s in ('Hendriks 2017', 'Akimov 2018'))
     assert 'CC BY 4.0' in build.SOURCES['Berryhill 2023']['license'] and 'supplements carry no separate notice' in build.SOURCES['Berryhill 2023']['license']
     assert 'not open access' in build.SOURCES['Ochoa 2020']['license'] and 'supplements carry no license' in build.SOURCES['Ochoa 2020']['license']
-    # CPLM is the one source without a license: no license is stated
-    assert build.SOURCES['CPLM']['license'] == 'none stated' and 'pending' not in build.SOURCES['CPLM']['citation']
+    # CPLM 4.0 states no license: it is left out, and the build refuses a staged CPLM table
+    assert set(build.EXCLUDED_SOURCES) == {'CPLM'} and not set(build.EXCLUDED_SOURCES) & set(build.SOURCES)
+    assert 'no license' in build.EXCLUDED_SOURCES['CPLM']
 
 
 def test_no_closed_source_is_referenced():
@@ -326,7 +324,7 @@ def test_no_closed_source_is_referenced():
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
             assert set(r['sources'].split('; ')) <= set(build.SOURCES)
             names = r['sources'].split('; ')
-            assert ('CPLM' in names) == bool(r.get('cplm_evidence', ''))
+            assert 'CPLM' not in names and 'cplm_evidence' not in r
             assert ('Ochoa 2020' in names) == bool(r.get('functional_score', ''))
             assert ('Berryhill 2023' in names) == bool(r.get('berryhill_cell_lines', ''))
             assert ('Hendriks 2017' in names) == bool(r.get('hendriks_localization_probability', ''))
@@ -380,46 +378,54 @@ def test_cplm_staging_pubmed_ids_and_evidence_classes():
         cplm.stage_marks(good.assign(evidence=['Exp.', 'Exp.', 'Other']), 'x')
 
 
-def test_cplm_rows_in_the_release_and_the_merge():
+def test_cplm_is_not_a_source_of_the_release(tmp_path):
+    import json
+
     import pandas as pd
     folder = ROOT / 'releases' / 'v1.5.0'
-    table = pd.read_csv(folder / 'human_methyllysine_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)
-    cp = table[table['sources'].str.contains('CPLM')]
-    staged = pd.read_csv(ROOT / 'inputs' / 'marks' / 'cplm_4_0_methyllysine_sites.tsv', sep='\t', dtype=str, keep_default_na=False)
-    assert len(staged) == len(cp) == 5356 and cp['canonical_UniProtAC'].nunique() == 2939
-    assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any()
-    assert set(cp['cplm_evidence']) == {'Exp.', 'Exp./Dat.', 'Dat.'} and set(table.loc[~table['sources'].str.contains('CPLM'), 'cplm_evidence']) == {''}
-    assert set(cp['state']) <= {'me'} and 'CPLM 4.0 (2021-06-13)' in set(cp['source_releases'].str.split('; ').str[-1])
-    reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
-    for r in cp.itertuples():
-        assert r.residue == 'K' and reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
-    # every CPLM Exp. or Exp./Dat. row is experimental, whatever else reports it
-    assert set(cp.loc[cp['cplm_evidence'] != 'Dat.', 'evidence_class']) == {'experimental'}
-    # the rows of the other sources are as they were: UniProt and iPTMnet rows without CPLM keep their class
-    others = table[~table['sources'].str.contains('CPLM')]
-    assert len(others) + len(cp[cp['sources'] != 'CPLM']) >= 756
-    text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
-    assert 'CPLM states no license' in text and 'All Rights Reserved' in text and 'Zhang et al., Nucleic Acids Res 50:D451' in text
+    for path in context_files(folder):
+        table = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+        assert 'cplm_evidence' not in table.columns and not table['sources'].str.contains('CPLM').any(), path.name
+        assert not table['source_releases'].str.contains('CPLM').any(), path.name
+    assert 'cplm_evidence' not in (folder / 'data_dictionary.tsv').read_text(encoding='utf-8')
+    release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
+    assert 'CPLM' not in release['sources'] and set(release['sources_excluded']) == {'CPLM'}
+    assert not [n for v in release['inputs_md5'].values() for n in v if n.startswith('cplm_')]
+    text = (folder / 'CHANGES.md').read_text(encoding='utf-8')
+    assert 'CPLM 4.0 is not a source' in text and 'All Rights Reserved' in text
+    # a staged CPLM table stops the build, with the reason
+    marks = tmp_path / 'marks'
+    marks.mkdir()
+    for f in (ROOT / 'inputs' / 'marks').iterdir():
+        (marks / f.name).write_bytes(f.read_bytes())
+    row = dict.fromkeys(stage.COLUMNS, '')
+    row.update({'canonical_UniProtAC': 'P04637', 'position': '120', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me',
+                'evidence_class': 'experimental', 'source': 'CPLM', 'source_release': 'CPLM 4.0 (2021-06-13)'})
+    pd.DataFrame([row], columns=stage.COLUMNS).to_csv(marks / 'cplm_4_0_methyllysine_sites.tsv', sep='\t', index=False)
+    run = subprocess.run([sys.executable, str(ROOT / 'scripts' / '56_build_context_marks.py'), '--version', 'v0.0.0', '--release-date', '2026-01-01',
+                          '--inputs', str(marks), '--out', str(tmp_path / 'out')], cwd=ROOT, capture_output=True, text=True)
+    assert run.returncode != 0 and 'CPLM' in run.stderr and 'no license' in run.stderr
 
 
-def test_merge_adds_cplm_to_sources_without_changing_other_rows():
+def test_merge_adds_a_source_without_changing_other_rows():
     import pandas as pd
     base = dict.fromkeys(stage.COLUMNS, '')
-    u = pd.DataFrame([{**base, 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me',
+    u = pd.DataFrame([{**base, 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me1',
                        'evidence_class': 'by-similarity', 'evidence': 'ECO:0000250', 'source': 'UniProt', 'source_release': '2026_04'}])
-    c = pd.DataFrame([{**base, 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me',
-                       'evidence_class': 'experimental', 'pmids': '9;3', 'source': 'CPLM', 'source_release': 'CPLM 4.0 (2021-06-13)',
-                       'cplm_evidence': 'Exp.'},
-                      {**base, 'canonical_UniProtAC': 'P00002', 'position': '3', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me',
-                       'evidence_class': 'unspecified', 'source': 'CPLM', 'source_release': 'CPLM 4.0 (2021-06-13)', 'cplm_evidence': 'Dat.'}])
-    out = build.merge([u.assign(upstream_sources='', cplm_evidence=''), c.assign(upstream_sources='')])
-    assert list(out.columns) == build.OUT_COLUMNS + ['cplm_evidence']
+    b = pd.DataFrame([{**base, 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me1',
+                       'evidence_class': 'experimental', 'pmids': '9;3', 'source': 'Berryhill 2023', 'source_release': 'Sci Rep 13:377 (2023)',
+                       'berryhill_cell_lines': 'U2OS'},
+                      {**base, 'canonical_UniProtAC': 'P00002', 'position': '3', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me2',
+                       'evidence_class': 'experimental', 'source': 'Berryhill 2023', 'source_release': 'Sci Rep 13:377 (2023)', 'berryhill_cell_lines': 'HEK293T'}])
+    cols = build.SOURCE_COLUMNS['Berryhill 2023']
+    out = build.merge([u.assign(upstream_sources='', **dict.fromkeys(cols, '')), b.assign(upstream_sources='')])
+    assert list(out.columns) == build.OUT_COLUMNS + cols
     first = out.iloc[0]
-    assert first['sources'] == 'UniProt; CPLM' and first['evidence_class'] == 'experimental' and first['evidence'] == 'ECO:0000250'
-    assert first['pmids'] == '3;9' and first['source_releases'] == '2026_04; CPLM 4.0 (2021-06-13)' and first['cplm_evidence'] == 'Exp.'
-    assert out.iloc[1]['sources'] == 'CPLM' and out.iloc[1]['evidence_class'] == 'unspecified'
-    assert build.overlap(out)['sites'] == {'UniProt + CPLM': 1, 'CPLM only': 1}
-    assert 'cplm_evidence' not in build.merge([u.assign(upstream_sources='', cplm_evidence='')]).columns
+    assert first['sources'] == 'UniProt; Berryhill 2023' and first['evidence_class'] == 'experimental' and first['evidence'] == 'ECO:0000250'
+    assert first['pmids'] == '3;9' and first['source_releases'] == '2026_04; Sci Rep 13:377 (2023)' and first['berryhill_cell_lines'] == 'U2OS'
+    assert out.iloc[1]['sources'] == 'Berryhill 2023' and out.iloc[1]['evidence_class'] == 'experimental'
+    assert build.overlap(out)['sites'] == {'UniProt + Berryhill 2023': 1, 'Berryhill 2023 only': 1}
+    assert 'berryhill_cell_lines' not in build.merge([u.assign(upstream_sources='', **dict.fromkeys(cols, ''))]).columns
 
 
 def test_acyl_terms_come_from_the_vocabulary():
@@ -485,7 +491,7 @@ def test_berryhill_rows_in_the_release():
                         if not f.name.startswith('berryhill')]).set_index(['canonical_UniProtAC', 'position', 'state'])
     untouched = table[~table.set_index(['canonical_UniProtAC', 'position', 'state']).index.isin(staged.set_index(['canonical_UniProtAC', 'position', 'state']).index)]
     assert len(untouched) == len(base) - base.index.isin(staged.set_index(['canonical_UniProtAC', 'position', 'state']).index).sum()
-    cols = build.OUT_COLUMNS + ['cplm_evidence']
+    cols = build.OUT_COLUMNS
     a = untouched[cols].set_index(['canonical_UniProtAC', 'position', 'state']).sort_index()
     b = base.reset_index().set_index(['canonical_UniProtAC', 'position', 'state']).loc[a.index, [c for c in cols if c not in ('canonical_UniProtAC', 'position', 'state')]].sort_index()
     assert a.equals(b)
@@ -532,8 +538,9 @@ def test_iptmnet_score_in_the_release():
     # the score columns are in the data dictionary, and the methylarginine files have none
     dictionary = (ROOT / 'releases' / 'v1.5.0' / 'data_dictionary.tsv').read_text(encoding='utf-8')
     assert 'human_phosphorylation_sites_v1.5.0.tsv\tiptmnet_score' in dictionary and 'human_methylarginine_crosscheck_v1.5.0.tsv\tiptmnet_score' not in dictionary
-    for col in ('functional_score', 'best_pep', 'berryhill_cell_lines', 'cplm_evidence'):
+    for col in ('functional_score', 'best_pep', 'berryhill_cell_lines'):
         assert col in dictionary
+    assert 'cplm_evidence' not in dictionary
 
 
 def test_license_notes_of_the_new_sources_in_the_release_text():
@@ -610,7 +617,7 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
     import pandas as pd
     folder = ROOT / 'releases' / 'v1.5.0'
     reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
-    for mark, state, sources in (('ubiquitination', 'ub', {'UniProt', 'iPTMnet', 'CPLM', 'Akimov 2018'}), ('sumoylation', 'sumo', {'UniProt', 'iPTMnet', 'CPLM', 'Hendriks 2017'})):
+    for mark, state, sources in (('ubiquitination', 'ub', {'UniProt', 'iPTMnet', 'Akimov 2018'}), ('sumoylation', 'sumo', {'UniProt', 'iPTMnet', 'Hendriks 2017'})):
         table = pd.read_csv(folder / f'human_{mark}_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)
         assert set(table['state']) == {state} and set(table['mark']) == {mark} and set(table['residue']) == {'K'}
         assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any()
@@ -618,19 +625,19 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
         for r in table.itertuples():
             assert reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
         by_source = {s: table[table['sources'].str.contains(s)] for s in sources}
-        staged = {'UniProt': f'uniprot_2026_04_{mark}_sites.tsv', 'iPTMnet': f'iptmnet_6_2_{mark}_sites.tsv', 'CPLM': f'cplm_4_0_{mark}_sites.tsv',
+        staged = {'UniProt': f'uniprot_2026_04_{mark}_sites.tsv', 'iPTMnet': f'iptmnet_6_2_{mark}_sites.tsv',
                   'Akimov 2018': 'akimov2018_ubiquitination_sites.tsv', 'Hendriks 2017': 'hendriks2017_sumoylation_sites.tsv'}
         for s in sources:
             n = len(pd.read_csv(ROOT / 'inputs' / 'marks' / staged[s], sep='\t', dtype=str, keep_default_na=False))
             assert len(by_source[s]) == n, (mark, s)
     text = (folder / 'README.md').read_text(encoding='utf-8') + (folder / 'CHANGES.md').read_text(encoding='utf-8')
-    for needle in ('All Rights Reserved', 'Zhang et al., Nucleic Acids Res 50:D451',
-                   'CPLM states no license', 'The sumoylation table likewise includes'):
+    for needle in ('Akimov 2018', 'Hendriks 2017', 'CPLM 4.0 is not a source'):
         assert needle in text, needle
+    assert 'The sumoylation table likewise includes' not in text
     dictionary = (folder / 'data_dictionary.tsv').read_text(encoding='utf-8')
     for name in ('human_ubiquitination_sites_v1.5.0.tsv', 'human_sumoylation_sites_v1.5.0.tsv'):
         assert f'{name}\tiptmnet_score' in dictionary
-    assert 'human_ubiquitination_sites_v1.5.0.tsv\tcplm_evidence' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\tcplm_evidence' in dictionary
+    assert '\tcplm_evidence' not in dictionary
     assert 'human_ubiquitination_sites_v1.5.0.tsv\takimov_localization_probability' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\thendriks_cell_lines' in dictionary
     assert 'SUMOylation sites are not included' not in text
 
@@ -653,7 +660,7 @@ def test_cplm_acylation_staging_maps_every_download_to_one_acyl_type():
     assert uniprot_types <= set(ACYL_COUNTS)
 
 
-def test_cplm_acylation_rows_in_the_release_by_type():
+def test_acylation_rows_in_the_release_by_type():
     import json
 
     import pandas as pd
@@ -661,26 +668,16 @@ def test_cplm_acylation_rows_in_the_release_by_type():
     table = read_release('human_lysine_acylation_sites_v1.5.0.tsv')
     acetyl = read_release('human_acetylation_sites_v1.5.0.tsv')
     reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
-    assert 'cplm_evidence' in table.columns and 'cplm_evidence' in acetyl.columns and list(table.columns)[-2:] == ['cplm_evidence', 'iptmnet_score']
+    assert list(table.columns)[-1] == 'iptmnet_score' and 'cplm_evidence' not in table.columns
     assert not table.duplicated(['canonical_UniProtAC', 'position', 'acyl_type']).any()
-    assert set(table['acyl_type']) == set(ACYL_COUNTS) | {'methacryl', 'isonicotinyl'}
-    cp = table[table['sources'].str.split('; ').map(lambda x: 'CPLM' in x)]
-    assert set(cp['acyl_type']) == set(ACYL_COUNTS) and set(cp['cplm_evidence']) <= {'Exp.', 'Exp./Dat.', 'Dat.'} and '' not in set(cp['cplm_evidence'])
-    assert set(table.loc[~table.index.isin(cp.index), 'cplm_evidence']) == {''}
+    assert {x for v in table['sources'] for x in v.split('; ')} == {'UniProt', 'iPTMnet'}
+    # the acyl types of UniProt's N6-acyl lysine terms; iPTMnet gives acetyl only
+    assert set(table['acyl_type']) == {'acetyl', 'succinyl', '2-hydroxyisobutyryl', 'beta-hydroxybutyryl', 'lactoyl', 'glutaryl', 'crotonyl',
+                                       'methacryl', 'isonicotinyl', 'benzoyl', 'butyryl', 'malonyl', 'propionyl'}
+    assert set(table.loc[table['sources'] == 'iPTMnet', 'acyl_type']) <= {'acetyl'}
     for r in table.itertuples():     # a lysine at the position, on the reference sequence
         assert r.residue == 'K' and reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
-    for name, c in cplm.MODIFICATIONS.items():
-        if c['mark'] != 'lysine_acylation':
-            continue
-        staged = read_staged(c['table'])
-        summary = json.loads((ROOT / 'inputs' / 'marks' / c['summary']).read_text(encoding='utf-8'))
-        kind = cp[cp['acyl_type'] == c['state']]
-        assert set(staged['state']) == {c['state']} and set(staged['source']) == {'CPLM'} and set(staged['mark']) == {'lysine_acylation'}
-        assert len(staged) == len(kind) == summary['rows']['lysine_acylation'] and kind['canonical_UniProtAC'].nunique() == summary['proteins']
-        assert summary['records_in_scope'] == len(staged) + sum(summary['dropped'].values()), name
-        assert not kind.duplicated(['canonical_UniProtAC', 'position']).any() and len(staged) == ACYL_COUNTS[c['state']]
     assert acetyl.equals(table[table['acyl_type'] == 'acetyl'].reset_index(drop=True))
-    assert 'CPLM states no license' in (folder / 'CHANGES.md').read_text() or 'CPLM states no license' in (folder / 'README.md').read_text()
     release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
     assert release['context_marks']['lysine_acylation']['rows'] == len(table)
     assert len(pd.read_csv(folder / 'human_acetylation_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)) == len(acetyl)
