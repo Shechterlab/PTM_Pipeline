@@ -9,8 +9,8 @@ The tables are made by `scripts/64_export_site_interactions.py`, which runs the 
 | Site set | Residues | Sites from | Sites | with a PDB interface | with RNA or DNA within 4 Å in a structure | with evidence from cells |
 |---|---|---|---|---|---|---|
 | methylarginine | R | `releases/v1.4.3/human_methylarginine_sites_v1.4.3.tsv` | 11,632 | 1,396 | 344 | 4,330 |
-| methyllysine | K | `releases/v1.5.0/human_methyllysine_sites_v1.5.0.tsv` | 10,040 | 954 | 229 | 338 |
-| lysine | K | `releases/v1.5.0/human_acetylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_lysine_acylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_ubiquitination_sites_v1.5.0.tsv`; `releases/v1.5.0/human_sumoylation_sites_v1.5.0.tsv` | 172,015 | 17,084 | 3,039 | 3,978 |
+| methyllysine | K | `releases/v1.5.0/human_methyllysine_sites_v1.5.0.tsv` | 5,178 | 419 | 86 | 114 |
+| lysine | K | `releases/v1.5.0/human_acetylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_lysine_acylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_ubiquitination_sites_v1.5.0.tsv`; `releases/v1.5.0/human_sumoylation_sites_v1.5.0.tsv` | 90,876 | 9,529 | 1,706 | 2,429 |
 | phospho | S, T, Y | `releases/v1.5.0/human_phosphorylation_sites_v1.5.0.tsv` | 142,415 | 6,635 | 585 | 5,042 |
 
 ## Tables
@@ -86,24 +86,24 @@ The tables are under CC BY-NC-SA 4.0, as the release. Cite the sources of the ev
 
 | File | Rows |
 |---|---|
-| `supporting/lysine_nucleic_acid_contacts_v1.5.1.tsv` | 46,402 |
-| `supporting/lysine_nucleic_acid_near_sites_v1.5.1.tsv` | 12,243 |
-| `supporting/lysine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 15,933 |
-| `supporting/lysine_residue_evidence_v1.5.1.tsv` | 206,810 |
-| `supporting/lysine_site_interaction_records_v1.5.1.tsv` | 190,457 |
-| `supporting/lysine_site_interactions_v1.5.1.tsv` | 32,798 |
+| `supporting/lysine_nucleic_acid_contacts_v1.5.1.tsv` | 28,471 |
+| `supporting/lysine_nucleic_acid_near_sites_v1.5.1.tsv` | 7,652 |
+| `supporting/lysine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 10,820 |
+| `supporting/lysine_residue_evidence_v1.5.1.tsv` | 179,341 |
+| `supporting/lysine_site_interaction_records_v1.5.1.tsv` | 118,646 |
+| `supporting/lysine_site_interactions_v1.5.1.tsv` | 19,011 |
 | `supporting/methylarginine_nucleic_acid_contacts_v1.5.1.tsv` | 14,212 |
 | `supporting/methylarginine_nucleic_acid_near_sites_v1.5.1.tsv` | 943 |
 | `supporting/methylarginine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 1,519 |
 | `supporting/methylarginine_residue_evidence_v1.5.1.tsv` | 222,880 |
 | `supporting/methylarginine_site_interaction_records_v1.5.1.tsv` | 52,060 |
 | `supporting/methylarginine_site_interactions_v1.5.1.tsv` | 22,899 |
-| `supporting/methyllysine_nucleic_acid_contacts_v1.5.1.tsv` | 5,682 |
-| `supporting/methyllysine_nucleic_acid_near_sites_v1.5.1.tsv` | 1,178 |
-| `supporting/methyllysine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 2,402 |
-| `supporting/methyllysine_residue_evidence_v1.5.1.tsv` | 95,029 |
-| `supporting/methyllysine_site_interaction_records_v1.5.1.tsv` | 19,237 |
-| `supporting/methyllysine_site_interactions_v1.5.1.tsv` | 2,973 |
+| `supporting/methyllysine_nucleic_acid_contacts_v1.5.1.tsv` | 1,466 |
+| `supporting/methyllysine_nucleic_acid_near_sites_v1.5.1.tsv` | 678 |
+| `supporting/methyllysine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 1,326 |
+| `supporting/methyllysine_residue_evidence_v1.5.1.tsv` | 58,802 |
+| `supporting/methyllysine_site_interaction_records_v1.5.1.tsv` | 8,367 |
+| `supporting/methyllysine_site_interactions_v1.5.1.tsv` | 1,358 |
 | `supporting/phospho_nucleic_acid_contacts_v1.5.1.tsv` | 14,030 |
 | `supporting/phospho_nucleic_acid_near_sites_v1.5.1.tsv` | 4,093 |
 | `supporting/phospho_nucleic_acid_proximal_sites_v1.5.1.tsv` | 4,954 |
