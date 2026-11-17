@@ -1,6 +1,6 @@
 # PTM_Pipeline v1.5.1: site-level interaction evidence for the context marks
 
-Release v1.5.1 adds, for the site sets methyllysine, lysine, phospho, the site-level interaction tables that the methylarginine release has. Everything else is release v1.5.0, unchanged and not repeated here; the methylarginine tables stay those of v1.4.3 and v1.5.0.
+Release v1.5.1 adds, for the site sets methyllysine, lysine, phospho, the site-level interaction tables that the methylarginine release has. Everything else is release v1.5.0, unchanged and not repeated here. The interaction tables of methylarginine are here too, under this release's names: they are the files of v1.5.0, byte for byte (which are those of v1.4.3), so one release holds the tables of every site set.
 
 The tables are made by `scripts/64_export_site_interactions.py`, which runs the interface, crosslink and structure-contact steps of the methylarginine pipeline (`scripts/37_export_interaction_data.py`) with the modified residue as a parameter (`config/site_sets.json`). Run on the methylarginines it gives the methylarginine release tables (`tests/test_site_interactions.py`).
 
@@ -8,6 +8,7 @@ The tables are made by `scripts/64_export_site_interactions.py`, which runs the 
 
 | Site set | Residues | Sites from | Sites | with a PDB interface | with RNA or DNA within 4 Å in a structure | with evidence from cells |
 |---|---|---|---|---|---|---|
+| methylarginine | R | `releases/v1.4.3/human_methylarginine_sites_v1.4.3.tsv` | 11,632 | 1,396 | 344 | 4,330 |
 | methyllysine | K | `releases/v1.5.0/human_methyllysine_sites_v1.5.0.tsv` | 10,040 | 954 | 229 | 338 |
 | lysine | K | `releases/v1.5.0/human_acetylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_lysine_acylation_sites_v1.5.0.tsv`; `releases/v1.5.0/human_ubiquitination_sites_v1.5.0.tsv`; `releases/v1.5.0/human_sumoylation_sites_v1.5.0.tsv` | 172,015 | 17,084 | 3,039 | 3,978 |
 | phospho | S, T, Y | `releases/v1.5.0/human_phosphorylation_sites_v1.5.0.tsv` | 142,415 | 6,635 | 585 | 5,042 |
@@ -57,7 +58,9 @@ Side-chain distances are measured from the atoms that carry the modification and
 | `not_read` | a structure whose residue at the site could not be read |
 | `not_recorded` | not recorded: a crosslink, RNA-bound peptide or annotation |
 
-## Not in these tables
+The tables of methylarginine hold more kinds of evidence, classes and states than these (predicted interfaces and contacts, IntAct features, RBDmap and pCLAP): `releases/v1.5.0/data_dictionary.tsv` and its README describe them. In the table above, their evidence from cells counts those kinds too.
+
+## Not in the tables of methyllysine, lysine, phospho
 
 - RBDmap fragments and pCLAP peptides: their extents are not republished.
 - Predicted interfaces and contacts (ProtVar, AlphaFold DB) and IntAct features: the pipeline computes them for methylarginines only.
@@ -89,6 +92,12 @@ The tables are under CC BY-NC-SA 4.0, as the release. Cite the sources of the ev
 | `supporting/lysine_residue_evidence_v1.5.1.tsv` | 206,810 |
 | `supporting/lysine_site_interaction_records_v1.5.1.tsv` | 190,457 |
 | `supporting/lysine_site_interactions_v1.5.1.tsv` | 32,798 |
+| `supporting/methylarginine_nucleic_acid_contacts_v1.5.1.tsv` | 14,212 |
+| `supporting/methylarginine_nucleic_acid_near_sites_v1.5.1.tsv` | 943 |
+| `supporting/methylarginine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 1,519 |
+| `supporting/methylarginine_residue_evidence_v1.5.1.tsv` | 222,880 |
+| `supporting/methylarginine_site_interaction_records_v1.5.1.tsv` | 52,060 |
+| `supporting/methylarginine_site_interactions_v1.5.1.tsv` | 22,899 |
 | `supporting/methyllysine_nucleic_acid_contacts_v1.5.1.tsv` | 5,682 |
 | `supporting/methyllysine_nucleic_acid_near_sites_v1.5.1.tsv` | 1,178 |
 | `supporting/methyllysine_nucleic_acid_proximal_sites_v1.5.1.tsv` | 2,402 |

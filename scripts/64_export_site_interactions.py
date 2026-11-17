@@ -526,25 +526,50 @@ SOURCES = [   # source, what it gives, licence
 ]
 
 
-def write_release_notes(folder: Path, version: str, config: dict) -> None:
-    """README.md and MD5SUMS of a release folder that holds the tables of the site sets (supporting/<set>_<table>_<version>.tsv)."""
+CARRIED_TABLES = (*TABLES, 'site_interaction_records')
+
+
+def carry_over(folder: Path, version: str, source: Path, config: dict) -> list:
+    """The interaction tables of the arginine site sets, copied unchanged from the release that holds them (source: a release
+    folder, its files supporting/<table>_<its version>.tsv) under this release's names, so one release holds every set's."""
+    import shutil
+    out = []
+    for name, spec in config['site_sets'].items():
+        if not set(spec['residues']) <= set(x37.ARGININE.letters):
+            continue
+        for t in CARRIED_TABLES:
+            src = source / 'supporting' / f'{t}_{source.name}.tsv'
+            dest = folder / 'supporting' / f'{name}_{t}_{version}.tsv'
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dest)
+            out.append(dest)
+    return out
+
+
+def write_release_notes(folder: Path, version: str, config: dict, carried_from: str = '') -> None:
+    """README.md and MD5SUMS of a release folder that holds the tables of the site sets (supporting/<set>_<table>_<version>.tsv).
+    carried_from: the release the arginine sets' tables were copied from (carry_over)."""
     import hashlib
     import interaction_sources
     files = sorted((folder / 'supporting').glob(f'*_{version}.tsv'))
     def count(path, col=None):   # rows, or distinct values of a column
         with open(path, encoding='utf-8') as fh:
             return (len({line.split('\t')[col] for line in fh}) if col is not None else sum(1 for _ in fh)) - 1
-    sets = [n for n in config['site_sets'] if any(f.name.startswith(f'{n}_site_interactions_') for f in files)]
+    have = [n for n in config['site_sets'] if any(f.name.startswith(f'{n}_site_interactions_') for f in files)]
+    carried = [n for n in have if carried_from and set(config['site_sets'][n]['residues']) <= set(x37.ARGININE.letters)]
+    sets = [n for n in have if n not in carried]
     out = [f'# PTM_Pipeline {version}: site-level interaction evidence for the context marks', '',
            f'Release {version} adds, for the site sets {", ".join(sets)}, the site-level interaction tables that the methylarginine release '
-           'has. Everything else is release v1.5.0, unchanged and not repeated here; the methylarginine tables stay '
-           'those of v1.4.3 and v1.5.0.', '',
+           'has. Everything else is release v1.5.0, unchanged and not repeated here.'
+           + (f' The interaction tables of {", ".join(carried)} are here too, under this release\'s names: they are the files of '
+              f'{carried_from}, byte for byte (which are those of v1.4.3), so one release holds the tables of every site set.' if carried else
+              ' The methylarginine tables stay those of v1.4.3 and v1.5.0.'), '',
            'The tables are made by `scripts/64_export_site_interactions.py`, which runs the interface, crosslink and structure-contact '
            'steps of the methylarginine pipeline (`scripts/37_export_interaction_data.py`) with the modified residue as a parameter '
            '(`config/site_sets.json`). Run on the methylarginines it gives the methylarginine release tables '
            '(`tests/test_site_interactions.py`).', '',
            '## Site sets', '', '| Site set | Residues | Sites from | Sites | with a PDB interface | with RNA or DNA within 4 Å in a structure | with evidence from cells |', '|---|---|---|---|---|---|---|']
-    for n in sets:
+    for n in have:
         spec = config['site_sets'][n]
         ev = [line.rstrip('\n').split('\t') for line in open(folder / 'supporting' / f'{n}_site_interactions_{version}.tsv', encoding='utf-8')][1:]
         pdb = {r[0] for r in ev if r[1].startswith('pdb_')}
@@ -567,7 +592,11 @@ def write_release_notes(folder: Path, version: str, config: dict) -> None:
     letters = sorted({r for n in sets for r in config['site_sets'][n]['residues']})
     out += ['', '### site_state', '', '| Code | Meaning |', '|---|---|']
     out += [f'| `{k}` | {v} |' for k, v in interaction_sources.site_set_state_vocabulary(config, letters).items()]
-    out += ['', '## Not in these tables', '',
+    if carried:
+        out += ['', f'The tables of {", ".join(carried)} hold more kinds of evidence, classes and states than these (predicted interfaces and '
+                f'contacts, IntAct features, RBDmap and pCLAP): `releases/{carried_from}/data_dictionary.tsv` and its README describe them. '
+                'In the table above, their evidence from cells counts those kinds too.']
+    out += ['', f'## Not in the tables of {", ".join(sets)}', '',
             '- RBDmap fragments and pCLAP peptides: their extents are not republished.',
             '- Predicted interfaces and contacts (ProtVar, AlphaFold DB) and IntAct features: the pipeline computes them for methylarginines only.',
             '- Enzyme-substrate records (kinases, writers and erasers).',
@@ -587,6 +616,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--site-set', default='', help='a site set of --config')
     ap.add_argument('--release-notes', default='', help='write README.md and MD5SUMS of this release folder from the tables in its supporting/ (with --version) and stop')
+    ap.add_argument('--carry-over', default='', help='with --release-notes: first copy the interaction tables of the arginine site sets, unchanged, '
+                                                     'from this release folder (e.g. releases/v1.5.0) under the names of --version')
     ap.add_argument('--config', default=str(ROOT / 'config' / 'site_sets.json'))
     ap.add_argument('--tables', default=str(ROOT / 'inputs' / 'interactions'), help='the staged tables')
     ap.add_argument('--topup-cache', default='PTM_data/site_interactions_topup', help='where to save what the staged tables do not cover')
@@ -601,7 +632,9 @@ def main():
     args = ap.parse_args()
     config = load_config(Path(args.config))
     if args.release_notes:
-        write_release_notes(Path(args.release_notes), args.version, config)
+        if args.carry_over:
+            carry_over(Path(args.release_notes), args.version, Path(args.carry_over), config)
+        write_release_notes(Path(args.release_notes), args.version, config, Path(args.carry_over).name if args.carry_over else '')
         return
     if not args.out:
         raise SystemExit('--out is required')
