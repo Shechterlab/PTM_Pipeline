@@ -66,7 +66,8 @@ def test_release_v1_5_1_holds_nothing_that_is_not_republished():
     earlier releases' files; MD5SUMS matches the files."""
     import hashlib
     release = ROOT / 'releases' / 'v1.5.1'
-    files = sorted((release / 'supporting').glob('*_v1.5.1.tsv'))
+    # the interaction tables (supporting/ also holds the methylarginine release's other tables, carried over)
+    files = sorted(f for f in (release / 'supporting').glob('*_v1.5.1.tsv') if any(f.name.endswith(f'_{t}_v1.5.1.tsv') for t in s64.CARRIED_TABLES))
     carried = [f for f in files if f.name.startswith('methylarginine_')]
     assert len(files) == 24 and len(carried) == 6
     for f in carried:   # the methylarginine tables are those of v1.5.0 and v1.4.3, byte for byte, under this release's names
