@@ -81,7 +81,7 @@ SET_LABELS = {'methylarginine': 'Methylarginine (R)', 'methyllysine': 'Methyllys
               'lysine': 'Lysine acylation, ubiquitination and SUMOylation (K)', 'phospho': 'Phosphorylation (S, T, Y)'}
 
 # British spellings in prose and their American forms (DECISIONS_v1.5.1 D6). Code spans, quoted text and links are left as
-# they are, so column names (`localisation`), codes and the titles of papers keep their spelling.
+# they are, so column names (`localisation`), codes, paths and the titles of papers keep their spelling.
 SPELLING = {
     'licence': 'license', 'licences': 'licenses', 'colour': 'color', 'colours': 'colors',
     'coloured': 'colored', 'localised': 'localized', 'localise': 'localize', 'localises': 'localizes',
@@ -101,7 +101,7 @@ SPELLING = {
     'visualise': 'visualize', 'randomised': 'randomized', 'stabilised': 'stabilized', 'mobilised': 'mobilized',
     'generalise': 'generalize', 'generalised': 'generalized', 'specialised': 'specialized', 'parametrised': 'parametrized',
 }
-_PROTECT = re.compile(r'`[^`\n]*`|"[^"\n]*"|“[^”\n]*”|https?://\S+|\]\([^)]*\)')
+_PROTECT = re.compile(r'`[^`\n]*`|"[^"\n]*"|“[^”\n]*”|https?://\S+|\]\([^)]*\)|[^\s()\[\]]*/[^\s()\[\]]*')
 _WORD = re.compile(r'\b(' + '|'.join(sorted(SPELLING, key=len, reverse=True)) + r')\b', re.I)
 
 
@@ -253,8 +253,10 @@ def interaction_section(out: Path, version: str, previous: str, config: dict) ->
         text = (t / 'README.md').read_text(encoding='utf-8')
     body = text[text.index('The tables are made by'):]
     body = re.sub(r'^(#+) ', lambda m: '#' + m.group(1) + ' ', body, flags=re.M)
-    return body.replace(f'`releases/{previous}/data_dictionary.tsv` and its README describe them',
+    body = body.replace(f'`releases/{previous}/data_dictionary.tsv` and its README describe them',
                         '`data_dictionary.tsv` and the methylarginine section below describe them')
+    # the site sets' tables as this release names them (config/site_sets.json names the files they were read from)
+    return re.sub(r'`releases/v[0-9.]+/(human_\w+?)_v[0-9.]+\.tsv`', rf'`\1_{version}.tsv`', body)
 
 
 def carried_readme(prev: Path, previous: str, version: str, arginine_sets: list[str]) -> str:
