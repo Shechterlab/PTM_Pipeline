@@ -74,9 +74,7 @@ the best reliability and counts a location as main when any of the genes has it 
 ## CPLM tables
 
 CPLM 4.0 states "Copyright © 2010-2026 The CUCKOO Workgroup. All Rights Reserved" and gives no licence
-(cplm.biocuckoo.cn, checked 20 October 2026). For that reason, and because the validated sites reach the public only through the context-mark release
-(`../marks/cplm_4_0_methyllysine_sites.tsv`, by the owner's decision of 2026-11-09, cited, pending the authors'
-permission; see `../marks/README.md`):
+(cplm.biocuckoo.cn, checked 20 October 2026). For that reason (the context marks, `../marks/`, do not include CPLM since 17 November 2026):
 
 - the two CPLM tables of this folder stay out of Git (`.gitignore`), and are marked `checksum_only` in `../MANIFEST.tsv`, which
   gives the MD5 of both;

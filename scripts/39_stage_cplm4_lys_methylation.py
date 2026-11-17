@@ -24,7 +24,7 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
 With --modification Ubiquitination or Sumoylation the same checks and outputs apply under other names: cplm4_human_lys_ubiquitination_validated.tsv
 (and _rejected.tsv, cplm4_summary.json), and with --marks-dir cplm_4_0_ubiquitination_sites.tsv (mark ubiquitination, state ub) and
 cplm_ubiquitination_summary.json, or cplm_4_0_sumoylation_sites.tsv (mark sumoylation, state sumo) and cplm_sumoylation_summary.json.
-The Methylation outputs are unchanged by the option. Script 56 reads every inputs/marks/*_sumoylation_sites.tsv.
+The Methylation outputs are unchanged by the option.
 
 Lysine acylations: --modification takes each acylation download of CPLM too (Acetylation, Succinylation, Crotonylation, Malonylation,
 Glutarylation, 2-Hydroxyisobutyrylation, beta-Hydroxybutyrylation, Lactylation, Propionylation, Butyrylation, Benzoylation, Biotinylation,
@@ -34,8 +34,9 @@ vocabulary of UniProt's N6-acyl lysine terms, see ACYL_TYPES; for example acetyl
 and validated/rejected tables cplm4_human_lys_<type>_validated.tsv / _rejected.tsv, where <type> is the lower-case download name with
 "-" as "_". CPLM's Formylation, HMGylation, MGcylation and MGylation downloads hold no human rows and are not staged.
 
-With --marks-dir the validated sites are also staged for the context-mark release (inputs/marks/, read by
-56_build_context_marks.py) in the format of the other marks:
+CPLM 4.0 is not a source of the context-mark release (since 17 November 2026: it states no license), and
+56_build_context_marks.py stops if a CPLM table is staged in inputs/marks. --marks-dir still writes the format below,
+for a local analysis only. With --marks-dir the validated sites are staged in the format of the other marks:
 
     python scripts/39_stage_cplm4_lys_methylation.py --cplm PTM_data/marks/Methylation.zip \\
         --fasta inputs/reference/uniprot_human_reviewed_2026_03.fasta --marks-dir inputs/marks --downloaded 2026-10-18
