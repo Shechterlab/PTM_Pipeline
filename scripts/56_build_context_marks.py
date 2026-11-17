@@ -258,6 +258,13 @@ def retitle_workbook(data: bytes, version: str) -> bytes:
     return out.getvalue()
 
 
+def refresh_md5sums(path: Path) -> None:
+    """Rewrite an MD5SUMS file with the checksums of the files it lists now (same files, same order)."""
+    lines = [ln for ln in path.read_text(encoding='utf-8').splitlines() if ln.strip()]
+    names = [ln.split('  ', 1)[1] for ln in lines]
+    path.write_text(''.join(f'{md5_file(path.parent / n)}  {n}\n' for n in names), encoding='utf-8')
+
+
 def site_changes(sites: pd.DataFrame, previous_changes: pd.DataFrame) -> pd.DataFrame:
     """supporting/site_changes_<previous>_to_<version>.tsv for a release whose sites are the previous release's: every
     site kept, with its records the same (build_release.build_changes gives these rows when nothing changes). A gene the
@@ -468,6 +475,14 @@ def main() -> None:
         carried[new_rel] = {'from': rel.as_posix(), 'from_md5': md5_file(path), 'md5': md5_file(dest)}
         if carried[new_rel]['from_md5'] != carried[new_rel]['md5']:
             edited.append(new_rel)
+    # a carried MD5SUMS lists files whose version strings were just edited (the analyses READMEs): checksum them again
+    for sums in sorted(out.glob('*/MD5SUMS')):
+        refresh_md5sums(sums)
+        rel = sums.relative_to(out).as_posix()
+        if rel in carried:
+            carried[rel]['md5'] = md5_file(sums)
+            if carried[rel]['md5'] != carried[rel]['from_md5'] and rel not in edited:
+                edited.append(rel)
     # every site is kept: the changes table in the format of the pipeline's
     sites = pd.read_csv(src / f'human_methylarginine_sites_{CARRIED_FROM}.tsv', sep='\t', dtype=str, keep_default_na=False,
                         usecols=['site_id', 'gene', 'uniprot_accession', 'position'])
