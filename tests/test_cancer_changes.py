@@ -82,13 +82,18 @@ def test_summary_and_manifest():
     assert summary['denominators']['tcga_tumor_samples'] == 10294 and summary['denominators']['tcga_projects'] == 33
     manifest = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}
     names = [f'{p}_{r}.tsv.gz' for r in RESIDUES for p in ('tcga_mc3_changes', 'depmap_24q4_changes')]
-    for name in names + ['cancer_change_protein_background.tsv.gz', 'cancer_changes_summary.json', 'raw_files.tsv']:
+    for name in names + ['cancer_change_protein_background.tsv.gz', 'cancer_changes_summary.json', 'raw_files.tsv',
+                         'depmap_24q4_change_models.tsv']:
         row = manifest[f'layers/{name}']
         assert row['redistribution'] == 'git' and row['md5'] == md5(LAYERS / name), name
     for res in RESIDUES:
         n = summary['residues'][res]
         assert n['tcga_changes'] == len(read(f'tcga_mc3_changes_{res}.tsv.gz')) == int(manifest[f'layers/tcga_mc3_changes_{res}.tsv.gz']['rows'])
         assert n['md5'][f'tcga_mc3_changes_{res}.tsv.gz'] == md5(LAYERS / f'tcga_mc3_changes_{res}.tsv.gz')
+    models = set(read('depmap_24q4_change_models.tsv')['model_id'])
+    for res in RESIDUES:
+        assert set(read(f'depmap_24q4_changes_{res}.tsv.gz')['model_id']) <= models, res
+    assert set(read('depmap_24q4_arginine_changes.tsv')['model_id']) <= models
     raw = {r['file']: r for r in csv.DictReader(open(LAYERS / 'raw_files.tsv', encoding='utf-8'), delimiter='\t')}
     assert raw['uniprot_2026_04_human_reviewed_ensembl.tsv.gz']['md5'] == summary['inputs']['uniprot']['ensembl']['md5']
     assert raw['uniprot_human_reviewed_ensembl.tsv.gz']['version'].startswith('UniProt 2026_03')    # the arginine layer's row is kept

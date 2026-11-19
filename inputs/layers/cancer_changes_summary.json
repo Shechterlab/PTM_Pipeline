@@ -37,6 +37,10 @@
    "md5_of_file_read": "96b62faadbcf32aced3124e65e4c62f4",
    "note": "the header line of CRISPRGeneEffect.csv (DepMap 24Q4, MD5 of the whole file 6edf7ade09b9b34199210b559d4745d3)"
   },
+  "depmap_models": {
+   "file": "Model.csv",
+   "md5": "675210d17675f3517b0ce39a3c274f16"
+  },
   "reference": {
    "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
    "md5": "c75aad9d197cbba00f51063f65a96ac4"
