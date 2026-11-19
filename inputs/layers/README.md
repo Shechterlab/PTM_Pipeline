@@ -11,6 +11,7 @@ the release (`../../ADDING_A_SOURCE.md` says how to add one).
 | CARM1 knockout response (Shishkova et al. 2017) | `scripts/41_stage_carm1_ko_sites.py` | `carm1_ko_peptides.tsv`, `carm1_ko_sites.tsv`, `carm1_ko_summary.json` |
 | Human Protein Atlas 25.1 subcellular locations | `scripts/42_stage_hpa_subcellular.py` | `hpa_subcellular_locations.tsv`, `hpa_summary.json` |
 | Cancer cell lines and tumours: DepMap Public 24Q4 (CRISPR gene effect, changes at arginines, MTAP copy number), PRISM Repurposing 24Q2 (PRMT inhibitors) and the TCGA MC3 somatic calls at arginines (GDC open access) | `scripts/44b_extract_tcga_mc3.py` (from the MC3 public MAF, the GDC cases of TCGA and UniProt's Ensembl cross-references), then `scripts/44_stage_depmap.py`; the release build adds its columns and tests (`scripts/release_layers.py`) and `scripts/44c_export_depmap.py` writes the website's `docs/data/depmap/` from the release | `depmap_24q4_gene_effect_summary.tsv`, `depmap_24q4_arginine_changes.tsv`, `depmap_24q4_models.tsv`, `depmap_24q4_prmt_gene_effect.tsv`, `prism_24q2_prmt_inhibitors.tsv`, `tcga_mc3_arginine_changes.tsv`, `tcga_mc3_projects.tsv`, `depmap_summary.json` |
+| Cancer changes at every candidate K, S, T and Y (v1.6.0), and each protein's background: the TCGA MC3 calls and DepMap 24Q4 by the rules of the arginine layer | `scripts/66_stage_cancer_changes.py` (from the MC3 public MAF and OmicsSomaticMutations.csv of the arginine layer, the GDC cases of TCGA, UniProt's Ensembl cross-references and the genes DepMap screened) | `tcga_mc3_changes_{K,S,T,Y}.tsv.gz`, `depmap_24q4_changes_{K,S,T,Y}.tsv.gz`, `cancer_change_protein_background.tsv.gz`, `cancer_changes_summary.json` |
 | Writer perturbations: PRMT7 knockout (Szewczyk et al. 2020), PRMT1 knockdown (Hartel et al. 2019), PRMT5 inhibitor (Lu et al. 2024), PRMT7, CARM1 and PRMT5 knockdowns and the PRMT7 inhibitor SGC3027 (Li et al. 2021) | `scripts/45_stage_prmt7_szewczyk2020.py`, `scripts/46_stage_hartel2019_prmt1_kd.py`, `scripts/51_stage_lu2024_prmt5.py`, `scripts/50_stage_li2021_perturbations.py` | `prmt7_ko_*`, `hartel2019_prmt1_kd_*`, `lu2024_prmt5_*`, `li2021_*` |
 | PaxDb 6.1 protein abundance | `scripts/47_stage_paxdb.py` | `paxdb_human_integrated_abundance.tsv`, `paxdb_summary.json` |
 | Reactome 97 pathways | `scripts/48_stage_reactome.py` | `reactome_human_protein_pathways.tsv`, `reactome_human_pathways.tsv`, `reactome_summary.json` |
@@ -70,6 +71,20 @@ the best reliability and counts a location as main when any of the genes has it 
   ask that TCGA and the MC3 publication be acknowledged and that no one try to identify participants.
 - **`tcga_mc3_projects.tsv`** (33 rows): each TCGA project, with its tumour samples in the MAF (10,294 in all), those
   with a kept call, and the arginine changes extracted.
+
+- **`tcga_mc3_changes_{K,S,T,Y}.tsv.gz`** and **`depmap_24q4_changes_{K,S,T,Y}.tsv.gz`**: the somatic missense and stop
+  changes at every lysine, serine, threonine and tyrosine of reviewed canonical proteins, a known site or not, in TCGA
+  tumors and DepMap cell lines, for the lysine, methyllysine and phosphorylation site sets. They have the columns of the
+  arginine tables and follow their rules: rerun on arginines, `scripts/66_stage_cancer_changes.py` writes
+  `tcga_mc3_arginine_changes.tsv` and `depmap_24q4_arginine_changes.tsv` byte for byte. The Ensembl transcripts of the
+  canonical isoforms come from UniProt 2026_04, the current release on the day of staging; positions are checked on the
+  2026_03 reference, as for arginines. TCGA rows: K 61,510, S 142,576, T 59,012, Y 25,757; DepMap rows: K 20,835,
+  S 44,341, T 24,605, Y 13,533. The files are gzip-compressed without a timestamp, so restaging gives the same bytes.
+- **`cancer_change_protein_background.tsv.gz`** (122,496 rows): for each reviewed canonical entry and residue class (R, K,
+  S, T, Y, and all residues), the residues of that class in its sequence and the TCGA and DepMap changes on them, with
+  the tumor samples or cell lines that carry one and the positions changed. A site's changes can be compared with those
+  of the other residues of its kind in the same protein. The denominators (10,294 tumor samples, 1,929 cell lines with
+  mutation calls) are in `cancer_changes_summary.json`.
 
 ## CPLM tables
 
