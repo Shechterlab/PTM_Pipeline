@@ -1,0 +1,33 @@
+{
+  "description": "The site sets that get site-level interaction tables (scripts/64_export_site_interactions.py) and the residues they modify. residues: for each residue letter, its PDB component, the side-chain atoms whose distance to a partner counts as a contact (the atoms that carry the modification and the carbons next to them), the PDB components that model a modified form with the state each one is (the codes of the site tables and of scripts/interaction_sources.py MARKS), and the state code of the unmodified residue. site_sets: for each set, the residue letters it modifies, as its mark profile in ptmcontext (sites/marks/<mark>.yaml, residues) lists them, and the release tables its sites come from (a row per site: the accession and position columns; a residue column where the table has one).",
+  "residues": {
+    "R": {"name": "arginine", "component": "ARG", "side_chain_atoms": ["CD", "NE", "CZ", "NH1", "NH2"], "unmodified_state": "arginine", "modified_components": {"NMM": "Rme1", "DA2": "Rme2a", "2MR": "Rme2s"}},
+    "K": {"name": "lysine", "component": "LYS", "side_chain_atoms": ["CD", "CE", "NZ"], "unmodified_state": "lysine", "modified_components": {"ALY": "Kac", "MLZ": "Kme1", "MLY": "Kme2", "M3L": "Kme3"}},
+    "S": {"name": "serine", "component": "SER", "side_chain_atoms": ["CB", "OG"], "unmodified_state": "serine", "modified_components": {"SEP": "Sph"}},
+    "T": {"name": "threonine", "component": "THR", "side_chain_atoms": ["CB", "OG1", "CG2"], "unmodified_state": "threonine", "modified_components": {"TPO": "Tph"}},
+    "Y": {"name": "tyrosine", "component": "TYR", "side_chain_atoms": ["CE1", "CE2", "CZ", "OH"], "unmodified_state": "tyrosine", "modified_components": {"PTR": "Yph"}}
+  },
+  "site_sets": {
+    "methylarginine": {
+      "mark": "methylarginine", "residues": ["R"], "noun": "methylarginine",
+      "tables": ["releases/v1.4.3/human_methylarginine_sites_v1.4.3.tsv"],
+      "columns": {"accession": "uniprot_accession", "position": "position"}
+    },
+    "methyllysine": {
+      "mark": "methyllysine", "residues": ["K"], "noun": "methyllysine",
+      "tables": ["releases/v1.5.0/human_methyllysine_sites_v1.5.0.tsv"],
+      "columns": {"accession": "canonical_UniProtAC", "position": "position", "residue": "residue"}
+    },
+    "lysine": {
+      "mark": "lysine", "residues": ["K"], "noun": "modified lysine",
+      "tables": ["releases/v1.5.0/human_acetylation_sites_v1.5.0.tsv", "releases/v1.5.0/human_lysine_acylation_sites_v1.5.0.tsv",
+                 "releases/v1.5.0/human_ubiquitination_sites_v1.5.0.tsv", "releases/v1.5.0/human_sumoylation_sites_v1.5.0.tsv"],
+      "columns": {"accession": "canonical_UniProtAC", "position": "position", "residue": "residue"}
+    },
+    "phospho": {
+      "mark": "phospho", "residues": ["S", "T", "Y"], "noun": "phosphosite",
+      "tables": ["releases/v1.5.0/human_phosphorylation_sites_v1.5.0.tsv"],
+      "columns": {"accession": "canonical_UniProtAC", "position": "position", "residue": "residue"}
+    }
+  }
+}

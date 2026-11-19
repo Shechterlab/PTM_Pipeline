@@ -1,0 +1,534 @@
+canonical_UniProtAC	position	residue	mark	state	evidence	evidence_class	pmids	source	source_release
+A0A2R8Y619	43	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+A0A2R8Y619	54	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+A0A2R8Y619	105	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+A0A2R8Y619	113	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+O00159	383	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+O00268	594	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O00268	595	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O00268	597	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O00268	605	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O00268	611	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O00268	621	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O00268	631	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O00268	658	K	methyllysine	me2	ECO:0007744	experimental		UniProt	2026_04
+O14979	161	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+O43169	39	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+O43524	46	K	methyllysine	me1	ECO:0000269	experimental	22820736	UniProt	2026_04
+O43524	149	K	methyllysine	me1	ECO:0000269	experimental	22820736	UniProt	2026_04
+O43524	230	K	methyllysine	me1	ECO:0000269	experimental	22820736	UniProt	2026_04
+O43524	262	K	methyllysine	me1	ECO:0000269	experimental	22820736	UniProt	2026_04
+O43524	271	K	methyllysine	me1	ECO:0000269	experimental	22820736	UniProt	2026_04
+O43524	290	K	methyllysine	me1	ECO:0000269	experimental	22820736	UniProt	2026_04
+O43524	419	K	methyllysine	me1	ECO:0000269	experimental	22820736	UniProt	2026_04
+O43929	7	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+O60814	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+O60814	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+O60814	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+O60814	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+O60814	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+O60869	25	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+O60870	135	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+O60870	135	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	23349634;24129315	UniProt	2026_04
+O75367	18	K	methyllysine	me1	ECO:0000269	experimental	16210244	UniProt	2026_04
+O75367	123	K	methyllysine	me2	ECO:0000305	by-similarity	16210244	UniProt	2026_04
+O75390	395	K	methyllysine	me3	ECO:0000269	experimental	28391595;28887308	UniProt	2026_04
+O75530	66	K	methyllysine	me1	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	66	K	methyllysine	me2	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	66	K	methyllysine	me3	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	197	K	methyllysine	me1	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	197	K	methyllysine	me2	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	197	K	methyllysine	me3	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	268	K	methyllysine	me1	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	268	K	methyllysine	me2	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	268	K	methyllysine	me3	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	284	K	methyllysine	me1	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	284	K	methyllysine	me2	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75530	284	K	methyllysine	me3	ECO:0000269	experimental	20974918	UniProt	2026_04
+O75815	334	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+O95248	1223	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+O95785	1162	K	methyllysine	me2	ECO:0000269	experimental	18438403	UniProt	2026_04
+O95785	1162	K	methyllysine	me3	ECO:0000269	experimental	18438403	UniProt	2026_04
+O96013	78	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P02768	558	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P04264	276	K	methyllysine	me2	ECO:0000269	experimental		UniProt	2026_04
+P04406	5	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04406	66	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04406	194	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04406	215	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04406	227	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04406	260	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04406	263	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04406	334	K	methyllysine	me2	ECO:0000269	experimental	18183946	UniProt	2026_04
+P04637	370	K	methyllysine	me1	ECO:0000269	experimental	17108971;22864287	UniProt	2026_04
+P04637	370	K	methyllysine	me2	ECO:0000269	experimental	17108971;22864287	UniProt	2026_04
+P04637	372	K	methyllysine	me1	ECO:0000269	experimental	15525938;16415881	UniProt	2026_04
+P04637	373	K	methyllysine	me2	ECO:0000269	experimental	20118233	UniProt	2026_04
+P04637	382	K	methyllysine	me1	ECO:0000269	experimental	17707234;20870725;22864287	UniProt	2026_04
+P04637	382	K	methyllysine	me2	ECO:0000269	experimental	17707234;20870725;22864287	UniProt	2026_04
+P04920	274	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P05141	52	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+P05141	52	K	methyllysine	me2	ECO:0000269	experimental		UniProt	2026_04
+P05141	52	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	24129315;31213526	UniProt	2026_04
+P05141	147	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P05496	104	K	methyllysine	me3	ECO:0000269	experimental	30530489	UniProt	2026_04
+P06400	810	K	methyllysine	me1	ECO:0000269	experimental	22787429	UniProt	2026_04
+P06400	860	K	methyllysine	me1	ECO:0000269	experimental	20870719	UniProt	2026_04
+P06899	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P06899	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+P06899	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P06899	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P06899	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+P08238	531	K	methyllysine	me	ECO:0000269	experimental	24880080	UniProt	2026_04
+P08238	574	K	methyllysine	me	ECO:0000269	experimental	24880080	UniProt	2026_04
+P0C0S5	5	K	methyllysine	me1	ECO:0000269	experimental	23324626	UniProt	2026_04
+P0C0S5	8	K	methyllysine	me1	ECO:0000269	experimental	23324626	UniProt	2026_04
+P0DMV8	561	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+P0DMV8	561	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	23349634;23921388;24129315	UniProt	2026_04
+P0DMV9	561	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+P0DMV9	561	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	23349634;23921388;24129315	UniProt	2026_04
+P0DP23	116	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P0DP23	116	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	7093203;24129315	UniProt	2026_04
+P0DP24	116	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P0DP24	116	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	7093203;24129315	UniProt	2026_04
+P0DP25	116	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P0DP25	116	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	7093203;24129315	UniProt	2026_04
+P0DPK2	5	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	5	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	5	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	10	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	10	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	10	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	19	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	24	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	28	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	28	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	28	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	37	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	37	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	37	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	38	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	57	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	57	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	65	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	5	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	5	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	5	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	10	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	10	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	10	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	19	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	24	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	28	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	28	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	28	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	37	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	37	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	37	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	38	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	57	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	57	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	65	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P10071	436	K	methyllysine	me1	ECO:0000269	experimental	27146893	UniProt	2026_04
+P10071	595	K	methyllysine	me1	ECO:0000269	experimental	27146893	UniProt	2026_04
+P10412	26	K	methyllysine	me1	ECO:0000269	experimental	3782055;19144645	UniProt	2026_04
+P10412	26	K	methyllysine	me2	ECO:0000269;ECO:0000305	experimental	16127177;19144645	UniProt	2026_04
+P10412	26	K	methyllysine	me3	ECO:0000269;ECO:0000305	experimental	16127177;30156264	UniProt	2026_04
+P10636	480	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	576	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	628	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P11021	585	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P11021	585	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+P11021	585	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	23349634;23921388;24129315	UniProt	2026_04
+P11021	591	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P11055	130	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+P11142	561	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+P11142	561	K	methyllysine	me3	ECO:0000269	experimental	23349634;23921388	UniProt	2026_04
+P11940	299	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+P12035	296	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P12235	52	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P12236	52	K	methyllysine	me3	ECO:0000269;ECO:0007744	experimental	24129315;31213526	UniProt	2026_04
+P12882	130	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+P12883	129	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+P12956	570	K	methyllysine	me3	ECO:0000269	experimental	35545041	UniProt	2026_04
+P13533	129	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+P13535	132	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+P13639	525	K	methyllysine	me3	ECO:0000269	experimental	25231979;37209825;38508183	UniProt	2026_04
+P14618	3	K	methyllysine	me3	ECO:0007744	experimental	24129315	UniProt	2026_04
+P15172	104	K	methyllysine	me1	ECO:0000269	experimental	22215600	UniProt	2026_04
+P16401	27	K	methyllysine	me1	ECO:0000269	experimental	19552482	UniProt	2026_04
+P16403	34	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+P16403	187	K	methyllysine	me1	ECO:0000269	experimental	20334638	UniProt	2026_04
+P16949	29	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P17066	563	K	methyllysine	me3	ECO:0000269	experimental	23921388	UniProt	2026_04
+P17676	43	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+P20290	46	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P20290	54	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P22626	104	K	methyllysine	me2	ECO:0000269	experimental		UniProt	2026_04
+P23246	314	K	methyllysine	me2	ECO:0000269	experimental		UniProt	2026_04
+P23527	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P23527	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+P23527	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P23527	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P23527	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+P24928	1838	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P24928	1838	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P24928	1859	K	methyllysine	me1	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1859	K	methyllysine	me2	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1866	K	methyllysine	me1	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1866	K	methyllysine	me2	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1866	K	methyllysine	me3	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1873	K	methyllysine	me1	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1873	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P24928	1873	K	methyllysine	me3	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1887	K	methyllysine	me1	ECO:0000269	experimental	26566685	UniProt	2026_04
+P24928	1887	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P24928	1908	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P24928	1922	K	methyllysine	me1	ECO:0000305	by-similarity	26566685	UniProt	2026_04
+P24928	1922	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P24928	1936	K	methyllysine	me1	ECO:0000305	by-similarity	26566685	UniProt	2026_04
+P24928	1936	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P26358	70	K	methyllysine	me2	ECO:0000269	experimental	18438403	UniProt	2026_04
+P26358	142	K	methyllysine	me1	ECO:0000269	experimental	21151116	UniProt	2026_04
+P30101	61	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P30876	1052	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P33778	47	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P33778	58	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+P33778	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P33778	109	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P33778	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+P34932	773	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P35398	38	K	methyllysine	me1	ECO:0000269	experimental	23063525	UniProt	2026_04
+P35749	129	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+P38117	200	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P38117	200	K	methyllysine	me3	ECO:0000269	experimental	25023281;25416781	UniProt	2026_04
+P38117	203	K	methyllysine	me3	ECO:0000269	experimental	25023281;25416781	UniProt	2026_04
+P40763	140	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P42224	114	K	methyllysine	me1	ECO:0000269	experimental	28753426	UniProt	2026_04
+P42224	175	K	methyllysine	me1	ECO:0000269	experimental	28753426	UniProt	2026_04
+P42224	296	K	methyllysine	me1	ECO:0000269	experimental	28753426	UniProt	2026_04
+P42224	366	K	methyllysine	me1	ECO:0000269	experimental	28753426	UniProt	2026_04
+P42224	525	K	methyllysine	me1	ECO:0000269	experimental	28753426	UniProt	2026_04
+P42224	637	K	methyllysine	me1	ECO:0000269	experimental	28753426	UniProt	2026_04
+P42224	665	K	methyllysine	me1	ECO:0000269	experimental	28753426	UniProt	2026_04
+P43694	300	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P47914	5	K	methyllysine	me1	ECO:0000269;ECO:0007744	experimental	12962325;24129315	UniProt	2026_04
+P48201	110	K	methyllysine	me3	ECO:0000269	experimental	30530489	UniProt	2026_04
+P48431	42	K	methyllysine	me1	ECO:0000269	experimental	29358331	UniProt	2026_04
+P48431	117	K	methyllysine	me1	ECO:0000269	experimental	29358331	UniProt	2026_04
+P49588	943	K	methyllysine	me1	ECO:0000269	experimental	32611769	UniProt	2026_04
+P49588	943	K	methyllysine	me2	ECO:0000269	experimental	32611769	UniProt	2026_04
+P49588	943	K	methyllysine	me3	ECO:0000269	experimental	32611769	UniProt	2026_04
+P49750	735	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P51957	622	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P54652	564	K	methyllysine	me3	ECO:0000269	experimental	23921388	UniProt	2026_04
+P55072	315	K	methyllysine	me3	ECO:0000269	experimental	22948820;23349634	UniProt	2026_04
+P57053	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P57053	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+P57053	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P57053	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P57053	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+P58876	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P58876	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+P58876	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P58876	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P58876	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+P60174	194	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P60709	84	K	methyllysine	me1	ECO:0000269	experimental	23673617	UniProt	2026_04
+P62736	86	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P62805	13	K	methyllysine	me1	ECO:0000269	experimental	31061526	UniProt	2026_04
+P62805	21	K	methyllysine	me1	ECO:0000269	experimental	12086618;15964846;17967882;20622854;27338793;32209475	UniProt	2026_04
+P62805	21	K	methyllysine	me2	ECO:0000269	experimental	12086618;15964846;17967882;32209475	UniProt	2026_04
+P62805	21	K	methyllysine	me3	ECO:0000269	experimental	12086618;15964846;17967882;32209475	UniProt	2026_04
+P62807	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P62807	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+P62807	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P62807	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+P62807	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+P62987	98	K	methyllysine	me3	ECO:0000269	experimental	39048817;39103523	UniProt	2026_04
+P63261	84	K	methyllysine	me1	ECO:0000269	experimental	23673617	UniProt	2026_04
+P68032	86	K	methyllysine	me1	ECO:0000269	experimental	23673617	UniProt	2026_04
+P68104	36	K	methyllysine	me1	ECO:0000269	experimental	28520920	UniProt	2026_04
+P68104	36	K	methyllysine	me2	ECO:0000269	experimental	28520920	UniProt	2026_04
+P68104	36	K	methyllysine	me3	ECO:0000269	experimental	28520920	UniProt	2026_04
+P68104	55	K	methyllysine	me2	ECO:0000269	experimental	30143613;30612740	UniProt	2026_04
+P68104	79	K	methyllysine	me3	ECO:0000269	experimental	26545399	UniProt	2026_04
+P68104	165	K	methyllysine	me1	ECO:0000269	experimental	28108655	UniProt	2026_04
+P68104	165	K	methyllysine	me2	ECO:0000269	experimental	28108655	UniProt	2026_04
+P68104	165	K	methyllysine	me3	ECO:0000269	experimental	28108655	UniProt	2026_04
+P68104	318	K	methyllysine	me3	ECO:0000269	experimental	25144183	UniProt	2026_04
+P68133	86	K	methyllysine	me1	ECO:0000269	experimental	23673617	UniProt	2026_04
+P68363	40	K	methyllysine	me3	ECO:0000269	experimental	27518565	UniProt	2026_04
+P68431	5	K	methyllysine	me1	ECO:0000269	experimental	16267050;16457588;17194708	UniProt	2026_04
+P68431	5	K	methyllysine	me2	ECO:0000269	experimental	16267050;16457588;17194708	UniProt	2026_04
+P68431	5	K	methyllysine	me3	ECO:0000269	experimental	16267050;16457588;17194708	UniProt	2026_04
+P68431	10	K	methyllysine	me1	ECO:0000269	experimental	11242053;16185088;16267050;16457588;17194708	UniProt	2026_04
+P68431	10	K	methyllysine	me2	ECO:0000269	experimental	11242053;16185088;16267050;16457588;17194708	UniProt	2026_04
+P68431	10	K	methyllysine	me3	ECO:0000269	experimental	11242053;16185088;16267050;16457588;17194708;37938770	UniProt	2026_04
+P68431	19	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+P68431	24	K	methyllysine	me1	ECO:0000269	experimental	17194708	UniProt	2026_04
+P68431	28	K	methyllysine	me1	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+P68431	28	K	methyllysine	me2	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+P68431	28	K	methyllysine	me3	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+P68431	37	K	methyllysine	me1	ECO:0000269	experimental	15983376;16185088;16267050;16627869;17194708	UniProt	2026_04
+P68431	37	K	methyllysine	me2	ECO:0000269	experimental	15983376;16185088;16267050;16627869;17194708	UniProt	2026_04
+P68431	37	K	methyllysine	me3	ECO:0000269	experimental	15983376;16185088;16267050;16627869;17194708	UniProt	2026_04
+P68431	38	K	methyllysine	me1	ECO:0000269	experimental	15983376	UniProt	2026_04
+P68431	57	K	methyllysine	me1	ECO:0000269	experimental	17194708;22387026	UniProt	2026_04
+P68431	57	K	methyllysine	me3	ECO:0000269	experimental	17194708;22387026	UniProt	2026_04
+P68431	65	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+P68431	80	K	methyllysine	me1	ECO:0000269	experimental	15525939;16267050;16627869;17194708	UniProt	2026_04
+P68431	80	K	methyllysine	me2	ECO:0000269	experimental	15525939;16267050;16627869;17194708	UniProt	2026_04
+P68431	80	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P68431	123	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+P78344	431	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+P84243	5	K	methyllysine	me1	ECO:0000269	experimental	16185088;16267050;16457588;17194708	UniProt	2026_04
+P84243	5	K	methyllysine	me2	ECO:0000269	experimental	16185088;16267050;16457588;17194708	UniProt	2026_04
+P84243	5	K	methyllysine	me3	ECO:0000269	experimental	16185088;16267050;16457588;17194708	UniProt	2026_04
+P84243	10	K	methyllysine	me1	ECO:0000269	experimental	7309716;11242053;16185088;16267050;16457588;17194708	UniProt	2026_04
+P84243	10	K	methyllysine	me2	ECO:0000269	experimental	7309716;11242053;16185088;16267050;16457588;17194708	UniProt	2026_04
+P84243	10	K	methyllysine	me3	ECO:0000269	experimental	7309716;11242053;16185088;16267050;16457588;17194708	UniProt	2026_04
+P84243	19	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+P84243	24	K	methyllysine	me1	ECO:0000269	experimental	17194708	UniProt	2026_04
+P84243	28	K	methyllysine	me1	ECO:0000269	experimental	7309716;16185088;16267050;17194708	UniProt	2026_04
+P84243	28	K	methyllysine	me2	ECO:0000269;ECO:0007744	experimental	7309716;16185088;16267050;17194708;24129315	UniProt	2026_04
+P84243	28	K	methyllysine	me3	ECO:0000269	experimental	7309716;16185088;16267050;17194708	UniProt	2026_04
+P84243	37	K	methyllysine	me1	ECO:0000269	experimental	7309716;16185088;16267050;17194708	UniProt	2026_04
+P84243	37	K	methyllysine	me2	ECO:0000269	experimental	7309716;16185088;16267050;17194708	UniProt	2026_04
+P84243	37	K	methyllysine	me3	ECO:0000269	experimental	7309716;16185088;16267050;17194708	UniProt	2026_04
+P84243	38	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+P84243	57	K	methyllysine	me1	ECO:0000269	experimental	17194708;22387026	UniProt	2026_04
+P84243	57	K	methyllysine	me3	ECO:0000269	experimental	17194708;22387026	UniProt	2026_04
+P84243	65	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+P84243	80	K	methyllysine	me1	ECO:0000269	experimental	15525939;16267050;17194708	UniProt	2026_04
+P84243	80	K	methyllysine	me2	ECO:0000269	experimental	15525939;16267050;17194708	UniProt	2026_04
+P84243	80	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+P84243	123	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+Q00325	112	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q01081	39	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q01094	185	K	methyllysine	me1	ECO:0000269	experimental	20603083	UniProt	2026_04
+Q01518	287	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q03468	170	K	methyllysine	me	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q03468	297	K	methyllysine	me	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q03468	448	K	methyllysine	me	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q03468	1054	K	methyllysine	me	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q04206	310	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q05639	36	K	methyllysine	me1	ECO:0000269	experimental	28520920	UniProt	2026_04
+Q05639	36	K	methyllysine	me2	ECO:0000269	experimental	28520920	UniProt	2026_04
+Q05639	36	K	methyllysine	me3	ECO:0000269	experimental	28520920	UniProt	2026_04
+Q05639	55	K	methyllysine	me2	ECO:0000269	experimental	30143613;30612740	UniProt	2026_04
+Q05639	55	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q05639	79	K	methyllysine	me3	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q05639	165	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q05639	165	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q05639	165	K	methyllysine	me3	ECO:0000269	experimental	28108655	UniProt	2026_04
+Q06055	109	K	methyllysine	me3	ECO:0000269	experimental	30530489	UniProt	2026_04
+Q08211	146	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q09666	1208	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q09666	1666	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q09666	1868	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q09666	1935	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q09666	2002	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q09666	2130	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q12802	1670	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q12962	189	K	methyllysine	me3	ECO:0000269	experimental	15099517;16415881;25959397	UniProt	2026_04
+Q13310	361	K	methyllysine	me2	ECO:0000269	experimental		UniProt	2026_04
+Q13442	126	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q13547	432	K	methyllysine	me	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q14103	119	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+Q14676	45	K	methyllysine	me2	ECO:0000269	experimental	24240613	UniProt	2026_04
+Q14676	1075	K	methyllysine	me2	ECO:0000269	experimental	24240613	UniProt	2026_04
+Q14676	1104	K	methyllysine	me2	ECO:0000269	experimental	24240613	UniProt	2026_04
+Q14676	1140	K	methyllysine	me2	ECO:0000269	experimental	24240613	UniProt	2026_04
+Q14676	1345	K	methyllysine	me2	ECO:0000269	experimental	24240613	UniProt	2026_04
+Q14676	1740	K	methyllysine	me2	ECO:0000269	experimental	24240613	UniProt	2026_04
+Q14847	75	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q14865	336	K	methyllysine	me2	ECO:0000269	experimental	21532585	UniProt	2026_04
+Q15047	1170	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q15047	1170	K	methyllysine	me3	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q15047	1178	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q15047	1178	K	methyllysine	me3	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q15417	158	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q16695	5	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	5	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	5	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	10	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	10	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	10	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	19	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	24	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	28	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	28	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	28	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	37	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	37	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	37	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	38	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	57	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	57	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	65	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	80	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	80	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	80	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	123	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q16778	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q16778	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q16778	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q16778	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q16778	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q53H47	498	K	methyllysine	me1	ECO:0000269	experimental	18790802	UniProt	2026_04
+Q5QNW6	47	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5QNW6	58	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q5QNW6	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q5QNW6	109	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5QNW6	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q5T2S8	552	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q5TEC6	5	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	5	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	5	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	10	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	10	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	10	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	19	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	24	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	28	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	28	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	28	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	37	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	37	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	37	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	38	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	57	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	57	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	65	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	80	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	80	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	80	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	123	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q5VTD9	8	K	methyllysine	me2	ECO:0000269	experimental	22399799	UniProt	2026_04
+Q5VTE0	55	K	methyllysine	me2	ECO:0000269	experimental		UniProt	2026_04
+Q5VTE0	165	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+Q5VTE0	165	K	methyllysine	me2	ECO:0000269	experimental		UniProt	2026_04
+Q5VTE0	165	K	methyllysine	me3	ECO:0000269	experimental		UniProt	2026_04
+Q6DN03	47	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6DN03	58	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q6DN03	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q6DRA6	47	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6DRA6	58	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q6DRA6	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	5	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	5	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	5	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	10	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	10	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	10	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	19	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	24	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	28	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	28	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	28	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	37	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	56	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	56	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	64	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	122	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q6P2C8	134	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q6P2Q9	1425	K	methyllysine	me2	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q6RFH5	311	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q71DI3	5	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+Q71DI3	5	K	methyllysine	me2	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+Q71DI3	5	K	methyllysine	me3	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+Q71DI3	10	K	methyllysine	me1	ECO:0000269	experimental	11242053;16185088;16267050;17194708	UniProt	2026_04
+Q71DI3	10	K	methyllysine	me2	ECO:0000269	experimental	11242053;16185088;16267050;17194708	UniProt	2026_04
+Q71DI3	10	K	methyllysine	me3	ECO:0000269	experimental	11242053;16185088;16267050;17194708	UniProt	2026_04
+Q71DI3	19	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+Q71DI3	24	K	methyllysine	me1	ECO:0000269	experimental	17194708	UniProt	2026_04
+Q71DI3	28	K	methyllysine	me1	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	28	K	methyllysine	me2	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	28	K	methyllysine	me3	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	37	K	methyllysine	me1	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	37	K	methyllysine	me2	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	37	K	methyllysine	me3	ECO:0000269	experimental	16185088;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	38	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q71DI3	57	K	methyllysine	me1	ECO:0000269	experimental	17194708;22387026	UniProt	2026_04
+Q71DI3	57	K	methyllysine	me3	ECO:0000269	experimental	17194708;22387026	UniProt	2026_04
+Q71DI3	65	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+Q71DI3	80	K	methyllysine	me1	ECO:0000269	experimental	15525939;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	80	K	methyllysine	me2	ECO:0000269	experimental	15525939;16267050;16627869;17194708	UniProt	2026_04
+Q71DI3	80	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q71DI3	123	K	methyllysine	me1	ECO:0000269	experimental	16267050;17194708	UniProt	2026_04
+Q7Z699	224	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q86V81	235	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q8IWF6	510	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q8N163	123	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q8N257	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q8N257	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q8N257	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q8N257	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q8N257	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q8N884	506	K	methyllysine	me1	ECO:0000269	experimental	35210392	UniProt	2026_04
+Q8NHH9	270	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q8TBK2	39	K	methyllysine	me	ECO:0000269	experimental	30189201	UniProt	2026_04
+Q8TBK2	179	K	methyllysine	me	ECO:0000269	experimental	30189201	UniProt	2026_04
+Q8TBK2	372	K	methyllysine	me	ECO:0000305	by-similarity	30189201	UniProt	2026_04
+Q93079	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q93079	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q93079	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q93079	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q93079	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q969Q0	53	K	methyllysine	me1	ECO:0000269	experimental		UniProt	2026_04
+Q96A08	48	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q96A08	59	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q96A08	87	K	methyllysine	me3	ECO:0000269	experimental	21249133	UniProt	2026_04
+Q96A08	110	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q96A08	118	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q96JM2	2004	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q96K17	5	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q96KQ7	185	K	methyllysine	me2	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q96KQ7	185	K	methyllysine	me3	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q96N67	381	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q96RI1	220	K	methyllysine	me1	ECO:0000269	experimental	22345554	UniProt	2026_04
+Q99877	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q99877	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q99877	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q99877	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q99877	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q99879	47	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q99879	58	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q99879	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q99879	109	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q99879	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q99880	47	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q99880	58	K	methyllysine	me2	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q99880	86	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q99880	109	K	methyllysine	me1	ECO:0000269	experimental	16627869	UniProt	2026_04
+Q99880	117	K	methyllysine	me	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BYX7	84	K	methyllysine	me1	ECO:0000269	experimental	23673617	UniProt	2026_04
+Q9C0C2	1644	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9H361	361	K	methyllysine	me2	ECO:0000250	by-similarity		UniProt	2026_04
+Q9H3Q1	5	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9H8H0	346	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9H9T3	229	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9NQS1	230	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9NQV7	368	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q9NQV7	368	K	methyllysine	me3	ECO:0000250	by-similarity		UniProt	2026_04
+Q9NQV7	372	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q9NQV7	374	K	methyllysine	me1	ECO:0000250	by-similarity		UniProt	2026_04
+Q9NVM6	264	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9UEE9	219	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9UHD2	607	K	methyllysine	me1	ECO:0000269	experimental	37926288	UniProt	2026_04
+Q9UJS0	453	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9UKV3	654	K	methyllysine	me2	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q9UKV3	654	K	methyllysine	me3	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q9UKX2	130	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+Q9UKX3	130	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+Q9Y232	135	K	methyllysine	me1	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q9Y232	135	K	methyllysine	me2	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q9Y232	135	K	methyllysine	me3	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q9Y2K3	127	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+Q9Y2W1	252	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9Y2Z2	533	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9Y4X4	313	K	methyllysine	me	ECO:0000269	experimental	18438403	UniProt	2026_04
+Q9Y512	255	K	methyllysine	me1	ECO:0007744	experimental	24129315	UniProt	2026_04
+Q9Y623	130	K	methyllysine	me3	ECO:0000255	by-similarity		UniProt	2026_04
+Q9Y6K1	47	K	methyllysine	me2	ECO:0000269;ECO:0007744	experimental	22086334	UniProt	2026_04

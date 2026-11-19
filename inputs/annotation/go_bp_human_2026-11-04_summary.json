@@ -1,0 +1,103 @@
+{
+  "accession_history": "inputs/reference/uniprot_accession_history_2026_03.tsv",
+  "accession_history_md5": "c285be55ba2541822f068f8ec891dfb6",
+  "bp_rows_kept_iea_share": 0.2895,
+  "citation": "Gene Ontology Consortium, Genetics 224:iyad031 (2023), doi:10.1093/genetics/iyad031; Ashburner et al., Nat Genet 25:25 (2000), doi:10.1038/75556",
+  "direct_annotations_by_evidence_code": {
+    "EXP": 74,
+    "HDA": 65,
+    "HEP": 42,
+    "HMP": 92,
+    "IBA": 26470,
+    "IC": 766,
+    "IDA": 27138,
+    "IEA": 48147,
+    "IEP": 861,
+    "IGI": 1451,
+    "IMP": 19220,
+    "IPI": 147,
+    "ISA": 2,
+    "ISM": 1,
+    "ISO": 10,
+    "ISS": 18453,
+    "NAS": 9051,
+    "TAS": 11043
+  },
+  "direct_pair_codes_iea_share": 0.2953,
+  "direct_pairs_iea_only": 24828,
+  "direct_pairs_iea_only_share": 0.2055,
+  "direct_protein_term_pairs": 120819,
+  "dropped_term_ids": {
+    "GO:0120578 (not_in_go_basic)": 3,
+    "GO:0170077 (not_in_go_basic)": 1,
+    "GO:7770093 (not_in_go_basic)": 1
+  },
+  "files": {
+    "rows": "go_bp_human_2026-11-04.tsv",
+    "terms": "go_bp_terms_2026-11-04.tsv"
+  },
+  "files_md5": {
+    "rows": "e3e19d5e62b8a8e5cdf01fa427e22ae2",
+    "terms": "168b11be0686f4ae458ef35ca3b4f4c8"
+  },
+  "gaf": {
+    "bytes": 11061135,
+    "date_generated": "2026-11-04 15:05",
+    "downloaded": "2026-11-13",
+    "file": "goa_human.gaf.gz",
+    "gaf_version": "2.2",
+    "go_version_checked_against": "http://purl.obolibrary.org/obo/go/releases/2026-10-23/extensions/go-plus.ofn",
+    "md5": "933247dd6d91761e365b6649eac91185",
+    "sha256": "0286e5fc8af8baf07584a6e92bae1e86631fa546094ef60343bb6acb23f221d8"
+  },
+  "gaf_bp_accessions": {
+    "not_in_reference": 65,
+    "reference": 17570
+  },
+  "gaf_rows": {
+    "bp_rows_kept": 179872,
+    "bp_rows_kept_iea": 52081,
+    "bp_rows_nd_evidence": 91,
+    "bp_rows_not_in_reference": 119,
+    "bp_rows_not_qualifier": 521,
+    "bp_rows_term_not_in_go_basic": 5,
+    "gaf_rows_bp": 180608,
+    "gaf_rows_other_aspect": 648132,
+    "positive_with_not_row_same_term": 70,
+    "qualifier:acts_upstream_of": 576,
+    "qualifier:acts_upstream_of_negative_effect": 32,
+    "qualifier:acts_upstream_of_or_within": 2711,
+    "qualifier:acts_upstream_of_or_within_negative_effect": 13,
+    "qualifier:acts_upstream_of_or_within_positive_effect": 46,
+    "qualifier:acts_upstream_of_positive_effect": 120,
+    "qualifier:involved_in": 176374
+  },
+  "go_basic_bp_terms_live": 23974,
+  "license": "CC BY 4.0 (Gene Ontology and GO annotations, https://geneontology.org/docs/go-citation-policy/)",
+  "obo": {
+    "bytes": 32227785,
+    "data_version": "releases/2026-07-26",
+    "downloaded": "2026-11-13",
+    "file": "go-basic.obo",
+    "format_version": "1.2",
+    "md5": "26de643e50af9a1588f9a31062348cc4",
+    "sha256": "b08d45b268b8c24ccb2513dbbbc7d4df9f6521c099b413f79eb31e06e0fa3bcc"
+  },
+  "propagation": "is_a and part_of within biological_process (true-path rule); regulates relations not followed; root included",
+  "proteins": 17486,
+  "proteins_share_of_reference": 0.8565,
+  "proteins_with_non_iea_term": 16863,
+  "reference_entries": 20416,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": 883763,
+  "rows_direct": 120819,
+  "rows_iea_only": 104268,
+  "rows_iea_only_share": 0.118,
+  "rows_propagated": 762944,
+  "source": {
+    "gaf": "https://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/goa_human.gaf.gz",
+    "obo": "https://current.geneontology.org/ontology/go-basic.obo"
+  },
+  "terms_with_proteins": 13623
+}

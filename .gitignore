@@ -34,3 +34,9 @@ inputs/annotation/cplm4_lysine_methylation_*.zip
 *.tar
 *.tar.gz
 *.tgz
+
+# Scratch output written at the top level (scripts write into their own folders)
+/*.txt
+/*.out
+/*.png
+/scratch/

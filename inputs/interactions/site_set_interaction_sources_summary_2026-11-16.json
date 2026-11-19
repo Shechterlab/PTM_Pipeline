@@ -1,0 +1,42 @@
+{
+ "date": "2026-11-16",
+ "pdb": {
+  "chemical_components": 800,
+  "entities": 90032,
+  "entries_answered": 27308,
+  "entries_asked": 27308,
+  "site_residues": 1278091,
+  "site_residues_at_an_interface": 237218,
+  "site_residues_by_parent": {
+   "": 414,
+   "ALA": 817,
+   "ARG": 582,
+   "ASN": 530,
+   "ASP": 689,
+   "CYS": 191,
+   "GLN": 333,
+   "GLU": 912,
+   "GLY": 400,
+   "HIS": 166,
+   "ILE": 368,
+   "LEU": 493,
+   "LYS": 865837,
+   "Lys": 1,
+   "MET": 264,
+   "PHE": 297,
+   "PRO": 398,
+   "SER": 243575,
+   "THR": 110074,
+   "TRP": 39,
+   "TYR": 51052,
+   "VAL": 659
+  }
+ },
+ "proteins": 16147,
+ "site_sets": [
+  "methyllysine",
+  "lysine",
+  "phospho"
+ ],
+ "sites": 319410
+}

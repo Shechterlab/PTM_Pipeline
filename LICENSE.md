@@ -54,4 +54,6 @@ Most other sources are CC0 or CC BY 4.0, including UniProt, PANTHER, the Human D
 - Maron et al. 2021
 - ProMetheusDB
 
-CPLM 4.0 states "All Rights Reserved" and no licence. The current website (v1.1.0) does not use it; the published explorer kept in `docs/v1.0.0/` shows lysine positions derived from it. Its download and the tables made from it are not redistributed: `inputs/MANIFEST.tsv` records only their checksums.
+CPLM 4.0 states "All Rights Reserved" and no licence. The current website (v1.1.0) does not use it; the published explorer kept in `docs/v1.0.0/` shows lysine positions derived from it. Its download is not redistributed (`inputs/MANIFEST.tsv` records its checksum). The context-mark release v1.5.0 does not include CPLM's sites.
+
+The same release includes, cited, two sources whose terms are not those of the release: the human lysine methylation sites of Berryhill et al., Sci Rep 13:377 (2023), doi:10.1038/s41598-022-27175-x (the article is CC BY 4.0; its supplements carry no separate notice; `sources` = Berryhill 2023), and the human phosphosites with functional scores of Ochoa et al., Nat Biotechnol 38:365 (2020), doi:10.1038/s41587-019-0344-3 (the article is not open access, "© 2019 The Author(s), under exclusive licence to Springer Nature America, Inc.", and its supplements carry no licence; `sources` = Ochoa 2020). The CC BY-NC-SA 4.0 of the release does not grant rights in the Ochoa et al. data beyond what Springer Nature and the authors allow.

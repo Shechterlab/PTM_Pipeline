@@ -1,0 +1,55 @@
+{
+  "accession_history": "inputs/reference/uniprot_accession_history_2026_03.tsv",
+  "accession_history_md5": "c285be55ba2541822f068f8ec891dfb6",
+  "article_url": "https://www.nature.com/articles/nsmb.3366",
+  "files": {
+    "rejected": "hendriks2017_sumoylation_rejected.tsv",
+    "validated": "hendriks2017_sumoylation_sites.tsv"
+  },
+  "files_md5": {
+    "rejected": "4b293554db16ede7c8f65a0a1be02eb8",
+    "validated": "0a39c67564304b541f61c1aa224ed7c0"
+  },
+  "input_leading_proteins": 6747,
+  "input_rows": 40765,
+  "input_rows_leading_isoform": 7247,
+  "license": "article page: copyright \"2017 Springer Nature America, Inc.\"; not open access; the supplementary file carries no separate notice",
+  "localization_probability_note": "the table is used as published (the paper filters its sites itself); Localization prob ranges 0.681733-1 over the input rows, 6 below 0.75",
+  "raw_file": "41594_2017_BFnsmb3366_MOESM30_ESM.xlsx",
+  "raw_md5": "82327809bd8464466dc8f58cdaa50455",
+  "raw_sha256": "c6393ccfd0d023ea125a83bfa439b244febe1ff3f073a935039439c41dc5654c",
+  "redistribution": "git",
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rejected_by_reason": {
+    "no_canonical_accession": 329,
+    "window_not_in_canonical": 496,
+    "window_not_unique": 5
+  },
+  "row_status": {
+    "kept": 38955,
+    "no_canonical_accession": 329,
+    "relocated": 529,
+    "secondary_accession": 451,
+    "window_not_in_canonical": 496,
+    "window_not_unique": 5
+  },
+  "rows_merged_into_another_site": 77,
+  "rows_placed": 39935,
+  "sites_by_cell_lines": {
+    "HeLa": 11963,
+    "HeLa;U2OS": 21072,
+    "U2OS": 6823
+  },
+  "sites_by_placement": {
+    "kept": 38883,
+    "kept;relocated": 69,
+    "relocated": 455,
+    "relocated;secondary_accession": 3,
+    "secondary_accession": 448
+  },
+  "source": "Hendriks et al., Nat Struct Mol Biol 24:325-336 (2017), doi:10.1038/nsmb.3366; Supplementary Table 1 (sheet Hendriks_TableS1)",
+  "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fnsmb.3366/MediaObjects/41594_2017_BFnsmb3366_MOESM30_ESM.xlsx",
+  "validated_proteins": 6313,
+  "validated_sites": 39858
+}

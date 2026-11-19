@@ -1,0 +1,34 @@
+canonical_UniProtAC	position	residue	mark	state	evidence	evidence_class	pmids	source	source_release	upstream_sources
+O14965	258	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+O75030	289	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+O75030	423	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P04637	386	K	sumoylation	sumo		experimental	19339993	iPTMnet	6.2	pro
+P07910	250	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P08047	16	K	sumoylation	sumo		experimental	16407261	iPTMnet	6.2	pro
+P11387	117	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P15976	137	K	sumoylation	sumo		experimental	16371476	iPTMnet	6.2	pro
+P27694	449	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P27694	577	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P29373	102	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P38398	109	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P42224	703	K	sumoylation	sumo		experimental	12855578	iPTMnet	6.2	pro
+P43351	411	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P43351	412	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P43351	414	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P46060	524	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P54132	317	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P54132	331	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P54132	344	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P54132	347	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+P61978	422	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q01831	655	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q13330	509	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q13426	210	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q14191	356	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q14191	496	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q14191	898	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q92481	21	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q92754	10	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q969R5	675	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q969R5	700	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
+Q96GD4	202	K	sumoylation	sumo		experimental		iPTMnet	6.2	pro
