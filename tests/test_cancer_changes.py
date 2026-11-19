@@ -1,6 +1,6 @@
-"""The changes at every candidate residue in TCGA tumors, DepMap cell lines (K, S, T, Y) and ClinVar (R, K, S, T, Y), and the per-protein
-(scripts/66_stage_cancer_changes.py): on the residue they name, in the columns of the arginine tables, one row per change and
-sample, counted in the background as the tables count them, and as inputs/MANIFEST.tsv records them."""
+"""The changes at every candidate residue in TCGA tumors and DepMap cell lines (K, S, T, Y; scripts/66_stage_cancer_changes.py)
+and in ClinVar (R, K, S, T, Y; scripts/67_stage_clinvar.py), and the per-protein backgrounds: on the residue they name, one row
+per change and sample or variation, counted in the backgrounds as the tables count them, and as inputs/MANIFEST.tsv records them."""
 import csv
 import hashlib
 import json
