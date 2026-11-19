@@ -220,6 +220,11 @@ def evidence_sites(path: Path, generic_only: bool = False) -> set:
     return set(t['site_id'])
 
 
+def release_name(table: str, version: str) -> str:
+    """The name in this release of a site table config/site_sets.json names by the release it was read from."""
+    return re.sub(r'_v\d+\.\d+\.\d+\.tsv$', f'_{version}.tsv', Path(table).name)
+
+
 def site_ids(table: pd.DataFrame, residue_col: str = 'residue') -> set:
     return set(table['canonical_UniProtAC'] + ':' + table[residue_col] + table['position'])
 
@@ -237,8 +242,7 @@ def count_marks(out: Path, version: str, previous: str, config: dict) -> list[di
                          'with_interaction_evidence': len(ev & ids), 'with_generic_interaction_evidence': len(evidence_sites(ev_path, True) & ids),
                          'high_confidence_rule': 'methylarginine control: two or more studies, a laboratory counted once, PhosphoSitePlus, UniProt, IEDB and ProMetheusDB not counted'})
             continue
-        tables = {Path(t).name.split('_sites_')[0].removeprefix('human_'): read(out / Path(t).name.replace(f'_{previous}.', f'_{version}.'))
-                  for t in spec['tables']}
+        tables = {Path(t).name.split('_sites_')[0].removeprefix('human_'): read(out / release_name(t, version)) for t in spec['tables']}
         allt = pd.concat([t.assign(_modification=modification(t)).rename(columns={'acyl_type': '_acyl'}) for t in tables.values()], ignore_index=True)
         allt = allt.drop(columns=['state', '_acyl'], errors='ignore').rename(columns={'_modification': 'state'})
         per_mod = name in PER_MODIFICATION_SETS

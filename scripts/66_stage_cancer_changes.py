@@ -38,6 +38,8 @@ Outputs (in --outdir; gzip without a timestamp, so the same input gives the same
                                            residues of that class in the canonical sequence (its length for all), and the
                                            TCGA and DepMap changes on them, the samples or lines carrying one and the
                                            positions changed
+  depmap_24q4_change_models.tsv            every cell line with a placed change (any residue): name, Oncotree lineage and
+                                           primary disease (DepMap Model.csv), with --depmap-models
   cancer_changes_summary.json              inputs (MD5), the rules, the denominators (tumor samples, cell lines with
                                            mutation calls) and the counts of what was kept and dropped
 """
@@ -301,6 +303,13 @@ def write_manifest(manifest: Path, out: Path, args, residues: list[str], downloa
     for r in rows:
         path = out / r['file'].split('/', 1)[1]
         r.update({'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': gz_rows(path), 'redistribution': 'git', 'how_made_or_checked': HOW})
+    models = out / 'depmap_24q4_change_models.tsv'
+    if models.exists():
+        rows.append({'file': f'{folder}/depmap_24q4_change_models.tsv', 'bytes': models.stat().st_size, 'md5': md5_file(models),
+                     'rows': sum(1 for _ in open(models, encoding='utf-8')) - 1, 'redistribution': 'git',
+                     'content': 'Every DepMap cell line with a missense or stop change kept by the rules of the change tables (any residue): '
+                     'its name, Oncotree lineage and primary disease', 'source': s44.DM_SRC, 'version_or_date': s44.DM_VER,
+                     'citation': s44.DM_CIT, 'licence': 'CC BY 4.0', 'derived_from': 'Model.csv; OmicsSomaticMutations.csv', 'how_made_or_checked': HOW})
     summary = out / 'cancer_changes_summary.json'
     rows.append({'file': f'{folder}/cancer_changes_summary.json', 'bytes': summary.stat().st_size, 'md5': md5_file(summary), 'rows': '',
                  'redistribution': 'git', 'content': 'Inputs (MD5), rules, denominators (TCGA tumor samples, DepMap lines with mutation calls) '
@@ -327,6 +336,7 @@ def main() -> None:
     ap.add_argument('--depmap-mutations', required=True, help='DepMap 24Q4 OmicsSomaticMutations.csv')
     ap.add_argument('--crispr-gene-effect', required=True, help='DepMap 24Q4 CRISPRGeneEffect.csv, or its header line: the genes screened, '
                     'which decide an entry\'s Entrez gene as in scripts/44')
+    ap.add_argument('--depmap-models', default='', help='DepMap 24Q4 Model.csv: write depmap_24q4_change_models.tsv')
     ap.add_argument('--uniprot-ensembl', required=True, help='UniProt reviewed human: Entry, Entry Name, Ensembl (TSV, gzip)')
     ap.add_argument('--uniprot-isoforms', required=True, help='UniProt reviewed human: Entry, Alternative products (TSV, gzip)')
     ap.add_argument('--uniprot-release', required=True, help='the UniProt release the two UniProt files were downloaded from')
@@ -367,6 +377,13 @@ def main() -> None:
                                 f'depmap_24q4_changes_{res}.tsv.gz': md5_file(out / f'depmap_24q4_changes_{res}.tsv.gz')}}
     bg = background(canonical, tplaced, dplaced)
     write_gz(bg, out / 'cancer_change_protein_background.tsv.gz')
+    if args.depmap_models:
+        models = pd.read_csv(args.depmap_models, dtype=str, keep_default_na=False).set_index('ModelID')
+        used = sorted({x[4] for x in dplaced})
+        mt = pd.DataFrame({'model_id': used, 'cell_line': [models['CellLineName'].get(m, '') for m in used],
+                           'lineage': [models['OncotreeLineage'].get(m, '') for m in used],
+                           'primary_disease': [models['OncotreePrimaryDisease'].get(m, '') for m in used]})
+        mt.to_csv(out / 'depmap_24q4_change_models.tsv', sep='\t', index=False, lineterminator='\n')
     summary = {
         'generated': dt.date.today().isoformat(),
         'inputs': {'maf': {'file': Path(args.maf).name, 'url': s44b.MAF_URL, 'md5': md5_file(args.maf)},
@@ -379,6 +396,7 @@ def main() -> None:
                    'crispr_gene_effect_header': {'file': Path(args.crispr_gene_effect).name, 'genes': len(screened),
                                                  'md5_of_file_read': md5_file(args.crispr_gene_effect),
                                                  'note': 'the header line of CRISPRGeneEffect.csv (DepMap 24Q4, MD5 of the whole file 6edf7ade09b9b34199210b559d4745d3)'},
+                   'depmap_models': ({'file': Path(args.depmap_models).name, 'md5': md5_file(args.depmap_models)} if args.depmap_models else None),
                    'reference': {'fasta': args.fasta, 'md5': md5_file(args.fasta)}},
         'rule': {'tcga': 'FILTER PASS; in TCGA-OV and TCGA-LAML also FILTER wga alone (Ellrott et al. 2018); a missense or stop change '
                          'on a transcript UniProt assigns to a reviewed entry\'s displayed isoform (all_effects); where the variant falls '
