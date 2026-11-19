@@ -62,12 +62,21 @@ def test_methyllysine_release_rebuilds_from_the_staged_tables(tmp_path):
 
 
 def test_release_v1_5_1_holds_nothing_that_is_not_republished():
-    """No RBDmap, pCLAP, predicted or IntAct evidence in any table of the site sets; MD5SUMS matches the files."""
+    """No RBDmap, pCLAP, predicted or IntAct evidence in any table the generic step made; the methylarginine tables are the
+    earlier releases' files; MD5SUMS matches the files."""
     import hashlib
     release = ROOT / 'releases' / 'v1.5.1'
-    files = sorted((release / 'supporting').glob('*_v1.5.1.tsv'))
-    assert len(files) == 18
+    # the interaction tables (supporting/ also holds the methylarginine release's other tables, carried over)
+    files = sorted(f for f in (release / 'supporting').glob('*_v1.5.1.tsv') if any(f.name.endswith(f'_{t}_v1.5.1.tsv') for t in s64.CARRIED_TABLES))
+    carried = [f for f in files if f.name.startswith('methylarginine_')]
+    assert len(files) == 24 and len(carried) == 6
+    for f in carried:   # the methylarginine tables are those of v1.5.0 and v1.4.3, byte for byte, under this release's names
+        table = f.name[len('methylarginine_'):-len('_v1.5.1.tsv')]
+        for v in ('v1.5.0', 'v1.4.3'):
+            assert f.read_bytes() == (ROOT / 'releases' / v / 'supporting' / f'{table}_{v}.tsv').read_bytes(), (f.name, v)
     for f in files:
+        if f in carried:
+            continue
         text = f.read_text(encoding='utf-8')
         for word in ('rbdmap', 'pclap', 'RBDmap', 'pCLAP', 'predicted_', 'intact_', 'IntAct', 'ProtVar'):
             assert word not in text, (f.name, word)

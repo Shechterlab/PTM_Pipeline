@@ -1,5 +1,5 @@
 fcbf2df4175b1addd9fdee4158540fcf  CHANGES.md
-081ce8b0ff728ce03031583c212c9522  README.md
+d4f33327189aadd52c21eae285a6bea0  README.md
 880b429971eda2531d3477e71b350194  STUDIES.md
 c529f6de84545efb3c563a10dcbc29bc  analyses/README.md
 61c1f5efc826b84542ae11b9cd0f8e95  analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv
@@ -71,7 +71,7 @@ fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.5.0.tsv
 2b4cacbbedf48862d8c2816b9157c8fe  human_phosphorylation_sites_v1.5.0.tsv
 e01697c623934b97357e04a654fa07bd  human_sumoylation_sites_v1.5.0.tsv
 6e6491617eb7ff03429eee4a6a42cc2a  human_ubiquitination_sites_v1.5.0.tsv
-0f0a85b2a7c88e2322d7328e56830f40  release.json
+197bfc783df42e425faf4dda22a88860  release.json
 bdeb58f4dbbc713a3059930c363b074a  statistics_v1.5.0.tsv
 c62a97c257bd354b8f4a336d9d9e65e9  statistics_with_lower_confidence_v1.5.0.tsv
 2132e4b6c309d92628360cddbccad3a9  studies_v1.5.0.tsv
