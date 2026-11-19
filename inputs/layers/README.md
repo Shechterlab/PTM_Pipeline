@@ -12,7 +12,6 @@ the release (`../../ADDING_A_SOURCE.md` says how to add one).
 | Human Protein Atlas 25.1 subcellular locations | `scripts/42_stage_hpa_subcellular.py` | `hpa_subcellular_locations.tsv`, `hpa_summary.json` |
 | Cancer cell lines and tumours: DepMap Public 24Q4 (CRISPR gene effect, changes at arginines, MTAP copy number), PRISM Repurposing 24Q2 (PRMT inhibitors) and the TCGA MC3 somatic calls at arginines (GDC open access) | `scripts/44b_extract_tcga_mc3.py` (from the MC3 public MAF, the GDC cases of TCGA and UniProt's Ensembl cross-references), then `scripts/44_stage_depmap.py`; the release build adds its columns and tests (`scripts/release_layers.py`) and `scripts/44c_export_depmap.py` writes the website's `docs/data/depmap/` from the release | `depmap_24q4_gene_effect_summary.tsv`, `depmap_24q4_arginine_changes.tsv`, `depmap_24q4_models.tsv`, `depmap_24q4_prmt_gene_effect.tsv`, `prism_24q2_prmt_inhibitors.tsv`, `tcga_mc3_arginine_changes.tsv`, `tcga_mc3_projects.tsv`, `depmap_summary.json` |
 | Cancer changes at every candidate K, S, T and Y (v1.6.0), and each protein's background: the TCGA MC3 calls and DepMap 24Q4 by the rules of the arginine layer | `scripts/66_stage_cancer_changes.py` (from the MC3 public MAF and OmicsSomaticMutations.csv of the arginine layer, the GDC cases of TCGA, UniProt's Ensembl cross-references and the genes DepMap screened) | `tcga_mc3_changes_{K,S,T,Y}.tsv.gz`, `depmap_24q4_changes_{K,S,T,Y}.tsv.gz`, `cancer_change_protein_background.tsv.gz`, `cancer_changes_summary.json` |
-| ClinVar variants at every candidate R, K, S, T and Y (v1.6.0), and each protein's background | `scripts/67_stage_clinvar.py` (from ClinVar's hgvs4variation and variant_summary tables and UniProt's RefSeq cross-references) | `clinvar_changes_{R,K,S,T,Y}.tsv.gz`, `clinvar_protein_background.tsv.gz`, `clinvar_summary.json` |
 | Writer perturbations: PRMT7 knockout (Szewczyk et al. 2020), PRMT1 knockdown (Hartel et al. 2019), PRMT5 inhibitor (Lu et al. 2024), PRMT7, CARM1 and PRMT5 knockdowns and the PRMT7 inhibitor SGC3027 (Li et al. 2021) | `scripts/45_stage_prmt7_szewczyk2020.py`, `scripts/46_stage_hartel2019_prmt1_kd.py`, `scripts/51_stage_lu2024_prmt5.py`, `scripts/50_stage_li2021_perturbations.py` | `prmt7_ko_*`, `hartel2019_prmt1_kd_*`, `lu2024_prmt5_*`, `li2021_*` |
 | PaxDb 6.1 protein abundance | `scripts/47_stage_paxdb.py` | `paxdb_human_integrated_abundance.tsv`, `paxdb_summary.json` |
 | Reactome 97 pathways | `scripts/48_stage_reactome.py` | `reactome_human_protein_pathways.tsv`, `reactome_human_pathways.tsv`, `reactome_summary.json` |
@@ -86,17 +85,6 @@ the best reliability and counts a location as main when any of the genes has it 
   the tumor samples or cell lines that carry one and the positions changed. A site's changes can be compared with those
   of the other residues of its kind in the same protein. The denominators (10,294 tumor samples, 1,929 cell lines with
   mutation calls) are in `cancer_changes_summary.json`.
-
-- **`clinvar_changes_{R,K,S,T,Y}.tsv.gz`**: the ClinVar variants (files dated 15 and 16 November 2026) that change a
-  residue of the site sets on a reviewed canonical protein: a substitution or a stop written on a RefSeq protein that
-  UniProt assigns to the entry's displayed isoform, kept where the 2026_03 canonical sequence has that residue. One row
-  per entry, position, new residue and variation, with the germline classification, review status and ClinVar's
-  stars, submitters, origin, conditions, the somatic clinical impact and oncogenicity, and the dbSNP ID; the variation's
-  page (`https://www.ncbi.nlm.nih.gov/clinvar/variation/<variation_id>/`) lists its records. Rows: R 335,933, K 99,522,
-  S 186,004, T 142,865, Y 64,910. NCBI places no restrictions on the use or distribution of ClinVar data; submitters
-  may claim rights in what they submitted.
-- **`clinvar_protein_background.tsv.gz`** (122,496 rows): for each entry and residue class, the residues of that class,
-  the ClinVar variants on them, those classified pathogenic or likely pathogenic, and the positions changed.
 
 ## CPLM tables
 
