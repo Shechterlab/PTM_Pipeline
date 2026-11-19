@@ -866,7 +866,7 @@
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.5.0",
-  "release_code_commit": "8dff39e10cc48dfbec95dcf6f5a32492d3834491",
+  "release_code_commit": "854071a915e8a08f9090360c55ecb29efd96ae72",
   "release_date": "2026-11-17",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.5.0_to_v1.5.1.tsv",

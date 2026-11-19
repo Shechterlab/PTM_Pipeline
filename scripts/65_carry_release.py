@@ -286,7 +286,17 @@ def carried_readme(prev: Path, previous: str, version: str, arginine_sets: list[
     text = text.replace(f'site_changes_v1.4.3_to_{version}.tsv', f'site_changes_{previous}_to_{version}.tsv')
     text = re.sub(r'(?<![\w])(' + '|'.join(INTERACTION_TABLES) + rf')_{re.escape(version)}\.tsv', rf'{arginine_sets[0]}_\1_{version}.tsv', text)
     text = text.replace(f'`_{previous}` in place of', f'`_{version}` in place of').replace(f'renamed `_{previous}`', f'renamed `_{version}`')
-    return text
+    # CPLM 4.0 is not a source of this release: drop the row of its old protein-map layer from the carried layer table, and
+    # its citation, and say so where the row was (no release table and no website data hold CPLM data)
+    lines = text.split('\n')
+    if any(ln.startswith('| CPLM 4.0 lysine methylation |') for ln in lines):
+        at = next(i for i, ln in enumerate(lines) if ln.startswith('| CPLM 4.0 lysine methylation |'))
+        del lines[at]
+        end = next(i for i in range(at, len(lines)) if not lines[i].startswith('|'))
+        lines.insert(end, '\nCPLM 4.0, listed here in earlier releases for lysine methylation sites drawn on the protein maps, is not a source '
+                          'of this release: no table of it and none of the website data holds CPLM data (CHANGES.md).')
+        text = '\n'.join(lines)
+    return text.replace('CPLM 4.0 lysine methylation: Zhang et al., Nucleic Acids Res 50:D451 (2022); ', '')
 
 
 def dictionary(prev: Path, out: Path, previous: str, version: str, config: dict, arginine_sets: list[str]) -> str:

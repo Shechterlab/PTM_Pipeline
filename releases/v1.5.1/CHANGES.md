@@ -53,4 +53,4 @@ The site-level interaction tables of methyllysine and lysine were rebuilt from t
 
 `analyses/MD5SUMS` and `analyses_with_lower_confidence/MD5SUMS` listed their README.md with the checksum of the v1.4.3 text, while the README names the release's own version; they are checksummed again here (and in v1.5.0).
 
-Code: `scripts/64_export_site_interactions.py` (interaction tables), `scripts/56_build_context_marks.py` (context marks), `scripts/65_carry_release.py` (this release), at commit `8dff39e10cc48dfbec95dcf6f5a32492d3834491`.
+Code: `scripts/64_export_site_interactions.py` (interaction tables), `scripts/56_build_context_marks.py` (context marks), `scripts/65_carry_release.py` (this release), at commit `854071a915e8a08f9090360c55ecb29efd96ae72`.

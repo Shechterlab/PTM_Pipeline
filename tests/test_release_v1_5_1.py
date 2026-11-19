@@ -80,6 +80,8 @@ def test_no_cplm_in_the_release_tables():
             assert not t['sources'].str.contains('CPLM').any(), path.name
         assert 'cplm_evidence' not in t.columns, path.name
     assert 'CPLM' not in release('v1.5.1')['sources'] and set(release('v1.5.1')['sources_excluded']) == {'CPLM'}
+    readme = (REL / 'README.md').read_text(encoding='utf-8')
+    assert '| CPLM' not in readme and 'CPLM 4.0 lysine methylation: Zhang' not in readme   # not listed as a layer or cited
 
 
 def test_counts_in_release_json_and_readme():
