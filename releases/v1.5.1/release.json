@@ -788,8 +788,8 @@
       "with_interaction_evidence": 485
     },
     {
-      "high_confidence": 18097,
-      "high_confidence_rule": "D5: two or more units (PubMed IDs or direct datasets) over experimental rows",
+      "high_confidence": 1938,
+      "high_confidence_rule": "D5: two or more units (PubMed IDs or direct datasets) over experimental rows, counted per modification (each acyl type, ubiquitin, SUMO)",
       "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
       "set": "lysine",
       "sites": 90876,
@@ -797,15 +797,15 @@
     },
     {
       "high_confidence": 215,
-      "high_confidence_rule": "D5, units pooled within this table",
+      "high_confidence_rule": "D5 within this table, counted per modification",
       "label": "  of which acetylation",
       "set": "lysine/acetylation",
       "sites": 4597,
       "with_interaction_evidence": 1061
     },
     {
-      "high_confidence": 517,
-      "high_confidence_rule": "D5, units pooled within this table",
+      "high_confidence": 218,
+      "high_confidence_rule": "D5 within this table, counted per modification",
       "label": "  of which lysine acylation (all acyl types)",
       "set": "lysine/lysine_acylation",
       "sites": 5504,
@@ -813,7 +813,7 @@
     },
     {
       "high_confidence": 375,
-      "high_confidence_rule": "D5, units pooled within this table",
+      "high_confidence_rule": "D5 within this table, counted per modification",
       "label": "  of which ubiquitination",
       "set": "lysine/ubiquitination",
       "sites": 63480,
@@ -821,7 +821,7 @@
     },
     {
       "high_confidence": 1370,
-      "high_confidence_rule": "D5, units pooled within this table",
+      "high_confidence_rule": "D5 within this table, counted per modification",
       "label": "  of which SUMOylation",
       "set": "lysine/sumoylation",
       "sites": 40249,
@@ -866,7 +866,7 @@
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.5.0",
-  "release_code_commit": "21afab11e3d1c7aabb4d583843d80fe7e66b9685",
+  "release_code_commit": "8dff39e10cc48dfbec95dcf6f5a32492d3834491",
   "release_date": "2026-11-17",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.5.0_to_v1.5.1.tsv",

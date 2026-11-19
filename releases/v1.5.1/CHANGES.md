@@ -10,9 +10,9 @@ For methyllysine, lysine, phospho, `supporting/<site set>_<table>_v1.5.1.tsv` gi
 |---|---:|---:|---:|
 | Methylarginine (R) | 11,632 | 2,985 | 4,530 (3,069 from the kinds of evidence of the other sets) |
 | Methyllysine (K) | 5,178 | 83 | 485 |
-| Lysine acylation, ubiquitination and SUMOylation (K) | 90,876 | 18,097 | 10,878 |
+| Lysine acylation, ubiquitination and SUMOylation (K) | 90,876 | 1,938 | 10,878 |
 | &nbsp;&nbsp;of which acetylation | 4,597 | 215 | 1,061 |
-| &nbsp;&nbsp;of which lysine acylation (all acyl types) | 5,504 | 517 | 1,294 |
+| &nbsp;&nbsp;of which lysine acylation (all acyl types) | 5,504 | 218 | 1,294 |
 | &nbsp;&nbsp;of which ubiquitination | 63,480 | 375 | 8,150 |
 | &nbsp;&nbsp;of which SUMOylation | 40,249 | 1,370 | 5,201 |
 | Phosphorylation (S, T, Y) | 142,415 | 42,804 | 10,673 |
@@ -53,4 +53,4 @@ The site-level interaction tables of methyllysine and lysine were rebuilt from t
 
 `analyses/MD5SUMS` and `analyses_with_lower_confidence/MD5SUMS` listed their README.md with the checksum of the v1.4.3 text, while the README names the release's own version; they are checksummed again here (and in v1.5.0).
 
-Code: `scripts/64_export_site_interactions.py` (interaction tables), `scripts/56_build_context_marks.py` (context marks), `scripts/65_carry_release.py` (this release), at commit `21afab11e3d1c7aabb4d583843d80fe7e66b9685`.
+Code: `scripts/64_export_site_interactions.py` (interaction tables), `scripts/56_build_context_marks.py` (context marks), `scripts/65_carry_release.py` (this release), at commit `8dff39e10cc48dfbec95dcf6f5a32492d3834491`.
