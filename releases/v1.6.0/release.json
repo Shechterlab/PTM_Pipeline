@@ -136,7 +136,10 @@
     },
     "per_site_set": [
       {
+        "clinvar_pathogenic_sites": 328,
+        "clinvar_sites_changed": 4076,
         "depmap_24q4_sites_changed": 849,
+        "gnomad_v4_1_sites_changed": 9139,
         "label": "Methylarginine (R)",
         "residues": "R",
         "set": "methylarginine",
@@ -144,7 +147,10 @@
         "tcga_mc3_sites_changed": 3100
       },
       {
+        "clinvar_pathogenic_sites": 46,
+        "clinvar_sites_changed": 693,
         "depmap_24q4_sites_changed": 151,
+        "gnomad_v4_1_sites_changed": 2819,
         "label": "Methyllysine (K)",
         "residues": "K",
         "set": "methyllysine",
@@ -152,7 +158,10 @@
         "tcga_mc3_sites_changed": 415
       },
       {
+        "clinvar_pathogenic_sites": 866,
+        "clinvar_sites_changed": 12028,
         "depmap_24q4_sites_changed": 2466,
+        "gnomad_v4_1_sites_changed": 49864,
         "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
         "residues": "K",
         "set": "lysine",
@@ -160,7 +169,10 @@
         "tcga_mc3_sites_changed": 6984
       },
       {
+        "clinvar_pathogenic_sites": 1316,
+        "clinvar_sites_changed": 27085,
         "depmap_24q4_sites_changed": 5303,
+        "gnomad_v4_1_sites_changed": 96387,
         "label": "Phosphorylation (S, T, Y)",
         "residues": "STY",
         "set": "phospho",
@@ -1080,6 +1092,9 @@
     }
   },
   "context_marks_code_commit": "125f10960e39445db5a32ec4a30f5bb8cfed9f29",
+  "corrections": [
+    "README: RBDmap and pCLAP extents are carried in the methylarginine tables (the previous README said they were not republished)"
+  ],
   "counts": [
     {
       "high_confidence": 2985,
@@ -1147,6 +1162,437 @@
       "with_interaction_evidence": 10673
     }
   ],
+  "germline_variants": {
+    "clinvar": {
+      "inputs": {
+        "clinvar_files_dated": "2026-11-15 (hgvs4variation), 2026-11-16 (variant_summary)",
+        "hgvs4variation": {
+          "file": "hgvs4variation.txt.gz",
+          "md5": "4e468e2ba462005b9002a6d86dd8dea5",
+          "url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/hgvs4variation.txt.gz"
+        },
+        "reference": {
+          "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+          "md5": "c75aad9d197cbba00f51063f65a96ac4"
+        },
+        "uniprot": {
+          "isoforms": {
+            "file": "uniprot_2026_04_human_reviewed_altprod.tsv.gz",
+            "md5": "d3ce32007c476fa6c134416594db9de2"
+          },
+          "refseq": {
+            "file": "uniprot_2026_04_human_reviewed_refseq.tsv.gz",
+            "md5": "59d2b6d79998b16516892e6f72c42c5a",
+            "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,id,xref_refseq&format=tsv&compressed=true"
+          },
+          "release": "2026_04"
+        },
+        "variant_summary": {
+          "file": "variant_summary.txt.gz",
+          "md5": "7f64e1f49cf025d0f02757a621971c40",
+          "url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz"
+        }
+      },
+      "license": "NCBI places no restrictions on the use or distribution of ClinVar data; submitters may claim rights in what they submitted",
+      "rule": "a single-residue substitution or stop on a RefSeq protein UniProt assigns to a reviewed entry's displayed isoform, kept where the 2026_03 canonical sequence has the residue at the position; classifications from the GRCh38 rows of variant_summary; one row per (entry, position, new residue, variation)"
+    },
+    "files": {
+      "supporting/clinvar_changes_K_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_K.tsv.gz",
+        "from_md5": "a65cdffdb10cae7cfd832754bb7dd412",
+        "md5": "f013dfe2524dd13b7549de8f943a68fc"
+      },
+      "supporting/clinvar_changes_R_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_R.tsv.gz",
+        "from_md5": "e17900ed2035d70751be5f38712efa0d",
+        "md5": "18a7d9fbc7e05d17fb13d77958ef541e"
+      },
+      "supporting/clinvar_changes_S_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_S.tsv.gz",
+        "from_md5": "b05c8b1d0e9694ae14b3e835df864a8c",
+        "md5": "3ff4d900c857a7c55da649c89f0e8861"
+      },
+      "supporting/clinvar_changes_T_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_T.tsv.gz",
+        "from_md5": "2e70bb578b0bd087a28b710a7187de04",
+        "md5": "bbd8a7e47d875e631c32f2d1ee227f41"
+      },
+      "supporting/clinvar_changes_Y_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_Y.tsv.gz",
+        "from_md5": "36e66ac060fd566d351a54c0a2a5f464",
+        "md5": "23f394215bc9cc8fb343236cbed5bb4a"
+      },
+      "supporting/clinvar_protein_background_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_protein_background.tsv.gz",
+        "from_md5": "81929ddfc93711ff5b968b36d01d4d52",
+        "md5": "81929ddfc93711ff5b968b36d01d4d52"
+      },
+      "supporting/gnomad_protein_background_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_protein_background.tsv.gz",
+        "from_md5": "22a457f6990f903491e7d47f628b15c5",
+        "md5": "22a457f6990f903491e7d47f628b15c5"
+      },
+      "supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_K.tsv.gz",
+        "from_md5": "feb2f7e5397b2d7b94bd7196994d8d40",
+        "md5": "dd5b09b868043c783952f1816fb265f1"
+      },
+      "supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_R.tsv.gz",
+        "from_md5": "a0591bb714366206d602de7037033304",
+        "md5": "776eb438ce6ef9fb5d3b66f3b68ff6fb"
+      },
+      "supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_S.tsv.gz",
+        "from_md5": "84445cb98cd573c78ae17534a6f15f97",
+        "md5": "f00e8c1d025daedbb99c2fb5be449717"
+      },
+      "supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_T.tsv.gz",
+        "from_md5": "bec07145f3b71d46834111fdb96096e9",
+        "md5": "7710d644b3f4051a097303caa7adacb7"
+      },
+      "supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_Y.tsv.gz",
+        "from_md5": "3f507133403f89f7ba5bd91530d03419",
+        "md5": "8eb9a1d01c02f8b972d1dee70ff26f6b"
+      }
+    },
+    "gnomad": {
+      "citation": "Chen et al., Nature 625:92 (2024), doi:10.1038/s41586-023-06045-0 (gnomAD v4)",
+      "inputs": {
+        "reference": {
+          "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+          "md5": "c75aad9d197cbba00f51063f65a96ac4"
+        },
+        "uniprot": {
+          "ensembl_md5": "308c33bbed1d7db0f0200434a02a0551",
+          "isoforms_md5": "d3ce32007c476fa6c134416594db9de2",
+          "release": "2026_04"
+        },
+        "vcfs": {
+          "chr1": {
+            "bytes": 18789775480,
+            "entries": 1613112,
+            "fetched": "2026-11-19T22:15:02+00:00",
+            "lines_with_missense_or_stop": 1869024,
+            "md5": "848be4d85c953bc73a8e4f0c97026a72",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr1.vcf.bgz"
+          },
+          "chr10": {
+            "bytes": 7858233309,
+            "entries": 622658,
+            "fetched": "2026-11-19T22:43:59+00:00",
+            "lines_with_missense_or_stop": 716165,
+            "md5": "4befc8dc50ead888e8af24f556c9fdd6",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr10.vcf.bgz"
+          },
+          "chr11": {
+            "bytes": 11641720279,
+            "entries": 1045054,
+            "fetched": "2026-11-19T22:21:20+00:00",
+            "lines_with_missense_or_stop": 1179251,
+            "md5": "3833ce3ab046afe92c9b55df93a61ec8",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr11.vcf.bgz"
+          },
+          "chr12": {
+            "bytes": 10632124827,
+            "entries": 827447,
+            "fetched": "2026-11-19T22:28:45+00:00",
+            "lines_with_missense_or_stop": 954208,
+            "md5": "e530a9ed203cdcc914621ab7430774bb",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr12.vcf.bgz"
+          },
+          "chr13": {
+            "bytes": 3540233028,
+            "entries": 302758,
+            "fetched": "2026-11-19T22:54:02+00:00",
+            "lines_with_missense_or_stop": 330615,
+            "md5": "af1eab40c8be47c8c7c04dc73e0333e4",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz"
+          },
+          "chr14": {
+            "bytes": 6669068987,
+            "entries": 558139,
+            "fetched": "2026-11-19T22:44:08+00:00",
+            "lines_with_missense_or_stop": 632981,
+            "md5": "d0e0fa71d94bf016a061ba4dc0bd869f",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr14.vcf.bgz"
+          },
+          "chr15": {
+            "bytes": 7374290946,
+            "entries": 569405,
+            "fetched": "2026-11-19T22:48:47+00:00",
+            "lines_with_missense_or_stop": 655809,
+            "md5": "01b116e34b3815cfd1d3afa53a29a41b",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr15.vcf.bgz"
+          },
+          "chr16": {
+            "bytes": 9774275728,
+            "entries": 754799,
+            "fetched": "2026-11-19T22:35:25+00:00",
+            "lines_with_missense_or_stop": 940755,
+            "md5": "44137843b2df39c8a654427181bda919",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr16.vcf.bgz"
+          },
+          "chr17": {
+            "bytes": 12017042594,
+            "entries": 950384,
+            "fetched": "2026-11-19T22:05:48+00:00",
+            "lines_with_missense_or_stop": 1122826,
+            "md5": "c61978218ab3eaa07b571eb9959f39d2",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr17.vcf.bgz"
+          },
+          "chr18": {
+            "bytes": 3390375115,
+            "entries": 265123,
+            "fetched": "2026-11-19T22:57:24+00:00",
+            "lines_with_missense_or_stop": 295035,
+            "md5": "1ec708d5cae9657ccee0626763ed9946",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr18.vcf.bgz"
+          },
+          "chr19": {
+            "bytes": 12620525657,
+            "entries": 1203523,
+            "fetched": "2026-11-19T22:07:23+00:00",
+            "lines_with_missense_or_stop": 1506506,
+            "md5": "50a37cfa9a9a3e030388bcf15bdabb79",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr19.vcf.bgz"
+          },
+          "chr2": {
+            "bytes": 14282176877,
+            "entries": 1241220,
+            "fetched": "2026-11-19T22:09:07+00:00",
+            "lines_with_missense_or_stop": 1352975,
+            "md5": "e2f5d891a3374e88d1c3136f94bed0ea",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr2.vcf.bgz"
+          },
+          "chr20": {
+            "bytes": 4760834034,
+            "entries": 433298,
+            "fetched": "2026-11-19T22:54:59+00:00",
+            "lines_with_missense_or_stop": 471260,
+            "md5": "605680cd99e469bdf5f0045bd22359c9",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr20.vcf.bgz"
+          },
+          "chr21": {
+            "bytes": 2250319809,
+            "entries": 208273,
+            "fetched": "2026-11-19T22:56:35+00:00",
+            "lines_with_missense_or_stop": 184553,
+            "md5": "7ca6d51a42425b857eddb46d7bc5832d",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr21.vcf.bgz"
+          },
+          "chr22": {
+            "bytes": 5060347554,
+            "entries": 378718,
+            "fetched": "2026-11-19T22:55:46+00:00",
+            "lines_with_missense_or_stop": 448854,
+            "md5": "dcf191563e69054a71bd4dc77862799a",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr22.vcf.bgz"
+          },
+          "chr3": {
+            "bytes": 11586472818,
+            "entries": 1017387,
+            "fetched": "2026-11-19T22:22:34+00:00",
+            "lines_with_missense_or_stop": 1012860,
+            "md5": "a35b949b32453b4b5abd7b1de42e298a",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr3.vcf.bgz"
+          },
+          "chr4": {
+            "bytes": 7712255367,
+            "entries": 686490,
+            "fetched": "2026-11-19T22:42:44+00:00",
+            "lines_with_missense_or_stop": 723215,
+            "md5": "c7c7008a73acbb8fea68b82951842832",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr4.vcf.bgz"
+          },
+          "chr5": {
+            "bytes": 8494344938,
+            "entries": 751055,
+            "fetched": "2026-11-19T22:32:36+00:00",
+            "lines_with_missense_or_stop": 819954,
+            "md5": "c1016f56be62deb2e947fed4d31302dd",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr5.vcf.bgz"
+          },
+          "chr6": {
+            "bytes": 9132083331,
+            "entries": 843297,
+            "fetched": "2026-11-19T22:21:21+00:00",
+            "lines_with_missense_or_stop": 907345,
+            "md5": "f96bc8711ed085d63b8bd5396664adbc",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr6.vcf.bgz"
+          },
+          "chr7": {
+            "bytes": 9675275184,
+            "entries": 818098,
+            "fetched": "2026-11-19T22:33:46+00:00",
+            "lines_with_missense_or_stop": 946845,
+            "md5": "c41cd52571b001cf7d3e388a668e4dff",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr7.vcf.bgz"
+          },
+          "chr8": {
+            "bytes": 7275385426,
+            "entries": 631411,
+            "fetched": "2026-11-19T22:53:31+00:00",
+            "lines_with_missense_or_stop": 702602,
+            "md5": "a47777fe141c01876cb170f2c2f2e6b6",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr8.vcf.bgz"
+          },
+          "chr9": {
+            "bytes": 8041521990,
+            "entries": 670310,
+            "fetched": "2026-11-19T22:39:21+00:00",
+            "lines_with_missense_or_stop": 800843,
+            "md5": "c5abd4d8aff12f2bf8b4ec844769782f",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr9.vcf.bgz"
+          },
+          "chrX": {
+            "bytes": 5746768174,
+            "entries": 392580,
+            "fetched": "2026-11-19T22:49:24+00:00",
+            "lines_with_missense_or_stop": 482023,
+            "md5": "5b7b17d3d4cff22c20480a908c861a28",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrX.vcf.bgz"
+          },
+          "chrY": {
+            "bytes": 113561604,
+            "entries": 3149,
+            "fetched": "2026-11-19T21:49:59+00:00",
+            "lines_with_missense_or_stop": 6539,
+            "md5": "d500cf5a73c53f02d1b95f1e092f2e49",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrY.vcf.bgz"
+          }
+        }
+      },
+      "license": "CC0 1.0 (gnomAD primary data, https://github.com/broadinstitute/gnomad-browser/blob/main/browser/about/policies/terms.md); SpliceAI (CC BY-NC 4.0) and CADD (non-commercial) annotations not used",
+      "release": "gnomAD v4.1 exomes (730,947 exomes; files dated 2024-04-17)",
+      "rule": "FILTER PASS; a missense or stop-gained VEP consequence on a transcript UniProt assigns to a reviewed entry's displayed isoform, kept where the 2026_03 canonical sequence has the residue VEP names at the protein position; one row per (entry, position, new residue, variant)"
+    },
+    "per_residue": {
+      "clinvar/K": {
+        "known_sites_changed": 12531,
+        "known_sites_with_pathogenic": 901,
+        "pathogenic_rows": 6025,
+        "pathogenic_rows_at_known_sites": 995,
+        "positions": 81744,
+        "rows": 99522,
+        "rows_at_known_sites": 15986
+      },
+      "clinvar/R": {
+        "known_sites_changed": 4076,
+        "known_sites_with_pathogenic": 328,
+        "pathogenic_rows": 20501,
+        "pathogenic_rows_at_known_sites": 412,
+        "positions": 226113,
+        "rows": 335933,
+        "rows_at_known_sites": 6026
+      },
+      "clinvar/S": {
+        "known_sites_changed": 18079,
+        "known_sites_with_pathogenic": 793,
+        "pathogenic_rows": 8572,
+        "pathogenic_rows_at_known_sites": 947,
+        "positions": 151519,
+        "rows": 186004,
+        "rows_at_known_sites": 23071
+      },
+      "clinvar/T": {
+        "known_sites_changed": 7089,
+        "known_sites_with_pathogenic": 143,
+        "pathogenic_rows": 2621,
+        "pathogenic_rows_at_known_sites": 194,
+        "positions": 117373,
+        "rows": 142865,
+        "rows_at_known_sites": 9048
+      },
+      "clinvar/Y": {
+        "known_sites_changed": 1917,
+        "known_sites_with_pathogenic": 380,
+        "pathogenic_rows": 12099,
+        "pathogenic_rows_at_known_sites": 522,
+        "positions": 50892,
+        "rows": 64910,
+        "rows_at_known_sites": 2645
+      },
+      "gnomad_v4_1/K": {
+        "known_sites_changed": 51960,
+        "positions": 354581,
+        "rows": 517573,
+        "rows_at_known_sites": 75792
+      },
+      "gnomad_v4_1/R": {
+        "known_sites_changed": 9139,
+        "positions": 499128,
+        "rows": 1133321,
+        "rows_at_known_sites": 20550
+      },
+      "gnomad_v4_1/S": {
+        "known_sites_changed": 67421,
+        "positions": 603169,
+        "rows": 965320,
+        "rows_at_known_sites": 108765
+      },
+      "gnomad_v4_1/T": {
+        "known_sites_changed": 22561,
+        "positions": 417050,
+        "rows": 678065,
+        "rows_at_known_sites": 37713
+      },
+      "gnomad_v4_1/Y": {
+        "known_sites_changed": 6405,
+        "positions": 194793,
+        "rows": 307801,
+        "rows_at_known_sites": 10081
+      }
+    },
+    "per_site_set": [
+      {
+        "clinvar_pathogenic_sites": 328,
+        "clinvar_sites_changed": 4076,
+        "depmap_24q4_sites_changed": 849,
+        "gnomad_v4_1_sites_changed": 9139,
+        "label": "Methylarginine (R)",
+        "residues": "R",
+        "set": "methylarginine",
+        "sites": 11632,
+        "tcga_mc3_sites_changed": 3100
+      },
+      {
+        "clinvar_pathogenic_sites": 46,
+        "clinvar_sites_changed": 693,
+        "depmap_24q4_sites_changed": 151,
+        "gnomad_v4_1_sites_changed": 2819,
+        "label": "Methyllysine (K)",
+        "residues": "K",
+        "set": "methyllysine",
+        "sites": 5178,
+        "tcga_mc3_sites_changed": 415
+      },
+      {
+        "clinvar_pathogenic_sites": 866,
+        "clinvar_sites_changed": 12028,
+        "depmap_24q4_sites_changed": 2466,
+        "gnomad_v4_1_sites_changed": 49864,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "residues": "K",
+        "set": "lysine",
+        "sites": 90876,
+        "tcga_mc3_sites_changed": 6984
+      },
+      {
+        "clinvar_pathogenic_sites": 1316,
+        "clinvar_sites_changed": 27085,
+        "depmap_24q4_sites_changed": 5303,
+        "gnomad_v4_1_sites_changed": 96387,
+        "label": "Phosphorylation (S, T, Y)",
+        "residues": "STY",
+        "set": "phospho",
+        "sites": 142415,
+        "tcga_mc3_sites_changed": 15479
+      }
+    ]
+  },
   "interaction_tables": {
     "supporting/lysine_nucleic_acid_contacts_v1.6.0.tsv": "42396342cd33056579b9275b809fb698",
     "supporting/lysine_nucleic_acid_near_sites_v1.6.0.tsv": "094877f6301ad9abbc81dec3f576555b",
@@ -1177,7 +1623,7 @@
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.5.1",
-  "release_code_commit": "72818af85bf146475d676a7af35c362cf62fea78",
+  "release_code_commit": "e7757ee0bf185736ee663ee87eb0f42cb4665346",
   "release_date": "2026-11-19",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.5.1_to_v1.6.0.tsv",
@@ -1204,6 +1650,6 @@
   "sources_excluded": {
     "CPLM": "CPLM 4.0 states no license (\"All Rights Reserved\") and compiles sites from other databases as well as from papers; it is not a source of the context marks (decided 17 November 2026)"
   },
-  "title": "Human methylarginine sites, context marks, site-level interaction evidence and cancer changes",
+  "title": "Human methylarginine sites, context marks, site-level interaction evidence, and cancer and germline variants",
   "version": "v1.6.0"
 }

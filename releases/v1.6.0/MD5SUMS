@@ -1,5 +1,5 @@
-7dbb3bfc41a53e55abe96ea92ac62048  CHANGES.md
-f7b6f441709df3280bd0753f41c6113e  README.md
+c8125015cbd5730c94e866808a43f7a7  CHANGES.md
+7fcb171baeb305145fd81c8f69ba9eaf  README.md
 17dec6180dbf7e5651d215f0e6a38f4e  STUDIES.md
 b779587713cdad0cb3dd351b5b97a371  analyses/README.md
 61c1f5efc826b84542ae11b9cd0f8e95  analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv
@@ -59,7 +59,7 @@ ed0652550dcabf98079e38b851bb1c6b  analyses_with_lower_confidence/other_ptms/ptm_
 f2283b91ae43de2999770de4baba8cf7  analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv
 d7101c4b50ca7ee889196ff39af19c8e  analyses_with_lower_confidence/panther/panther_class_enrichment.tsv
 943dff2c27d23c73c39201ba1053a801  analyses_with_lower_confidence/statistics_v1.6.0.tsv
-75187552f4a130e30d3b63b514787dcc  data_dictionary.tsv
+7d0ef52bc8e3e620a1c1fe6f3941d16c  data_dictionary.tsv
 079ce9e22305fcb01fb9f035fca778f7  human_acetylation_sites_v1.6.0.tsv
 4164819cece8710a79904b9901cfa2bf  human_lysine_acylation_sites_v1.6.0.tsv
 fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.6.0.tsv
@@ -71,7 +71,7 @@ fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.6.0.tsv
 2b4cacbbedf48862d8c2816b9157c8fe  human_phosphorylation_sites_v1.6.0.tsv
 e01697c623934b97357e04a654fa07bd  human_sumoylation_sites_v1.6.0.tsv
 6e6491617eb7ff03429eee4a6a42cc2a  human_ubiquitination_sites_v1.6.0.tsv
-5b94929953b8a7304a1efb56695a49a3  release.json
+e5e6775a8d14f3777a434484b8459779  release.json
 bdeb58f4dbbc713a3059930c363b074a  statistics_v1.6.0.tsv
 c62a97c257bd354b8f4a336d9d9e65e9  statistics_with_lower_confidence_v1.6.0.tsv
 2132e4b6c309d92628360cddbccad3a9  studies_v1.6.0.tsv
@@ -79,6 +79,12 @@ c62a97c257bd354b8f4a336d9d9e65e9  statistics_with_lower_confidence_v1.6.0.tsv
 78f34a90f671ebdf75e8e1c19862d403  supporting/arginine_nucleic_acid_distances_v1.6.0.tsv
 03537973ea1bbde64735a38c84bd7405  supporting/cancer_change_protein_background_v1.6.0.tsv.gz
 1421435d03bec729120fd941f11390d0  supporting/carm1_ko_v1.6.0.tsv
+f013dfe2524dd13b7549de8f943a68fc  supporting/clinvar_changes_K_v1.6.0.tsv.gz
+18a7d9fbc7e05d17fb13d77958ef541e  supporting/clinvar_changes_R_v1.6.0.tsv.gz
+3ff4d900c857a7c55da649c89f0e8861  supporting/clinvar_changes_S_v1.6.0.tsv.gz
+bbd8a7e47d875e631c32f2d1ee227f41  supporting/clinvar_changes_T_v1.6.0.tsv.gz
+23f394215bc9cc8fb343236cbed5bb4a  supporting/clinvar_changes_Y_v1.6.0.tsv.gz
+81929ddfc93711ff5b968b36d01d4d52  supporting/clinvar_protein_background_v1.6.0.tsv.gz
 e7b088eed51884aa6cd45e277763bcab  supporting/complexes_v1.6.0.tsv
 a5c0a4fba53cef8c778455562f76ac6f  supporting/condensates_v1.6.0.tsv
 d707433811f76cd9659ff6c61e892c86  supporting/density_windows_v1.6.0.tsv
@@ -96,6 +102,12 @@ b5ee0ac01e31897bd36ca2b7bc3cef0b  supporting/dna_motifs_v1.6.0.tsv
 feaed0917ea9ed25898d6f179b12b608  supporting/eclip_rna_compartments_v1.6.0.tsv
 acfdad3a4a6f82f9d07866e3ced0a249  supporting/eclip_v1.6.0.tsv
 f8902195b280b87bb64f85860213ddec  supporting/functional_experiments_v1.6.0.tsv
+22a457f6990f903491e7d47f628b15c5  supporting/gnomad_protein_background_v1.6.0.tsv.gz
+dd5b09b868043c783952f1816fb265f1  supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz
+776eb438ce6ef9fb5d3b66f3b68ff6fb  supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz
+f00e8c1d025daedbb99c2fb5be449717  supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz
+7710d644b3f4051a097303caa7adacb7  supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz
+8eb9a1d01c02f8b972d1dee70ff26f6b  supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz
 8ad0da59e7ee3cdad22eb9e2ba132ee1  supporting/hpa_locations_v1.6.0.tsv
 c89d0a813e1309bcb13fead0ca817229  supporting/htr_selex_v1.6.0.tsv
 a0a3f43e62e06859f7f060e258cea85a  supporting/lower_confidence_evidence_v1.6.0.tsv
