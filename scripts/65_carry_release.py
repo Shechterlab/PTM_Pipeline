@@ -25,8 +25,10 @@ Counts per site set (README, release.json):
                              marks (DECISIONS_v1.5.1 D5, as ptmcontext's site files): only experimental rows give units; a
                              unit is a PubMed ID in pmids, or a direct dataset (Berryhill 2023, Ochoa 2020, Hendriks 2017 as
                              PubMed ID 28112733, Akimov 2018 as 29967540, so a database citing the paper is not counted
-                             again); databases count only through the papers they cite; a residue's units are pooled over
-                             all its rows; high confidence is two units or more. For methylarginine, its own control,
+                             again); databases count only through the papers they cite; high confidence is two units or
+                             more. Units pool over a residue's rows of one modification: for the lysine set each acyl
+                             type, ubiquitin and SUMO apart (owner's decision of 19 November 2026); methylation degrees
+                             pool for methyllysine. For methylarginine, its own control,
                              unchanged: two or more studies in `studies`, a laboratory's studies counted once, PhosphoSitePlus,
                              UniProt, IEDB and ProMetheusDB not counted.
   with interaction evidence  sites with a row of <set>_site_interactions that counts as evidence (counts_as_evidence true);
@@ -75,6 +77,8 @@ DIRECT_UNITS = {'Berryhill 2023': 'Berryhill 2023', 'Ochoa 2020': 'Ochoa 2020', 
 ARG_NOT_COUNTED = {'PSP', 'UniProt', 'IEDB', 'ProMetheusDB'}
 ARG_GROUPS = {'Larsen2016': 'Nielsen laboratory', 'Sylvestersen2014': 'Nielsen laboratory', 'Lu2024': 'Lu laboratory',
               'Lu2025': 'Lu laboratory', 'Musiani2019': 'Bonaldi laboratory', 'Fong2019': 'Bonaldi laboratory'}
+# site sets whose high-confidence count needs two studies of the same modification (owner's decision, 19 November 2026)
+PER_MODIFICATION_SETS = {'lysine'}
 LYSINE_MARKS = (('acetylation', 'acetylation'), ('lysine_acylation', 'lysine acylation (all acyl types)'),
                 ('ubiquitination', 'ubiquitination'), ('sumoylation', 'SUMOylation'))
 SET_LABELS = {'methylarginine': 'Methylarginine (R)', 'methyllysine': 'Methyllysine (K)',
@@ -178,15 +182,27 @@ def carry(prev: Path, out: Path, previous: str, version: str, arginine_sets: lis
     return carried, edited
 
 
-def mark_units(table: pd.DataFrame) -> pd.Series:
-    """Per residue (accession, position): its distinct units, pooled over its rows (D5)."""
+def modification(table: pd.DataFrame) -> pd.Series:
+    """The modification of each row of a lysine table: its acyl type (acetyl, succinyl, ...) in the acylation tables, its
+    state (ub, sumo) in the ubiquitination and sumoylation tables."""
+    return table['acyl_type'] if 'acyl_type' in table else table['state']
+
+
+def mark_units(table: pd.DataFrame, per_modification: bool = False) -> pd.Series:
+    """Per residue (accession, position): its distinct units, pooled over its rows (D5). per_modification: the units are
+    pooled over the rows of each modification apart, and a residue has the most any one modification has (the lysine
+    set: two studies must report the same modification at the lysine)."""
     exp = table[table['evidence_class'] == 'experimental']
+    mods = modification(exp) if per_modification else pd.Series('', index=exp.index)
     units: dict = {}
-    for acc, pos, pmids, sources in zip(exp['canonical_UniProtAC'], exp['position'], exp['pmids'], exp['sources'], strict=True):
-        got = units.setdefault((acc, pos), set())
+    for acc, pos, mod, pmids, sources in zip(exp['canonical_UniProtAC'], exp['position'], mods, exp['pmids'], exp['sources'], strict=True):
+        got = units.setdefault((acc, pos, mod), set())
         got.update(x.strip() for x in pmids.split(';') if x.strip())
         got.update(DIRECT_UNITS[s] for s in sources.split('; ') if s in DIRECT_UNITS)
-    return pd.Series({k: len(v) for k, v in units.items()}, dtype='int64')
+    best: dict = {}
+    for (acc, pos, _), v in units.items():
+        best[(acc, pos)] = max(best.get((acc, pos), 0), len(v))
+    return pd.Series(best, dtype='int64')
 
 
 def arginine_high_confidence(sites: pd.DataFrame) -> int:
@@ -223,18 +239,22 @@ def count_marks(out: Path, version: str, previous: str, config: dict) -> list[di
             continue
         tables = {Path(t).name.split('_sites_')[0].removeprefix('human_'): read(out / Path(t).name.replace(f'_{previous}.', f'_{version}.'))
                   for t in spec['tables']}
-        allt = pd.concat(tables.values(), ignore_index=True)
-        units = mark_units(allt)
+        allt = pd.concat([t.assign(_modification=modification(t)).rename(columns={'acyl_type': '_acyl'}) for t in tables.values()], ignore_index=True)
+        allt = allt.drop(columns=['state', '_acyl'], errors='ignore').rename(columns={'_modification': 'state'})
+        per_mod = name in PER_MODIFICATION_SETS
+        units = mark_units(allt, per_modification=per_mod)
         ids = site_ids(allt)
         rows.append({'set': name, 'label': SET_LABELS.get(name, name), 'sites': len(ids), 'high_confidence': int((units >= 2).sum()),
-                     'with_interaction_evidence': len(ev & ids), 'high_confidence_rule': 'D5: two or more units (PubMed IDs or direct datasets) over experimental rows'})
+                     'with_interaction_evidence': len(ev & ids),
+                     'high_confidence_rule': 'D5: two or more units (PubMed IDs or direct datasets) over experimental rows'
+                                             + (', counted per modification (each acyl type, ubiquitin, SUMO)' if per_mod else '')})
         if name == 'lysine':
             for mark, label in LYSINE_MARKS:
                 t = tables[mark]
-                u = mark_units(t)
+                u = mark_units(t, per_modification=True)
                 mids = site_ids(t)
                 rows.append({'set': f'{name}/{mark}', 'label': f'  of which {label}', 'sites': len(mids), 'high_confidence': int((u >= 2).sum()),
-                             'with_interaction_evidence': len(ev & mids), 'high_confidence_rule': 'D5, units pooled within this table'})
+                             'with_interaction_evidence': len(ev & mids), 'high_confidence_rule': 'D5 within this table, counted per modification'})
     return rows
 
 
@@ -370,7 +390,10 @@ def main() -> None:
          'of the release: the release tables keep every row. For the context marks a site is high confidence when at least two '
          'independent studies report it from experimental records: each PubMed ID counts once, a direct dataset (Berryhill 2023, '
          'Ochoa 2020, Hendriks 2017, Akimov 2018) counts as one study, and so as the paper a database cites, and UniProt and iPTMnet '
-         'count only through the papers they cite; a residue\'s studies are pooled over all its rows. For methylarginine it is the '
+         'count only through the papers they cite; a residue\'s studies are pooled over all its rows of one modification. For the '
+         'lysine set the studies must report the same modification (each acyl type, ubiquitin and SUMO apart), so a lysine '
+         'that one study reports ubiquitinated and another SUMOylated is not high confidence; methylation degrees (Kme1, Kme2, '
+         'Kme3) are one modification. For methylarginine it is the '
          'existing control: two or more studies, a laboratory\'s studies counted once, PhosphoSitePlus, UniProt, IEDB and '
          'ProMetheusDB not counted. Sites with interaction evidence have a row of their set\'s `site_interactions` table that counts '
          'as evidence; the methylarginine tables hold more kinds of evidence (predicted interfaces and contacts, IntAct, RBDmap, '

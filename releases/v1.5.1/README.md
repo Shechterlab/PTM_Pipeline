@@ -4,15 +4,15 @@ v1.5.1 holds everything of v1.5.0, the methylarginine data of v1.4.3 and the tab
 
 ## Counts
 
-Sites are the distinct residues of each site set's tables. High-confidence sites are the website's control, not a tier of the release: the release tables keep every row. For the context marks a site is high confidence when at least two independent studies report it from experimental records: each PubMed ID counts once, a direct dataset (Berryhill 2023, Ochoa 2020, Hendriks 2017, Akimov 2018) counts as one study, and so as the paper a database cites, and UniProt and iPTMnet count only through the papers they cite; a residue's studies are pooled over all its rows. For methylarginine it is the existing control: two or more studies, a laboratory's studies counted once, PhosphoSitePlus, UniProt, IEDB and ProMetheusDB not counted. Sites with interaction evidence have a row of their set's `site_interactions` table that counts as evidence; the methylarginine tables hold more kinds of evidence (predicted interfaces and contacts, IntAct, RBDmap, pCLAP), so their count from only the kinds the other sets have is given too.
+Sites are the distinct residues of each site set's tables. High-confidence sites are the website's control, not a tier of the release: the release tables keep every row. For the context marks a site is high confidence when at least two independent studies report it from experimental records: each PubMed ID counts once, a direct dataset (Berryhill 2023, Ochoa 2020, Hendriks 2017, Akimov 2018) counts as one study, and so as the paper a database cites, and UniProt and iPTMnet count only through the papers they cite; a residue's studies are pooled over all its rows of one modification. For the lysine set the studies must report the same modification (each acyl type, ubiquitin and SUMO apart), so a lysine that one study reports ubiquitinated and another SUMOylated is not high confidence; methylation degrees (Kme1, Kme2, Kme3) are one modification. For methylarginine it is the existing control: two or more studies, a laboratory's studies counted once, PhosphoSitePlus, UniProt, IEDB and ProMetheusDB not counted. Sites with interaction evidence have a row of their set's `site_interactions` table that counts as evidence; the methylarginine tables hold more kinds of evidence (predicted interfaces and contacts, IntAct, RBDmap, pCLAP), so their count from only the kinds the other sets have is given too.
 
 | Site set | Sites | High-confidence sites | Sites with interaction evidence |
 |---|---:|---:|---:|
 | Methylarginine (R) | 11,632 | 2,985 | 4,530 (3,069 from the kinds of evidence of the other sets) |
 | Methyllysine (K) | 5,178 | 83 | 485 |
-| Lysine acylation, ubiquitination and SUMOylation (K) | 90,876 | 18,097 | 10,878 |
+| Lysine acylation, ubiquitination and SUMOylation (K) | 90,876 | 1,938 | 10,878 |
 | &nbsp;&nbsp;of which acetylation | 4,597 | 215 | 1,061 |
-| &nbsp;&nbsp;of which lysine acylation (all acyl types) | 5,504 | 517 | 1,294 |
+| &nbsp;&nbsp;of which lysine acylation (all acyl types) | 5,504 | 218 | 1,294 |
 | &nbsp;&nbsp;of which ubiquitination | 63,480 | 375 | 8,150 |
 | &nbsp;&nbsp;of which SUMOylation | 40,249 | 1,370 | 5,201 |
 | Phosphorylation (S, T, Y) | 142,415 | 42,804 | 10,673 |
