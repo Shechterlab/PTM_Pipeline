@@ -121,6 +121,12 @@ What a build needs besides the repository:
 - **Storage**: about 0.7 GB for the work root, and about 0.2 GB of downloads in `PTM_data/external/` when the PRIDE
   tables are derived (the pCLAP MaxQuant output is 193 MB; the four RBDmap tables 19 MB).
 
+## Adding data, and version numbers
+
+New studies, marks, annotation layers and interaction sources follow the standard shared with ptmcontext: what can be added, the license and publication gate, the metadata and columns required, validation, how independent studies are counted and the checklists for maintainers and contributors ([`docs/DATA_STANDARD.md` in ptmcontext](https://github.com/Shechterlab/ptmcontext/blob/develop/docs/DATA_STANDARD.md)). [ADDING_A_SOURCE.md](ADDING_A_SOURCE.md) gives the steps in this repository.
+
+Version numbers: a minor release (v1.6.0) adds new sources, marks or layers; a patch release (v1.5.2) corrects or rebuilds without new content. A published release folder is never rewritten ([CONTRIBUTING.md](CONTRIBUTING.md)).
+
 ## Scripts
 
 | Scripts | Step |
