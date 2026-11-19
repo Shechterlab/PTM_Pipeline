@@ -106,6 +106,14 @@ def test_high_confidence_rule():
     assert units[('P1', '2')] == 2 and units[('P2', '5')] == 1 and units[('P3', '7')] == 2
     t2 = pd.DataFrame({'canonical_UniProtAC': ['P1'], 'position': ['2'], 'evidence_class': ['experimental'], 'pmids': ['28112733'], 'sources': ['UniProt; Hendriks 2017']})
     assert x65.mark_units(t2)[('P1', '2')] == 1     # a database citing Hendriks 2017 is not counted again
+    # per modification (the lysine set): ubiquitin in one study and SUMO in another is one unit each; two studies of SUMO is two
+    t3 = pd.DataFrame({'canonical_UniProtAC': ['P1', 'P1', 'P2', 'P2'], 'position': ['2', '2', '9', '9'], 'state': ['ub', 'sumo', 'sumo', 'sumo'],
+                       'evidence_class': ['experimental'] * 4, 'pmids': ['', '', '111', ''], 'sources': ['Akimov 2018', 'Hendriks 2017', 'UniProt', 'Hendriks 2017']})
+    pooled, per_mod = x65.mark_units(t3), x65.mark_units(t3, per_modification=True)
+    assert pooled[('P1', '2')] == 2 and per_mod[('P1', '2')] == 1 and per_mod[('P2', '9')] == 2
+    t4 = pd.DataFrame({'canonical_UniProtAC': ['P1', 'P1'], 'position': ['2', '2'], 'acyl_type': ['acetyl', 'succinyl'],
+                       'evidence_class': ['experimental'] * 2, 'pmids': ['111', '222'], 'sources': ['UniProt', 'UniProt']})
+    assert x65.mark_units(t4, per_modification=True)[('P1', '2')] == 1     # two acyl types are two modifications
     s = pd.DataFrame({'studies': ['Larsen2016; Sylvestersen2014', 'Larsen2016; Guo2014', 'PSP; UniProt; Guo2014', 'Guo2014; Fedoriw2019; PSP']})
     assert x65.arginine_high_confidence(s) == 2     # one laboratory; two studies; databases not counted; two studies
 
