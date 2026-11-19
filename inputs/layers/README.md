@@ -13,6 +13,7 @@ the release (`../../ADDING_A_SOURCE.md` says how to add one).
 | Cancer cell lines and tumours: DepMap Public 24Q4 (CRISPR gene effect, changes at arginines, MTAP copy number), PRISM Repurposing 24Q2 (PRMT inhibitors) and the TCGA MC3 somatic calls at arginines (GDC open access) | `scripts/44b_extract_tcga_mc3.py` (from the MC3 public MAF, the GDC cases of TCGA and UniProt's Ensembl cross-references), then `scripts/44_stage_depmap.py`; the release build adds its columns and tests (`scripts/release_layers.py`) and `scripts/44c_export_depmap.py` writes the website's `docs/data/depmap/` from the release | `depmap_24q4_gene_effect_summary.tsv`, `depmap_24q4_arginine_changes.tsv`, `depmap_24q4_models.tsv`, `depmap_24q4_prmt_gene_effect.tsv`, `prism_24q2_prmt_inhibitors.tsv`, `tcga_mc3_arginine_changes.tsv`, `tcga_mc3_projects.tsv`, `depmap_summary.json` |
 | Cancer changes at every candidate K, S, T and Y (v1.6.0), and each protein's background: the TCGA MC3 calls and DepMap 24Q4 by the rules of the arginine layer | `scripts/66_stage_cancer_changes.py` (from the MC3 public MAF and OmicsSomaticMutations.csv of the arginine layer, the GDC cases of TCGA, UniProt's Ensembl cross-references and the genes DepMap screened) | `tcga_mc3_changes_{K,S,T,Y}.tsv.gz`, `depmap_24q4_changes_{K,S,T,Y}.tsv.gz`, `cancer_change_protein_background.tsv.gz`, `cancer_changes_summary.json` |
 | ClinVar variants at every candidate R, K, S, T and Y (v1.6.0), and each protein's background | `scripts/67_stage_clinvar.py` (from ClinVar's hgvs4variation and variant_summary tables and UniProt's RefSeq cross-references) | `clinvar_changes_{R,K,S,T,Y}.tsv.gz`, `clinvar_protein_background.tsv.gz`, `clinvar_summary.json` |
+| gnomAD v4.1 exome variants at every candidate R, K, S, T and Y (v1.6.0), and each protein's background | `scripts/69_stage_gnomad.py` (streamed from Google's public copy, `gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/`) | `gnomad_v4_1_changes_{R,K,S,T,Y}.tsv.gz`, `gnomad_protein_background.tsv.gz`, `gnomad_summary.json` |
 | Writer perturbations: PRMT7 knockout (Szewczyk et al. 2020), PRMT1 knockdown (Hartel et al. 2019), PRMT5 inhibitor (Lu et al. 2024), PRMT7, CARM1 and PRMT5 knockdowns and the PRMT7 inhibitor SGC3027 (Li et al. 2021) | `scripts/45_stage_prmt7_szewczyk2020.py`, `scripts/46_stage_hartel2019_prmt1_kd.py`, `scripts/51_stage_lu2024_prmt5.py`, `scripts/50_stage_li2021_perturbations.py` | `prmt7_ko_*`, `hartel2019_prmt1_kd_*`, `lu2024_prmt5_*`, `li2021_*` |
 | PaxDb 6.1 protein abundance | `scripts/47_stage_paxdb.py` | `paxdb_human_integrated_abundance.tsv`, `paxdb_summary.json` |
 | Reactome 97 pathways | `scripts/48_stage_reactome.py` | `reactome_human_protein_pathways.tsv`, `reactome_human_pathways.tsv`, `reactome_summary.json` |
@@ -97,6 +98,17 @@ the best reliability and counts a location as main when any of the genes has it 
   may claim rights in what they submitted.
 - **`clinvar_protein_background.tsv.gz`** (122,496 rows): for each entry and residue class, the residues of that class,
   the ClinVar variants on them, those classified pathogenic or likely pathogenic, and the positions changed.
+
+- **`gnomad_v4_1_changes_{R,K,S,T,Y}.tsv.gz`**: the gnomAD v4.1 exome variants (730,947 exomes) that pass every gnomAD
+  filter and that VEP calls missense or stop gained on a transcript UniProt assigns to a reviewed entry's displayed
+  isoform, kept where the 2026_03 canonical sequence has that residue. One row per entry, position, new residue and
+  variant (GRCh38 chromosome-position-reference-alternate), with the dbSNP ID, allele count and number, frequency,
+  homozygotes, the ancestry group with the highest frequency and its frequency, and the highest filtering allele
+  frequency (95%). Rows: R 1,133,321, K 517,573, S 965,320, T 678,065, Y 307,801. The 24 sites VCFs (198 GB) were streamed,
+  not stored; `raw_files.tsv` gives the bytes and MD5 read for each. The primary data are CC0; SpliceAI and CADD, which
+  carry non-commercial terms, are not read.
+- **`gnomad_protein_background.tsv.gz`** (122,496 rows): for each entry and residue class, the residues of that class,
+  the gnomAD variants on them, the positions changed and the summed allele count.
 
 ## CPLM tables
 
