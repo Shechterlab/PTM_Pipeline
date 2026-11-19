@@ -1,0 +1,120 @@
+{
+ "generated": "2026-11-19",
+ "inputs": {
+  "maf": {
+   "file": "mc3.v0.2.8.PUBLIC.maf.gz",
+   "url": "https://api.gdc.cancer.gov/data/1c8cfe5f-e52d-41ba-94da-f15ea1337efc",
+   "md5": "639ad8f8386e98dacc22e439188aa8fa"
+  },
+  "cases": {
+   "file": "gdc_tcga_cases_2026-11-19.tsv",
+   "url": "https://api.gdc.cancer.gov/cases (filter project.program.name = TCGA; fields submitter_id, project.project_id, project.name)",
+   "md5": "082220b82e7c3cf039650330310ab735"
+  },
+  "depmap_mutations": {
+   "file": "OmicsSomaticMutations.csv",
+   "release": "DepMap Public 24Q4",
+   "doi": "10.25452/figshare.plus.27993248",
+   "license": "CC BY 4.0",
+   "md5": "7bdba347a1602fe96d5654a74d6e52f1"
+  },
+  "uniprot": {
+   "release": "2026_04",
+   "ensembl": {
+    "file": "uniprot_2026_04_human_reviewed_ensembl.tsv.gz",
+    "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,id,xref_ensembl&format=tsv&compressed=true",
+    "md5": "308c33bbed1d7db0f0200434a02a0551"
+   },
+   "isoforms": {
+    "file": "uniprot_2026_04_human_reviewed_altprod.tsv.gz",
+    "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,cc_alternative_products&format=tsv&compressed=true",
+    "md5": "d3ce32007c476fa6c134416594db9de2"
+   }
+  },
+  "crispr_gene_effect_header": {
+   "file": "depmap_24q4_CRISPRGeneEffect_header.csv",
+   "genes": 17916,
+   "md5_of_file_read": "96b62faadbcf32aced3124e65e4c62f4",
+   "note": "the header line of CRISPRGeneEffect.csv (DepMap 24Q4, MD5 of the whole file 6edf7ade09b9b34199210b559d4745d3)"
+  },
+  "reference": {
+   "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+   "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  }
+ },
+ "rule": {
+  "tcga": "FILTER PASS; in TCGA-OV and TCGA-LAML also FILTER wga alone (Ellrott et al. 2018); a missense or stop change on a transcript UniProt assigns to a reviewed entry's displayed isoform (all_effects); where the variant falls in no such transcript, a Missense_Mutation or Nonsense_Mutation of the MAF transcript (HGVSp_Short), placed on the entry SWISSPROT names, else on the entries of the gene symbol; kept where the 2026_03 canonical sequence has the changed residue at the position; one row per (entry, position, new residue, tumor sample)",
+  "depmap": "a missense or stop call on the canonical isoform (UniprotID unlabelled or -1, else VepSwissprot) whose residue the 2026_03 canonical sequence has at the position; one row per (entry, position, new residue, line)",
+  "background": "every change kept by these rules, at any residue, counted per entry and residue class"
+ },
+ "denominators": {
+  "tcga_tumor_samples": 10294,
+  "tcga_projects": 33,
+  "depmap_lines_with_mutation_calls": 1929
+ },
+ "residues": {
+  "K": {
+   "tcga_changes": 61510,
+   "tcga_positions": 55672,
+   "tcga_samples": 6868,
+   "depmap_changes": 20835,
+   "depmap_positions": 18961,
+   "depmap_lines": 1858,
+   "md5": {
+    "tcga_mc3_changes_K.tsv.gz": "a029935935404c55f9a6b33891af29cf",
+    "depmap_24q4_changes_K.tsv.gz": "579964a2916429cc80fe1ce65c34b186"
+   }
+  },
+  "S": {
+   "tcga_changes": 142576,
+   "tcga_positions": 120889,
+   "tcga_samples": 8127,
+   "depmap_changes": 44341,
+   "depmap_positions": 39102,
+   "depmap_lines": 1927,
+   "md5": {
+    "tcga_mc3_changes_S.tsv.gz": "81b917868bf58db2433b711bd517b3f1",
+    "depmap_24q4_changes_S.tsv.gz": "738fcb18845415f48b388e9e5b714c8f"
+   }
+  },
+  "T": {
+   "tcga_changes": 59012,
+   "tcga_positions": 52588,
+   "tcga_samples": 7599,
+   "depmap_changes": 24605,
+   "depmap_positions": 20489,
+   "depmap_lines": 1911,
+   "md5": {
+    "tcga_mc3_changes_T.tsv.gz": "f68c68bb37f380d85ed7e7ad8a2bae4b",
+    "depmap_24q4_changes_T.tsv.gz": "dd06b544e1e67011e8d30870d7bbd009"
+   }
+  },
+  "Y": {
+   "tcga_changes": 25757,
+   "tcga_positions": 23958,
+   "tcga_samples": 5784,
+   "depmap_changes": 13533,
+   "depmap_positions": 11879,
+   "depmap_lines": 1787,
+   "md5": {
+    "tcga_mc3_changes_Y.tsv.gz": "4be9a5fd905e26c4e2e7f5ccae7b71ab",
+    "depmap_24q4_changes_Y.tsv.gz": "0b6d17b589d2bdb983f30ad7449f95e5"
+   }
+  }
+ },
+ "background_md5": "03537973ea1bbde64735a38c84bd7405",
+ "counts": {
+  "depmap_calls_not_in_reference": 49805,
+  "depmap_calls_on_other_isoforms": 53859,
+  "depmap_calls_residue_not_on_canonical": 1299,
+  "depmap_changes_placed_all_residues": 528901,
+  "depmap_missense_and_stop_calls": 633876,
+  "tcga_changes_placed_all_residues": 1608027,
+  "tcga_changes_residue_not_on_canonical": 71974,
+  "tcga_maf_rows": 3600963,
+  "tcga_maf_transcript_changes_gene_without_entry": 9227,
+  "uniprot_canonical_transcripts": 72613,
+  "uniprot_entries_with_a_canonical_transcript": 19129,
+  "uniprot_other_isoform_transcripts": 26120
+ }
+}
