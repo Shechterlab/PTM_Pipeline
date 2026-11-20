@@ -119,6 +119,14 @@ the best reliability and counts a location as main when any of the genes has it 
 - **`gnomad_protein_background.tsv.gz`** (122,496 rows): for each entry and residue class, the residues of that class,
   the gnomAD variants on them, the positions changed and the summed allele count.
 
+- **`{tcga_mc3,depmap_24q4,clinvar,gnomad_v4_1}_changes_excluded.tsv.gz`**: the changes each source places on an entry that
+  the change tables leave out because the residue the source names at the position differs from the canonical sequence's
+  (`residue_differs`), or the position lies beyond it (`position_beyond_sequence`), where either residue is R, K, S, T or
+  Y: entry, position, new residue, the source's ID (tumor sample, cell line, ClinVar variation, gnomAD variant), gene,
+  both residues and the reason. A TCGA change read on the MAF's own transcript, which the staging tries on every entry of
+  its gene, is listed only if no entry kept it; a ClinVar variation kept at the same entry and position under another
+  RefSeq expression is not listed. The release joins the four as `supporting/variant_changes_excluded_<version>.tsv.gz`.
+
 ## CPLM tables
 
 CPLM 4.0 states "Copyright © 2010-2026 The CUCKOO Workgroup. All Rights Reserved" and gives no licence

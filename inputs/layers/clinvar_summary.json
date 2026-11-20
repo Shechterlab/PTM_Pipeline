@@ -69,6 +69,11 @@
    "md5": "65c0bd0c54b5c78dbd46abc49ff267a2"
   }
  },
+ "excluded": {
+  "rows": 28382,
+  "proteins": 705,
+  "md5": "629f21580da2dbdd23d35d0001455982"
+ },
  "background_md5": "81929ddfc93711ff5b968b36d01d4d52",
  "counts": {
   "canonical_refseq_proteins": 29383,

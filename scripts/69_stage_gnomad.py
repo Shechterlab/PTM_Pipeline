@@ -61,6 +61,7 @@ KEYS = ('AC', 'AN', 'AF', 'nhomalt', 'grpmax', 'AF_grpmax', 'fafmax_faf95_max')
 PARTIAL = ['chrom', 'pos', 'ref', 'alt', 'rsid'] + list(KEYS) + ['transcript', 'protein_position', 'ref_aa', 'alt_aa', 'consequence']
 COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'variant_id', 'dbsnp', 'ac', 'an', 'af', 'nhomalt', 'grpmax', 'af_grpmax',
            'faf95_max', 'consequence', 'gene']
+EXCLUDED_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'source_id', 'gene', 'source_ref', 'canonical_ref', 'reason']
 BACKGROUND_COLUMNS = ['canonical_UniProtAC', 'residue', 'residues', 'gnomad_variants', 'gnomad_positions', 'gnomad_allele_count']
 LICENSE = ('CC0 1.0 (gnomAD primary data, https://github.com/broadinstitute/gnomad-browser/blob/main/browser/about/policies/terms.md); '
            'SpliceAI (CC BY-NC 4.0) and CADD (non-commercial) annotations not used')
@@ -177,7 +178,7 @@ def stage(args) -> None:
     work = partials / 'staged'
     work.mkdir(exist_ok=True)
     counts = Counter()
-    bg_counts, bg_positions = [], []
+    bg_counts, bg_positions, excluded = [], [], []
     for c in CHROMS:
         p = pd.read_csv(partials / f'{c}.tsv.gz', sep='\t', dtype=str, keep_default_na=False)
         counts['vep_entries_on_canonical_transcripts'] += len(p)
@@ -187,6 +188,20 @@ def stage(args) -> None:
         seq_res = [canonical.get(a, '')[q - 1] if 1 <= q <= len(canonical.get(a, '')) else '' for a, q in zip(p['canonical_UniProtAC'], p['position'])]
         ok = p['ref_aa'].to_numpy() == pd.Series(seq_res, index=p.index).to_numpy()
         counts['residue_not_on_canonical'] += int((~ok).sum())
+        # changes left out because the residue VEP names differs from the canonical sequence's (or the position lies beyond it),
+        # where either residue is a candidate residue of the site sets
+        bad = p[~ok].assign(canonical_ref=pd.Series(seq_res, index=p.index)[~ok])
+        bad = bad[bad['ref_aa'].isin(CLASSES) | bad['canonical_ref'].isin(CLASSES)]
+        if len(bad):
+            bad = bad.assign(source_id=bad['chrom'].str.removeprefix('chr') + '-' + bad['pos'] + '-' + bad['ref'] + '-' + bad['alt'],
+                             gene=bad['transcript'].map(gene_of).fillna(''))
+            k = ['canonical_UniProtAC', 'position', 'alt_aa', 'source_id']
+            g = bad.groupby(k)['gene'].agg(lambda s: ';'.join(sorted({x for x in s if x}))).rename('genes').reset_index()
+            bad = bad.drop_duplicates(k).drop(columns='gene').merge(g, on=k, how='left')
+            excluded.append(pd.DataFrame({'canonical_UniProtAC': bad['canonical_UniProtAC'], 'position': bad['position'], 'alt': bad['alt_aa'],
+                                          'source_id': bad['source_id'], 'gene': bad['genes'], 'source_ref': bad['ref_aa'],
+                                          'canonical_ref': bad['canonical_ref'],
+                                          'reason': ['residue_differs' if x else 'position_beyond_sequence' for x in bad['canonical_ref']]}))
         p = p[ok]
         p['variant_id'] = p['chrom'].str.removeprefix('chr') + '-' + p['pos'] + '-' + p['ref'] + '-' + p['alt']
         p = p.drop(columns=['ref', 'alt'])          # the alleles live in variant_id; alt is the new residue below
@@ -231,6 +246,9 @@ def stage(args) -> None:
             n, ac = (int(g.at[(acc, cls), 'n']), int(g.at[(acc, cls), 'ac'])) if (acc, cls) in g.index else (0, 0)
             bg.append([acc, cls, len(seq) if cls == 'all' else seq.count(cls), n, int(pos.get((acc, cls), 0)), ac])
     write_gz(pd.DataFrame(bg, columns=BACKGROUND_COLUMNS), out / 'gnomad_protein_background.tsv.gz')
+    ex = pd.concat(excluded, ignore_index=True) if excluded else pd.DataFrame(columns=EXCLUDED_COLUMNS)
+    ex = ex.sort_values(['canonical_UniProtAC', 'position', 'alt', 'source_id'], kind='stable')[EXCLUDED_COLUMNS]
+    write_gz(ex, out / 'gnomad_v4_1_changes_excluded.tsv.gz')
     fetched = {c: json.loads((partials / f'{c}.done').read_text()) for c in CHROMS}
     summary = {'generated': dt.date.today().isoformat(), 'release': 'gnomAD v4.1 exomes (730,947 exomes; files dated 2024-04-17)',
                'license': LICENSE, 'citation': CITATION,
@@ -242,7 +260,9 @@ def stage(args) -> None:
                'rule': 'FILTER PASS; a missense or stop-gained VEP consequence on a transcript UniProt assigns to a reviewed entry\'s '
                        'displayed isoform, kept where the 2026_03 canonical sequence has the residue VEP names at the protein '
                        'position; one row per (entry, position, new residue, variant)',
-               'residues': written, 'background_md5': md5_file(out / 'gnomad_protein_background.tsv.gz'), 'counts': dict(sorted(counts.items()))}
+               'residues': written,
+               'excluded': {'rows': len(ex), 'proteins': int(ex['canonical_UniProtAC'].nunique()), 'md5': md5_file(out / 'gnomad_v4_1_changes_excluded.tsv.gz')},
+               'background_md5': md5_file(out / 'gnomad_protein_background.tsv.gz'), 'counts': dict(sorted(counts.items()))}
     (out / 'gnomad_summary.json').write_text(json.dumps(summary, indent=1) + '\n')
     if args.manifest:
         write_manifest(Path(args.manifest), out, args, fetched)
@@ -263,6 +283,10 @@ def write_manifest(manifest: Path, out: Path, args, fetched: dict) -> None:
                      'residue and variant, with dbSNP ID, allele count and number, frequency, homozygotes, the group with the highest '
                      'frequency and the highest filtering allele frequency (gzip)', 'source': src, 'version_or_date': ver,
                      'citation': CITATION, 'licence': LICENSE, 'derived_from': 'gnomad.exomes.v4.1.sites.<chrom>.vcf.bgz (24 files)'})
+    rows.append({'file': f'{folder}/gnomad_v4_1_changes_excluded.tsv.gz', 'content': 'gnomAD v4.1 exome variants (FILTER PASS) left out of the change '
+                 'tables because the residue VEP names differs from the canonical sequence\'s at that position (or lies beyond it), where either '
+                 'residue is R, K, S, T or Y: entry, position, new residue, variant, gene, both residues, reason (gzip)', 'source': src,
+                 'version_or_date': ver, 'citation': CITATION, 'licence': LICENSE, 'derived_from': 'gnomad.exomes.v4.1.sites.<chrom>.vcf.bgz (24 files)'})
     rows.append({'file': f'{folder}/gnomad_protein_background.tsv.gz', 'content': 'Per reviewed canonical entry and residue class (R, K, S, T, '
                  'Y, all): residues, gnomAD v4.1 exome variants on them, positions changed and summed allele count (gzip)', 'source': src,
                  'version_or_date': ver, 'citation': CITATION, 'licence': LICENSE,

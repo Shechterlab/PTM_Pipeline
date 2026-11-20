@@ -129,6 +129,18 @@
    }
   }
  },
+ "excluded": {
+  "tcga_mc3": {
+   "rows": 38804,
+   "proteins": 1148,
+   "md5": "3bb2986002cab1e409b98aa806f68c13"
+  },
+  "depmap_24q4": {
+   "rows": 611,
+   "proteins": 59,
+   "md5": "a8c84f32dc6486435d3bc6dff65325d9"
+  }
+ },
  "background_md5": "03537973ea1bbde64735a38c84bd7405",
  "counts": {
   "depmap_calls_not_in_reference": 49805,

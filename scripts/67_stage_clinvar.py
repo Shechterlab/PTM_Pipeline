@@ -63,6 +63,7 @@ STARS = {'practice guideline': 4, 'reviewed by expert panel': 3, 'criteria provi
 COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'variation_id', 'refseq_protein', 'variant_type', 'germline_classification',
            'clinsig_simple', 'review_status', 'review_stars', 'number_submitters', 'origin', 'conditions', 'last_evaluated',
            'somatic_clinical_impact', 'oncogenicity', 'dbsnp', 'gene']     # the variation's page lists its RCV records
+EXCLUDED_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'source_id', 'gene', 'source_ref', 'canonical_ref', 'reason']
 BACKGROUND_COLUMNS = ['canonical_UniProtAC', 'residue', 'residues', 'clinvar_variants', 'clinvar_pathogenic', 'clinvar_positions']
 PATHOGENIC = re.compile(r'^(Pathogenic|Likely pathogenic|Pathogenic/Likely pathogenic)(;|$|,)', re.I)
 URLS = {'hgvs4variation': 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/hgvs4variation.txt.gz',
@@ -124,7 +125,7 @@ def main() -> None:
     canon, counts = canonical_refseq(args.uniprot_refseq, args.uniprot_isoforms)
 
     # protein changes on canonical RefSeq proteins, checked on the 2026_03 sequence
-    changes = {}
+    changes, excluded = {}, {}
     with gzip.open(args.hgvs4variation, 'rt', encoding='utf-8') as fh:
         head = None
         for line in fh:
@@ -150,6 +151,9 @@ def main() -> None:
                 seq = canonical.get(acc, '')
                 if not (1 <= pos <= len(seq) and seq[pos - 1] == ref):
                     counts['residue_not_on_canonical'] += 1
+                    can = seq[pos - 1] if 1 <= pos <= len(seq) else ''
+                    if {ref, can} & set(CLASSES):
+                        excluded.setdefault((acc, pos, alt, r[ix['VariationID']]), (ref, can, r[ix['Symbol']], r[ix['GeneID']]))
                     continue
                 key = (acc, pos, alt, r[ix['VariationID']])
                 if key not in changes:
@@ -213,6 +217,16 @@ def main() -> None:
             a = agg.get((acc, cls), [0, 0, set()])
             bg.append([acc, cls, len(seq) if cls == 'all' else seq.count(cls), a[0], a[1], len(a[2])])
     write_gz(pd.DataFrame(bg, columns=BACKGROUND_COLUMNS), out / 'clinvar_protein_background.tsv.gz')
+    # changes left out because the residue of the RefSeq protein's expression differs from the canonical sequence's (a variation
+    # kept at that entry and position under another expression is not left out)
+    kept = {(a, p, v) for a, p, _, v in changes}
+    ex = pd.DataFrame([{'canonical_UniProtAC': a, 'position': p, 'alt': al, 'source_id': v,
+                        'gene': hgnc.symbol(entrez=gid, name=sym if sym not in ('', '-') else ''), 'source_ref': ref, 'canonical_ref': can,
+                        'reason': 'residue_differs' if can else 'position_beyond_sequence'}
+                       for (a, p, al, v), (ref, can, sym, gid) in excluded.items() if (a, p, v) not in kept], columns=EXCLUDED_COLUMNS)
+    ex['_v'] = pd.to_numeric(ex['source_id'], errors='coerce')
+    ex = ex.sort_values(['canonical_UniProtAC', 'position', 'alt', '_v'], kind='stable').drop(columns='_v')
+    write_gz(ex, out / 'clinvar_changes_excluded.tsv.gz')
 
     summary = {
         'generated': dt.date.today().isoformat(),
@@ -229,6 +243,7 @@ def main() -> None:
                 'kept where the 2026_03 canonical sequence has the residue at the position; classifications from the GRCh38 rows of '
                 'variant_summary; one row per (entry, position, new residue, variation)',
         'residues': written,
+        'excluded': {'rows': len(ex), 'proteins': int(ex['canonical_UniProtAC'].nunique()), 'md5': md5_file(out / 'clinvar_changes_excluded.tsv.gz')},
         'background_md5': md5_file(out / 'clinvar_protein_background.tsv.gz'),
         'counts': dict(sorted(counts.items())),
     }
@@ -268,6 +283,10 @@ def write_manifest(manifest: Path, out: Path, args) -> None:
                      'and variation, with the germline classification, review status and stars, submitters, origin, conditions, the '
                      'somatic clinical impact and oncogenicity, and the dbSNP ID (gzip)', 'source': src, 'version_or_date': ver,
                      'citation': cit, 'licence': lic, 'derived_from': 'hgvs4variation.txt.gz; variant_summary.txt.gz'})
+    rows.append({'file': f'{folder}/clinvar_changes_excluded.tsv.gz', 'content': 'ClinVar variants left out of the change tables because the residue '
+                 'of the RefSeq protein expression differs from the canonical sequence\'s at that position (or lies beyond it), where either '
+                 'residue is R, K, S, T or Y: entry, position, new residue, variation, gene, both residues, reason (gzip)', 'source': src,
+                 'version_or_date': ver, 'citation': cit, 'licence': lic, 'derived_from': 'hgvs4variation.txt.gz'})
     rows.append({'file': f'{folder}/clinvar_protein_background.tsv.gz', 'content': 'Per reviewed canonical entry and residue class (R, K, S, '
                  'T, Y, all): the residues of that class, the ClinVar variants on them, those classified pathogenic or likely pathogenic, '
                  'and the positions changed (gzip)', 'source': src, 'version_or_date': ver, 'citation': cit, 'licence': lic,

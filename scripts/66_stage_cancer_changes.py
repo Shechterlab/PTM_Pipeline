@@ -81,6 +81,9 @@ TCGA_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'project_id', 'sample_
                 'tumor_alt_count', 'tumor_ref_count', 'gene']
 DEPMAP_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'protein_change', 'model_id', 'allele_fraction', 'hotspot', 'likely_lof',
                   'am_pathogenicity', 'am_class', 'gene']
+# changes left out because the residue the source names differs from the canonical sequence's (or the position lies beyond
+# it), where either residue is a candidate residue of the site sets
+EXCLUDED_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'source_id', 'gene', 'source_ref', 'canonical_ref', 'reason']
 BACKGROUND_COLUMNS = ['canonical_UniProtAC', 'residue', 'residues', 'tcga_changes', 'tcga_samples', 'tcga_positions',
                       'depmap_changes', 'depmap_lines', 'depmap_positions']
 
@@ -193,12 +196,14 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
     best = {}
     for x in sorted(raw, key=lambda x: x[4]):
         best[(x[7], x[0], x[9], x[1], x[2], x[3], x[10], x[11], x[12])] = x
-    rows, placed, seen = [], [], set()
+    rows, placed, seen, excluded, kept_changes = [], [], set(), [], set()
     for x in sorted(best.values(), key=lambda x: (x[9], x[0], x[2], x[1], x[3], x[7], x[10], int(x[11]), x[12])):
         acc, ref, pos, alt = x[0], x[1], x[2], x[3]
         if not on_residue(canonical, acc, pos, ref):
             counts['tcga_changes_residue_not_on_canonical'] += 1
+            excluded.append(x)
             continue
+        kept_changes.add((x[7], x[9], x[1], x[2], x[3], x[10], x[11], x[12]))      # the change, on whichever entry
         key = (acc, pos, alt, x[7])
         if key in seen:
             continue
@@ -211,7 +216,21 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
                          # the Ensembl gene (a gene without an HGNC symbol)
                          'gene': gene_name(x[4], x[15], tx_gene, hgnc)})
     counts['tcga_changes_placed_all_residues'] = len(placed)
-    return rows, placed, samples
+    ex_rows, ex_seen = [], set()
+    for x in excluded:
+        acc, ref, pos, alt = x[0], x[1], x[2], x[3]
+        seq = canonical.get(acc, '')
+        can = seq[pos - 1] if 1 <= pos <= len(seq) else ''
+        # a change read on the MAF's own transcript is tried on every entry of its gene: one that another entry kept is not left out
+        if not ({ref, can} & set(CLASSES)) or (x[5] == 'maf_transcript' and (x[7], x[9], x[1], x[2], x[3], x[10], x[11], x[12]) in kept_changes):
+            continue
+        key = (acc, pos, alt, x[7])
+        if key in ex_seen:
+            continue
+        ex_seen.add(key)
+        ex_rows.append({'canonical_UniProtAC': acc, 'position': pos, 'alt': alt, 'source_id': x[7], 'gene': gene_name(x[4], x[15], tx_gene, hgnc),
+                        'source_ref': ref, 'canonical_ref': can, 'reason': 'residue_differs' if can else 'position_beyond_sequence'})
+    return rows, placed, samples, ex_rows
 
 
 def depmap(args, canonical: dict, residues: list[str], counts: Counter, hgnc: HGNC):
@@ -235,6 +254,12 @@ def depmap(args, canonical: dict, residues: list[str], counts: Counter, hgnc: HG
     m['position'] = m['position'].astype(int)
     ok = [on_residue(canonical, a, p, r) for a, p, r in zip(m['canonical_UniProtAC'], m['position'], m['ref'])]
     counts['depmap_calls_residue_not_on_canonical'] = int(len(m) - sum(ok))
+    bad = m[[not o for o in ok]].drop_duplicates(['canonical_UniProtAC', 'position', 'alt', 'ModelID'])
+    can = [canonical[a][q - 1] if 1 <= q <= len(canonical[a]) else '' for a, q in zip(bad['canonical_UniProtAC'], bad['position'])]
+    ex = pd.DataFrame({'canonical_UniProtAC': bad['canonical_UniProtAC'], 'position': bad['position'], 'alt': bad['alt'], 'source_id': bad['ModelID'],
+                       'gene': [hgnc.symbol(ensg=e, name=s) for e, s in zip(bad['EnsemblGeneID'], bad['HugoSymbol'])], 'source_ref': bad['ref'],
+                       'canonical_ref': can, 'reason': ['residue_differs' if c else 'position_beyond_sequence' for c in can]})
+    ex = ex[ex['source_ref'].isin(CLASSES) | ex['canonical_ref'].isin(CLASSES)]
     m = m[ok].drop_duplicates(['canonical_UniProtAC', 'position', 'alt', 'ModelID'])
     counts['depmap_changes_placed_all_residues'] = len(m)
     placed = list(zip(m['canonical_UniProtAC'], m['ref'], m['position'], m['alt'], m['ModelID']))
@@ -244,7 +269,7 @@ def depmap(args, canonical: dict, residues: list[str], counts: Counter, hgnc: HG
                          'allele_fraction': t['AF'], 'hotspot': t['Hotspot'] == 'True', 'likely_lof': t['LikelyLoF'] == 'True',
                          'am_pathogenicity': t['AMPathogenicity'], 'am_class': t['AMClass'],
                          'gene': [hgnc.symbol(ensg=e, name=s) for e, s in zip(t['EnsemblGeneID'], t['HugoSymbol'])], 'ref': t['ref']})
-    return rows, placed, lines
+    return rows, placed, lines, ex
 
 
 def background(canonical: dict, tplaced, dplaced) -> pd.DataFrame:
@@ -314,6 +339,15 @@ def write_manifest(manifest: Path, out: Path, args, residues: list[str], downloa
     for r in rows:
         path = out / r['file'].split('/', 1)[1]
         r.update({'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': gz_rows(path), 'redistribution': 'git', 'how_made_or_checked': HOW})
+    for src, label in (('tcga_mc3', 'TCGA MC3'), ('depmap_24q4', 'DepMap 24Q4')):
+        path = out / f'{src}_changes_excluded.tsv.gz'
+        rows.append({'file': f'{folder}/{path.name}', 'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': gz_rows(path), 'redistribution': 'git',
+                     'content': f'{label} changes left out of the change tables because the residue the source names differs from the canonical '
+                     'sequence\'s at that position (or lies beyond it), where either residue is R, K, S, T or Y: entry, position, new residue, '
+                     'sample or cell line, gene, both residues, reason (gzip)',
+                     'source': tc_src if src == 'tcga_mc3' else s44.DM_SRC, 'version_or_date': tc_ver if src == 'tcga_mc3' else s44.DM_VER,
+                     'citation': s44.TC_CIT if src == 'tcga_mc3' else s44.DM_CIT, 'licence': TC_LICENSE if src == 'tcga_mc3' else 'CC BY 4.0',
+                     'derived_from': 'mc3.v0.2.8.PUBLIC.maf.gz' if src == 'tcga_mc3' else 'OmicsSomaticMutations.csv', 'how_made_or_checked': HOW})
     models = out / 'depmap_24q4_change_models.tsv'
     if models.exists():
         rows.append({'file': f'{folder}/depmap_24q4_change_models.tsv', 'bytes': models.stat().st_size, 'md5': md5_file(models),
@@ -373,8 +407,8 @@ def main() -> None:
     screened = {m.group(1) for c in pd.read_csv(args.crispr_gene_effect, nrows=0).columns if (m := re.match(r'^.+ \((\d+)\)$', str(c)))}
     placer = Placer(args.fasta, args.entries, args.symbol_entrez, canonical, screened)
     tx_gene, hgnc = transcript_genes(args.ensembl_gtf), HGNC(args.hgnc)
-    trows, tplaced, samples = tcga(args, canonical, placer, residues, counts, tx_gene, hgnc)
-    drows, dplaced, lines = depmap(args, canonical, residues, counts, hgnc)
+    trows, tplaced, samples, tex = tcga(args, canonical, placer, residues, counts, tx_gene, hgnc)
+    drows, dplaced, lines, dex = depmap(args, canonical, residues, counts, hgnc)
 
     tt = pd.DataFrame(trows, columns=TCGA_COLUMNS)
     ref_of = {(a, p): canonical[a][p - 1] for a, p in zip(tt['canonical_UniProtAC'], tt['position'])}
@@ -391,6 +425,11 @@ def main() -> None:
                         'depmap_lines': int(d['model_id'].nunique()),
                         'md5': {f'tcga_mc3_changes_{res}.tsv.gz': md5_file(out / f'tcga_mc3_changes_{res}.tsv.gz'),
                                 f'depmap_24q4_changes_{res}.tsv.gz': md5_file(out / f'depmap_24q4_changes_{res}.tsv.gz')}}
+    excluded = {}
+    for src, ex in (('tcga_mc3', pd.DataFrame(tex, columns=EXCLUDED_COLUMNS)), ('depmap_24q4', dex[EXCLUDED_COLUMNS])):
+        ex = ex.sort_values(['canonical_UniProtAC', 'position', 'alt', 'source_id'], kind='stable')
+        write_gz(ex, out / f'{src}_changes_excluded.tsv.gz')
+        excluded[src] = {'rows': len(ex), 'proteins': int(ex['canonical_UniProtAC'].nunique()), 'md5': md5_file(out / f'{src}_changes_excluded.tsv.gz')}
     bg = background(canonical, tplaced, dplaced)
     write_gz(bg, out / 'cancer_change_protein_background.tsv.gz')
     if args.depmap_models:
@@ -427,6 +466,7 @@ def main() -> None:
         'denominators': {'tcga_tumor_samples': sum(len(v) for k, v in samples.items() if k),
                          'tcga_projects': len([k for k in samples if k]), 'depmap_lines_with_mutation_calls': int(lines)},
         'residues': written,
+        'excluded': excluded,
         'background_md5': md5_file(out / 'cancer_change_protein_background.tsv.gz'),
         'counts': dict(sorted(counts.items())),
     }
