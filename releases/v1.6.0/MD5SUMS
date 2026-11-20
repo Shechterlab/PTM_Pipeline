@@ -1,5 +1,5 @@
-86755f9d1096b041c25b7494b642ec5c  CHANGES.md
-3a04eb8f032446ef053d93e675c026a9  README.md
+7dfc8b8e5d99fcbf89faf54afc5ad293  CHANGES.md
+8b27c322e98a3eb046b2ecb09dacd539  README.md
 17dec6180dbf7e5651d215f0e6a38f4e  STUDIES.md
 b779587713cdad0cb3dd351b5b97a371  analyses/README.md
 61c1f5efc826b84542ae11b9cd0f8e95  analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv
@@ -59,7 +59,7 @@ ed0652550dcabf98079e38b851bb1c6b  analyses_with_lower_confidence/other_ptms/ptm_
 f2283b91ae43de2999770de4baba8cf7  analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv
 d7101c4b50ca7ee889196ff39af19c8e  analyses_with_lower_confidence/panther/panther_class_enrichment.tsv
 943dff2c27d23c73c39201ba1053a801  analyses_with_lower_confidence/statistics_v1.6.0.tsv
-6b9869a213b767026b9cc435c217bb47  data_dictionary.tsv
+721cdce69dbcc4c6eca42922d7155f5a  data_dictionary.tsv
 079ce9e22305fcb01fb9f035fca778f7  human_acetylation_sites_v1.6.0.tsv
 4164819cece8710a79904b9901cfa2bf  human_lysine_acylation_sites_v1.6.0.tsv
 fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.6.0.tsv
@@ -71,7 +71,7 @@ fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.6.0.tsv
 2b4cacbbedf48862d8c2816b9157c8fe  human_phosphorylation_sites_v1.6.0.tsv
 e01697c623934b97357e04a654fa07bd  human_sumoylation_sites_v1.6.0.tsv
 6e6491617eb7ff03429eee4a6a42cc2a  human_ubiquitination_sites_v1.6.0.tsv
-58e5283dddc36ac1f9fbcd9a42c9c6fd  release.json
+fff187835a8c93329de5731153a3f270  release.json
 bdeb58f4dbbc713a3059930c363b074a  statistics_v1.6.0.tsv
 c62a97c257bd354b8f4a336d9d9e65e9  statistics_with_lower_confidence_v1.6.0.tsv
 2132e4b6c309d92628360cddbccad3a9  studies_v1.6.0.tsv
@@ -150,4 +150,5 @@ f1e3fec12479bf2bbdef5a3323edbe00  supporting/phospho_site_interaction_records_v1
 d8068cdf2c8ea6b12f303f143051eeed  supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz
 e36ef60ecfc6bc6f5972707e37b1c643  supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz
 891b8caf4f6bf049e619e82a56b4b037  supporting/tcga_mc3_projects_v1.6.0.tsv
+e9d043b7798d4317a35a7e6d549dda64  supporting/variant_changes_excluded_v1.6.0.tsv.gz
 368e601f1752b6282ccff412cc0bc804  supporting/writer_perturbations_v1.6.0.tsv

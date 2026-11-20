@@ -1651,7 +1651,7 @@
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.5.1",
-  "release_code_commit": "487ebf90c8242653f4d71e03ae5039bf42815a40",
+  "release_code_commit": "36052256146a2c40b83c0e6ef2d58d11ae44f240",
   "release_date": "2026-11-19",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.5.1_to_v1.6.0.tsv",
@@ -1679,5 +1679,21 @@
     "CPLM": "CPLM 4.0 states no license (\"All Rights Reserved\") and compiles sites from other databases as well as from papers; it is not a source of the context marks (decided 17 November 2026)"
   },
   "title": "Human methylarginine sites, context marks, site-level interaction evidence, and cancer and germline variants",
+  "variant_changes_excluded": {
+    "by_reason": {
+      "position_beyond_sequence": 1211,
+      "residue_differs": 40845
+    },
+    "by_source": {
+      "clinvar": 2072,
+      "depmap_24q4": 611,
+      "gnomad_v4_1": 7078,
+      "tcga_mc3": 32295
+    },
+    "file": "supporting/variant_changes_excluded_v1.6.0.tsv.gz",
+    "md5": "e9d043b7798d4317a35a7e6d549dda64",
+    "proteins": 1240,
+    "rows": 42056
+  },
   "version": "v1.6.0"
 }

@@ -50,6 +50,10 @@ The rules are those of the arginine layer of earlier releases (`scripts/44b_extr
 
 NCBI places no restrictions on the use or distribution of ClinVar data (submitters may claim rights in what they submitted); cite ClinVar (Landrum et al., Nucleic Acids Res 46:D1062, 2018). The gnomAD primary data are CC0; cite gnomAD v4 (Chen et al., Nature 625:92, 2024). gnomAD's SpliceAI and CADD annotations, which carry non-commercial terms, are not used. gnomAD was read from Google's public copy (`gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/`), streamed (`scripts/69_stage_gnomad.py`); ClinVar from its FTP tables (`scripts/67_stage_clinvar.py`).
 
+## Changes not shown
+
+`supporting/variant_changes_excluded_v1.6.0.tsv.gz` lists the changes a source places on an entry that the change tables leave out because the residue the source names there differs from the canonical sequence's (UniProt 2026_03), or the position lies beyond it, where either residue is R, K, S, T or Y: for example a gene of a protein family whose own protein differs from the canonical one at that position. 42,056 changes on 1,240 proteins: TCGA MC3 32,295, DepMap 24Q4 611, ClinVar 2,072, gnomAD v4.1 7,078.
+
 ## Corrected: RBDmap and pCLAP in the interaction notes
 
 The interaction notes of v1.5.1's README said, under what the tables of methyllysine, lysine and phospho lack, that the extents of RBDmap fragments and pCLAP peptides are not republished. They are: the methylarginine interaction tables carry each RBDmap fragment and pCLAP peptide with its extent and sequence, credited (RBDmap: Castello et al. 2016, CC BY 4.0; pCLAP: Mullari et al. 2017, called from PRIDE PXD005739 with the rule of Mullari et al. 2023). This README says so; v1.5.1's published folder is left as archived.
@@ -81,9 +85,10 @@ The interaction notes of v1.5.1's README said, under what the tables of methylly
 - `supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz`
 - `supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz`
 - `supporting/tcga_mc3_projects_v1.6.0.tsv`
+- `supporting/variant_changes_excluded_v1.6.0.tsv.gz`
 
 ## Files renamed
 
 Every carried file is renamed `_v1.5.1` to `_v1.6.0`, its content unchanged except where it names its version: `STUDIES.md`, `analyses/MD5SUMS`, `analyses/README.md`, `analyses_with_lower_confidence/MD5SUMS`, `analyses_with_lower_confidence/README.md`, `human_methylarginine_sites_v1.6.0.xlsx`. `supporting/site_changes_v1.5.1_to_v1.6.0.tsv` replaces v1.5.1's site changes table; it lists every one of the 11,632 methylarginine sites as kept.
 
-Code: `scripts/66_stage_cancer_changes.py` (the K, S, T and Y change tables and the background), `scripts/67_stage_clinvar.py` (ClinVar), `scripts/69_stage_gnomad.py` (gnomAD), `scripts/68_release_cancer_changes.py` (this release), `scripts/65_carry_release.py` (carrying the previous release), at commit `487ebf90c8242653f4d71e03ae5039bf42815a40`.
+Code: `scripts/66_stage_cancer_changes.py` (the K, S, T and Y change tables and the background), `scripts/67_stage_clinvar.py` (ClinVar), `scripts/69_stage_gnomad.py` (gnomAD), `scripts/68_release_cancer_changes.py` (this release), `scripts/65_carry_release.py` (carrying the previous release), at commit `36052256146a2c40b83c0e6ef2d58d11ae44f240`.

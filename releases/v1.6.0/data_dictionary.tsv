@@ -1313,6 +1313,15 @@ supporting/gnomad_protein_background_v1.6.0.tsv.gz	residues	integer			residues o
 supporting/gnomad_protein_background_v1.6.0.tsv.gz	gnomad_variants	integer			gnomAD v4.1 exome variants on them
 supporting/gnomad_protein_background_v1.6.0.tsv.gz	gnomad_positions	integer			positions changed
 supporting/gnomad_protein_background_v1.6.0.tsv.gz	gnomad_allele_count	integer			summed allele count of those variants
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	position	integer			position the source gives on the canonical sequence's isoform
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	source	string	tcga_mc3; depmap_24q4; clinvar; gnomad_v4_1		the change table the change would have been in
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	source_id	string			TCGA tumor sample, DepMap model, ClinVar variation or gnomAD variant (GRCh38 chrom-pos-ref-alt)
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene, as in the change tables
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	source_ref	string			the residue the source names at the position
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	canonical_ref	string			the residue of the canonical sequence (UniProt 2026_03) at the position; empty beyond its end
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/variant_changes_excluded_v1.6.0.tsv.gz	reason	string	residue_differs; position_beyond_sequence	residue_differs = the source's residue differs from the canonical one; position_beyond_sequence = the position lies beyond the canonical sequence	why the change is not in the change tables (rows where either residue is R, K, S, T or Y)
 supporting/cancer_change_protein_background_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/cancer_change_protein_background_v1.6.0.tsv.gz	residue	string	R; K; S; T; Y; all		residue class; all = every residue of the protein
 supporting/cancer_change_protein_background_v1.6.0.tsv.gz	residues	integer			residues of that class in the canonical sequence (its length for all)
