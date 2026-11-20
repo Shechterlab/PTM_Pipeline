@@ -240,4 +240,4 @@ Sizes: `site_propensity_tcga_mc3_v1.7.0.tsv.gz` 18.1 MB, `site_propensity_depmap
 
 Every carried file is renamed `_v1.6.0` to `_v1.7.0`, its content unchanged except where it names its version: `STUDIES.md`, `analyses/MD5SUMS`, `analyses/README.md`, `analyses_with_lower_confidence/MD5SUMS`, `analyses_with_lower_confidence/README.md`, `human_methylarginine_sites_v1.7.0.xlsx`. `supporting/site_changes_v1.6.0_to_v1.7.0.tsv` replaces v1.6.0's site changes table; it lists every one of the 11,632 methylarginine sites as kept.
 
-Code: `scripts/70_stage_propensity.py` (coding sequences, rates, burden, H3 changes), `scripts/propensity.py` (the method), `scripts/71_release_propensity.py` (this release), `scripts/65_carry_release.py` (carrying the previous release), at commit `a4f91cff557c3f732a11198ee91938db0b5f62c0 (scripts modified)`.
+Code: `scripts/70_stage_propensity.py` (coding sequences, rates, burden, H3 changes), `scripts/propensity.py` (the method), `scripts/71_release_propensity.py` (this release), `scripts/65_carry_release.py` (carrying the previous release), at commit `fc4b670f89ba96178356eb37d29227d34d4b9780`.

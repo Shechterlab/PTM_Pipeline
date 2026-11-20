@@ -5566,7 +5566,7 @@
       }
     ]
   },
-  "release_code_commit": "a4f91cff557c3f732a11198ee91938db0b5f62c0 (scripts modified)",
+  "release_code_commit": "fc4b670f89ba96178356eb37d29227d34d4b9780",
   "release_date": "2026-11-20",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.6.0_to_v1.7.0.tsv",
