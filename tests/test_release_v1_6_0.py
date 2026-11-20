@@ -69,8 +69,9 @@ def test_previous_release_is_carried_unchanged():
 
 @pytest.mark.parametrize('res', RESIDUES)
 def test_change_tables_are_the_staged_layer_with_site_sets(res):
-    for src in ('tcga_mc3', 'depmap_24q4'):
-        staged = read(LAYERS / (f'{src}_arginine_changes.tsv' if res == 'R' else f'{src}_changes_{res}.tsv.gz'))
+    for src in ('tcga_mc3', 'depmap_24q4', 'clinvar', 'gnomad_v4_1'):
+        somatic_arginine = res == 'R' and src in ('tcga_mc3', 'depmap_24q4')
+        staged = read(LAYERS / (f'{src}_arginine_changes.tsv' if somatic_arginine else f'{src}_changes_{res}.tsv.gz'))
         t = read(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz')
         assert list(t.columns) == list(staged.columns) + ['site_sets']
         assert t.drop(columns='site_sets').equals(staged), (src, res)
@@ -112,8 +113,13 @@ def test_counts_in_release_json_readme_and_dictionary():
     for key, s in RELEASE['cancer_changes']['per_residue'].items():
         src, res = key.split('/')
         assert s['rows'] == len(read(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz'))
+    for r in RELEASE['germline_variants']['per_site_set']:
+        assert r['clinvar_pathogenic_sites'] <= r['clinvar_sites_changed'] <= r['sites'] and r['gnomad_v4_1_sites_changed'] <= r['sites']
+    for key, s in RELEASE['germline_variants']['per_residue'].items():
+        src, res = key.split('/')
+        assert s['rows'] == len(read(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz'))
     dd = read(REL / 'data_dictionary.tsv')
-    for f in RELEASE['cancer_changes']['files']:
+    for f in list(RELEASE['cancer_changes']['files']) + list(RELEASE['germline_variants']['files']):
         path = REL / f
         opener = gzip.open if f.endswith('.gz') else open
         with opener(path, 'rt', encoding='utf-8') as fh:
@@ -121,3 +127,14 @@ def test_counts_in_release_json_readme_and_dictionary():
         assert list(dd.loc[dd['file'] == f, 'column']) == cols, f
     assert not dd.duplicated(['file', 'column']).any()
     assert RELEASE['version'] == 'v1.6.0' and RELEASE['previous_version'] == 'v1.5.1'
+
+
+def test_rbdmap_pclap_line_corrected_and_previous_release_untouched():
+    readme = (REL / 'README.md').read_text(encoding='utf-8')
+    assert 'their extents are not republished' not in readme
+    assert 'The methylarginine tables carry them, with their extents and sequences' in readme and 'PXD005739' in readme
+    assert '## Corrected: RBDmap and pCLAP in the interaction notes' in (REL / 'CHANGES.md').read_text(encoding='utf-8')
+    assert RELEASE['corrections']
+    # the published v1.5.1 folder is left as archived
+    assert 'their extents are not republished' in (PREV / 'README.md').read_text(encoding='utf-8')
+    assert RELEASE['germline_variants']['gnomad']['license'].startswith('CC0')

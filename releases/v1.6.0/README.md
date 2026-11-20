@@ -1,6 +1,6 @@
-# Human methylarginine sites, context marks, site-level interaction evidence and cancer changes, v1.6.0
+# Human methylarginine sites, context marks, site-level interaction evidence, and cancer and germline variants, v1.6.0
 
-v1.6.0 holds everything of v1.5.1 under this release's names, its data unchanged: the methylarginine data of v1.4.3, the tables of context marks and the site-level interaction tables of every site set. It adds the somatic changes in TCGA tumors and DepMap cell lines at every candidate residue of the site sets, with the site sets each residue belongs to, and per-protein background counts. See CHANGES.md for what changed.
+v1.6.0 holds everything of v1.5.1 under this release's names, its data unchanged: the methylarginine data of v1.4.3, the tables of context marks and the site-level interaction tables of every site set. It adds, at every candidate residue of the site sets, the somatic changes in TCGA tumors and DepMap cell lines and the germline variants of ClinVar and gnomAD, each with the site sets the residue belongs to, and per-protein background counts. See CHANGES.md for what changed.
 
 ## New: somatic changes at every candidate residue
 
@@ -26,6 +26,29 @@ v1.6.0 holds everything of v1.5.1 under this release's names, its data unchanged
 The rules are those of the arginine layer of earlier releases (`scripts/44b_extract_tcga_mc3.py`, `scripts/44_stage_depmap.py`): TCGA calls with FILTER PASS (in OV and LAML also `wga` alone), read on a transcript UniProt assigns to the canonical isoform, else on the MAF's own transcript placed through its entry or gene symbol; DepMap calls on the canonical isoform; a change counts only where the 2026_03 canonical sequence has that residue. `scripts/66_stage_cancer_changes.py` stages the K, S, T and Y tables and, rerun on arginines, writes the arginine tables byte for byte. TCGA data are GDC open access (NIH Genomic Data Sharing policy; acknowledge TCGA and the MC3 publication, Ellrott et al., Cell Syst 6:271, 2018, and make no attempt to identify participants); DepMap 24Q4 is CC BY 4.0 (doi:10.25452/figshare.plus.27993248).
 
 `supporting/tcga_mc3_projects_v1.6.0.tsv` names the TCGA projects and their tumor samples, and `supporting/depmap_24q4_change_models_v1.6.0.tsv` the cell lines (name, lineage, primary disease).
+
+## New: germline variants at every candidate residue (ClinVar, gnomAD)
+
+`supporting/clinvar_changes_<residue>_v1.6.0.tsv.gz` and `supporting/gnomad_v4_1_changes_<residue>_v1.6.0.tsv.gz` list the human germline variants that change an arginine, lysine, serine, threonine or tyrosine of a reviewed canonical protein (a substitution or a stop), a known site or not, with `site_sets` as in the cancer tables. ClinVar (files of 2026-11-15 (hgvs4variation), 2026-11-16 (variant_summary)): one row per variation, with its germline classification, review status and stars, submitters, origin, conditions, somatic clinical impact and oncogenicity; the variant counts where one of its protein changes is written on a RefSeq protein UniProt assigns to the entry's displayed isoform. gnomAD v4.1 (730,947 exomes): one row per variant that passes every gnomAD filter, with its allele count and number, frequency, homozygotes, the ancestry group with the highest frequency and the highest filtering allele frequency; the change is VEP's, on a transcript UniProt assigns to the displayed isoform. Either way a variant counts only where the 2026_03 canonical sequence has that residue.
+
+| Residue | ClinVar variants | at known sites | of which pathogenic or likely pathogenic | gnomAD variants | at known sites |
+|---|---:|---:|---:|---:|---:|
+| Arginine (R) | 335,933 | 6,026 | 412 | 1,133,321 | 20,550 |
+| Lysine (K) | 99,522 | 15,986 | 995 | 517,573 | 75,792 |
+| Serine (S) | 186,004 | 23,071 | 947 | 965,320 | 108,765 |
+| Threonine (T) | 142,865 | 9,048 | 194 | 678,065 | 37,713 |
+| Tyrosine (Y) | 64,910 | 2,645 | 522 | 307,801 | 10,081 |
+
+| Site set | Sites | Sites with a ClinVar variant | with a pathogenic or likely pathogenic one | Sites with a gnomAD variant |
+|---|---:|---:|---:|---:|
+| Methylarginine (R) | 11,632 | 4,076 | 328 | 9,139 |
+| Methyllysine (K) | 5,178 | 693 | 46 | 2,819 |
+| Lysine acylation, ubiquitination and SUMOylation (K) | 90,876 | 12,028 | 866 | 49,864 |
+| Phosphorylation (S, T, Y) | 142,415 | 27,085 | 1,316 | 96,387 |
+
+`supporting/clinvar_protein_background_v1.6.0.tsv.gz` and `supporting/gnomad_protein_background_v1.6.0.tsv.gz` give, for each protein and residue class, the residues and the variants on them (and, for ClinVar, those pathogenic or likely pathogenic; for gnomAD, the summed allele count).
+
+NCBI places no restrictions on the use or distribution of ClinVar data (submitters may claim rights in what they submitted); cite ClinVar (Landrum et al., Nucleic Acids Res 46:D1062, 2018). The gnomAD primary data are CC0; cite gnomAD v4 (Chen et al., Nature 625:92, 2024). gnomAD's SpliceAI and CADD annotations, which carry non-commercial terms, are not used. gnomAD was read from Google's public copy (`gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/`), streamed (`scripts/69_stage_gnomad.py`); ClinVar from its FTP tables (`scripts/67_stage_clinvar.py`).
 
 ## Counts
 
@@ -104,7 +127,7 @@ The tables of methylarginine hold more kinds of evidence, classes and states tha
 
 ### Not in the tables of methyllysine, lysine, phospho
 
-- RBDmap fragments and pCLAP peptides: their extents are not republished.
+- RBDmap fragments and pCLAP peptides: `scripts/64` does not read them for these sets. The methylarginine tables carry them, with their extents and sequences: RBDmap from Castello et al., Mol Cell 63:696 (2016), doi:10.1016/j.molcel.2016.06.029 (CC BY 4.0); pCLAP, the RNA-binding peptides of Mullari et al., J Proteome Res 16:2762 (2017), doi:10.1021/acs.jproteome.7b00042, called by the pipeline from PRIDE PXD005739 with the rule of Mullari et al., Nat Commun 14:4348 (2023).
 - Predicted interfaces and contacts (ProtVar, AlphaFold DB) and IntAct features: the pipeline computes them for methylarginines only.
 - Enzyme-substrate records (kinases, writers and erasers).
 - Statistics: no test is run on these tables.
