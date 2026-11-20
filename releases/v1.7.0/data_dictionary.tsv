@@ -1437,6 +1437,10 @@ supporting/site_frequency_by_group_v1.7.0.tsv.gz	samples_mutated	integer			tumor
 supporting/site_frequency_by_group_v1.7.0.tsv.gz	samples_profiled	integer			tumor samples or cell lines of the group profiled
 supporting/site_frequency_by_group_v1.7.0.tsv.gz	samples_mutated_no_hypermutated	integer			samples_mutated, the hypermutated ones left out
 supporting/site_frequency_by_group_v1.7.0.tsv.gz	samples_profiled_no_hypermutated	integer			samples_profiled, the hypermutated ones left out
+supporting/group_denominators_v1.7.0.tsv	source	string	tcga_mc3; depmap_24q4		TCGA MC3 or DepMap 24Q4
+supporting/group_denominators_v1.7.0.tsv	group	string			TCGA project, or Oncotree lineage (empty: a DepMap line without one in Model.csv)
+supporting/group_denominators_v1.7.0.tsv	samples_profiled	integer			tumor samples or cell lines of the group profiled (sample_burden), changed or not
+supporting/group_denominators_v1.7.0.tsv	samples_profiled_no_hypermutated	integer			of those, not hypermutated
 supporting/sample_burden_v1.7.0.tsv	source	string	tcga_mc3; depmap_24q4		TCGA MC3 or DepMap 24Q4
 supporting/sample_burden_v1.7.0.tsv	sample_id	string			TCGA tumor sample (barcode to the sample, 15 characters) or DepMap model ID
 supporting/sample_burden_v1.7.0.tsv	group	string			TCGA project or Oncotree lineage

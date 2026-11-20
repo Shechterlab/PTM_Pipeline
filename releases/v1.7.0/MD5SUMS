@@ -1,5 +1,5 @@
-979482c7a6f3f132b47b6a4abb612433  CHANGES.md
-3a3f43f6a8fa1c17d8616f49bf34c313  README.md
+33abb23742af8004119f6ff9af2df7dc  CHANGES.md
+c7f56b5472324cc9a7506406c3d72e37  README.md
 e7d235fede99a4d31fe05f50131872a7  STUDIES.md
 d2a58dc3f63659eb8fc2da8c1455be7c  analyses/README.md
 61c1f5efc826b84542ae11b9cd0f8e95  analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv
@@ -59,7 +59,7 @@ ed0652550dcabf98079e38b851bb1c6b  analyses_with_lower_confidence/other_ptms/ptm_
 f2283b91ae43de2999770de4baba8cf7  analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv
 d7101c4b50ca7ee889196ff39af19c8e  analyses_with_lower_confidence/panther/panther_class_enrichment.tsv
 943dff2c27d23c73c39201ba1053a801  analyses_with_lower_confidence/statistics_v1.7.0.tsv
-14fa81c3fd00a8876b7a301e8beef6fd  data_dictionary.tsv
+90b189ebc208c8af7d29cdaa2ac34017  data_dictionary.tsv
 079ce9e22305fcb01fb9f035fca778f7  human_acetylation_sites_v1.7.0.tsv
 4164819cece8710a79904b9901cfa2bf  human_lysine_acylation_sites_v1.7.0.tsv
 fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.7.0.tsv
@@ -71,7 +71,7 @@ fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.7.0.tsv
 2b4cacbbedf48862d8c2816b9157c8fe  human_phosphorylation_sites_v1.7.0.tsv
 e01697c623934b97357e04a654fa07bd  human_sumoylation_sites_v1.7.0.tsv
 6e6491617eb7ff03429eee4a6a42cc2a  human_ubiquitination_sites_v1.7.0.tsv
-5ef1810d7cfb7c4f5abbc1d88f86f8d6  release.json
+62dfc137c4bc7b620a21839c0b962097  release.json
 bdeb58f4dbbc713a3059930c363b074a  statistics_v1.7.0.tsv
 c62a97c257bd354b8f4a336d9d9e65e9  statistics_with_lower_confidence_v1.7.0.tsv
 2132e4b6c309d92628360cddbccad3a9  studies_v1.7.0.tsv
@@ -108,6 +108,7 @@ acf63ff665963c33d85b05df6b614193  supporting/gnomad_v4_1_changes_K_v1.7.0.tsv.gz
 b54c17083223244ac93d80e665fe4764  supporting/gnomad_v4_1_changes_S_v1.7.0.tsv.gz
 839777896ef0563e8179488dcd025c21  supporting/gnomad_v4_1_changes_T_v1.7.0.tsv.gz
 39d38b28204d723805130cd67abd5f9b  supporting/gnomad_v4_1_changes_Y_v1.7.0.tsv.gz
+616f018232a9bd42f31c817b1ee96085  supporting/group_denominators_v1.7.0.tsv
 8ad0da59e7ee3cdad22eb9e2ba132ee1  supporting/hpa_locations_v1.7.0.tsv
 c89d0a813e1309bcb13fead0ca817229  supporting/htr_selex_v1.7.0.tsv
 a0a3f43e62e06859f7f060e258cea85a  supporting/lower_confidence_evidence_v1.7.0.tsv

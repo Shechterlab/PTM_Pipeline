@@ -4361,6 +4361,10 @@
     "entries": 20416,
     "entries_with_weights": 18717,
     "files": {
+      "supporting/group_denominators_v1.7.0.tsv": {
+        "md5": "616f018232a9bd42f31c817b1ee96085",
+        "rows": 66
+      },
       "supporting/mutation_rates_v1.7.0.tsv": {
         "md5": "6229a9e221bd075d12c213ae1b5fe9af",
         "rows": 488
@@ -5566,7 +5570,7 @@
       }
     ]
   },
-  "release_code_commit": "fc4b670f89ba96178356eb37d29227d34d4b9780",
+  "release_code_commit": "ed0df10536271f082107c4f7ad0b4423fa63d06f",
   "release_date": "2026-11-20",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.6.0_to_v1.7.0.tsv",

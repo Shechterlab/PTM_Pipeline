@@ -8,6 +8,7 @@ v1.7.0 asks, for each source, whether a residue is changed more (or less) often 
 
 - `supporting/site_propensity_<source>_v1.7.0.tsv.gz` (tcga_mc3, depmap_24q4, clinvar, gnomad_v4_1): every candidate residue (R, K, S, T, Y) that is a known site of a site set, changed or not, and every other candidate residue with a change: observed changes k, expected changes, O/E, binomial p and BH q, with an unweighted expectation beside it; TCGA and DepMap also without the hypermutated samples; gnomAD also the lower tail (depletion);
 - `supporting/site_frequency_by_group_v1.7.0.tsv.gz`: samples changed and profiled per residue and TCGA project or DepMap lineage (for waterfall and oncoprint views; the change tables keep the sample of every change);
+- `supporting/group_denominators_v1.7.0.tsv`: the samples profiled per TCGA project and DepMap lineage, all and not hypermutated, every group included (so a group without a changed sample shows k = 0);
 - `supporting/sample_burden_v1.7.0.tsv`: every TCGA sample and DepMap line, its coding calls, burden per Mb and whether it is hypermutated;
 - `supporting/mutation_rates_v1.7.0.tsv`: the spectra and rates the mutability comes from;
 - `supporting/site_set_propensity_v1.7.0.tsv`: per site set, residue, source and cohort, the changes at the set's sites within its proteins against expectation;
