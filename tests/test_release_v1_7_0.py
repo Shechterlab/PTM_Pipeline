@@ -115,6 +115,19 @@ def test_frequency_by_group_adds_up_to_k(tables):
         den = burden[burden['source'] == src].groupby('group').size()
         assert (s['samples_profiled'].astype(int).to_numpy() == s['group'].map(den).to_numpy()).all()
         assert (s['samples_mutated'].astype(int) <= s['samples_profiled'].astype(int)).all()
+    groups = read(REL / 'supporting' / 'group_denominators_v1.7.0.tsv')
+    for src in ('tcga_mc3', 'depmap_24q4'):
+        g = groups[groups['source'] == src]
+        bb = burden[burden['source'] == src]
+        assert g['samples_profiled'].astype(int).sum() == len(bb)
+        assert g['samples_profiled_no_hypermutated'].astype(int).sum() == int((bb['hypermutated'] != 'True').sum())
+        s = f[f['source'] == src].drop_duplicates('group')
+        both = s.merge(g, on='group', suffixes=('', '_den'))
+        assert len(both) == len(s) and (both['samples_profiled'] == both['samples_profiled_den']).all()
+        assert (both['samples_profiled_no_hypermutated'] == both['samples_profiled_no_hypermutated_den']).all()
+    projects = read(REL / 'supporting' / 'tcga_mc3_projects_v1.7.0.tsv').set_index('project_id')['tumour_samples']
+    tg = groups[groups['source'] == 'tcga_mc3'].set_index('group')['samples_profiled']
+    assert len(tg) == 33 and (tg == projects.reindex(tg.index)).all()
 
 
 def test_site_set_rows_add_up(tables):

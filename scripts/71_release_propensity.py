@@ -267,6 +267,12 @@ def main() -> None:
     name = f'supporting/site_frequency_by_group_{version}.tsv.gz'
     P.write_gz(freq, out / name)
     files[name] = {'rows': len(freq), 'md5': md5_file(out / name), 'bytes': (out / name).stat().st_size}
+    # every group's denominators, those without a changed sample included (for k = 0 per group)
+    den = pd.DataFrame([{'source': src, 'group': g, 'samples_profiled': n, 'samples_profiled_no_hypermutated': int(denom_nh[src].get(g, 0))}
+                        for src in SOMATIC for g, n in sorted(denom[src].items())])
+    name = f'supporting/group_denominators_{version}.tsv'
+    den.to_csv(out / name, sep='\t', index=False, lineterminator='\n')
+    files[name] = {'rows': len(den), 'md5': md5_file(out / name)}
 
     # burden and rates
     name = f'supporting/sample_burden_{version}.tsv'
@@ -491,6 +497,12 @@ def dictionary_rows(version: str) -> list[str]:
               ('samples_mutated_no_hypermutated', 'integer', '', '', 'samples_mutated, the hypermutated ones left out'),
               ('samples_profiled_no_hypermutated', 'integer', '', '', 'samples_profiled, the hypermutated ones left out')):
         rows.append('\t'.join([f, *c]))
+    f = f'supporting/group_denominators_{version}.tsv'
+    for c in (('source', 'string', 'tcga_mc3; depmap_24q4', '', 'TCGA MC3 or DepMap 24Q4'),
+              ('group', 'string', '', '', 'TCGA project, or Oncotree lineage (empty: a DepMap line without one in Model.csv)'),
+              ('samples_profiled', 'integer', '', '', 'tumor samples or cell lines of the group profiled (sample_burden), changed or not'),
+              ('samples_profiled_no_hypermutated', 'integer', '', '', 'of those, not hypermutated')):
+        rows.append('\t'.join([f, *c]))
     f = f'supporting/sample_burden_{version}.tsv'
     for c in (('source', 'string', 'tcga_mc3; depmap_24q4', '', 'TCGA MC3 or DepMap 24Q4'),
               ('sample_id', 'string', '', '', 'TCGA tumor sample (barcode to the sample, 15 characters) or DepMap model ID'),
@@ -641,6 +653,8 @@ def write_docs(args, prev, out, version, previous, arginine_sets, carried, edite
         'the hypermutated samples; gnomAD also the lower tail (depletion);',
         f'- `supporting/site_frequency_by_group_{version}.tsv.gz`: samples changed and profiled per residue and TCGA project or DepMap '
         'lineage (for waterfall and oncoprint views; the change tables keep the sample of every change);',
+        f'- `supporting/group_denominators_{version}.tsv`: the samples profiled per TCGA project and DepMap lineage, all and not '
+        'hypermutated, every group included (so a group without a changed sample shows k = 0);',
         f'- `supporting/sample_burden_{version}.tsv`: every TCGA sample and DepMap line, its coding calls, burden per Mb and whether it is hypermutated;',
         f'- `supporting/mutation_rates_{version}.tsv`: the spectra and rates the mutability comes from;',
         f'- `supporting/site_set_propensity_{version}.tsv`: per site set, residue, source and cohort, the changes at the set\'s sites '
