@@ -131,9 +131,9 @@
  },
  "excluded": {
   "tcga_mc3": {
-   "rows": 38804,
-   "proteins": 1148,
-   "md5": "3bb2986002cab1e409b98aa806f68c13"
+   "rows": 32295,
+   "proteins": 1011,
+   "md5": "f8a487fb92c1b1c3074c7bff0ba0b148"
   },
   "depmap_24q4": {
    "rows": 611,

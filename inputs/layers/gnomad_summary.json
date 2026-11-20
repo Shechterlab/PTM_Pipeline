@@ -253,9 +253,9 @@
   }
  },
  "excluded": {
-  "rows": 13763,
-  "proteins": 86,
-  "md5": "642dda29422e7973124c14008764a7ea"
+  "rows": 7078,
+  "proteins": 78,
+  "md5": "6343abf78f09ea26d796683f5a31c93d"
  },
  "background_md5": "22a457f6990f903491e7d47f628b15c5",
  "counts": {

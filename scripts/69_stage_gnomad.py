@@ -192,6 +192,10 @@ def stage(args) -> None:
         # where either residue is a candidate residue of the site sets
         bad = p[~ok].assign(canonical_ref=pd.Series(seq_res, index=p.index)[~ok])
         bad = bad[bad['ref_aa'].isin(CLASSES) | bad['canonical_ref'].isin(CLASSES)]
+        # a variant the entry kept through another of its transcripts is not left out
+        good = p[ok]
+        kept = set(zip(good['canonical_UniProtAC'], good['chrom'] + ':' + good['pos'] + ':' + good['ref'] + ':' + good['alt']))
+        bad = bad[[k not in kept for k in zip(bad['canonical_UniProtAC'], bad['chrom'] + ':' + bad['pos'] + ':' + bad['ref'] + ':' + bad['alt'])]]
         if len(bad):
             bad = bad.assign(source_id=bad['chrom'].str.removeprefix('chr') + '-' + bad['pos'] + '-' + bad['ref'] + '-' + bad['alt'],
                              gene=bad['transcript'].map(gene_of).fillna(''))

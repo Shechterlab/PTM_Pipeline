@@ -162,6 +162,8 @@ def test_changes_not_shown():
             kept |= set(zip(t['canonical_UniProtAC'], t['position'], t['alt'], t[who]))
         e = ex[ex['source'] == src]
         assert not kept & set(zip(e['canonical_UniProtAC'], e['position'], e['alt'], e['source_id'])), src
+        if src in ('clinvar', 'gnomad_v4_1'):        # a variant the entry kept under another expression or transcript is not listed
+            assert not {(a, w) for a, _, _, w in kept} & set(zip(e['canonical_UniProtAC'], e['source_id'])), src
     dd = read(REL / 'data_dictionary.tsv')
     assert list(dd.loc[dd['file'] == 'supporting/variant_changes_excluded_v1.6.0.tsv.gz', 'column']) == list(ex.columns)
     assert RELEASE['variant_changes_excluded']['rows'] == len(ex)

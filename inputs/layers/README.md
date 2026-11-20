@@ -124,8 +124,8 @@ the best reliability and counts a location as main when any of the genes has it 
   (`residue_differs`), or the position lies beyond it (`position_beyond_sequence`), where either residue is R, K, S, T or
   Y: entry, position, new residue, the source's ID (tumor sample, cell line, ClinVar variation, gnomAD variant), gene,
   both residues and the reason. A TCGA change read on the MAF's own transcript, which the staging tries on every entry of
-  its gene, is listed only if no entry kept it; a ClinVar variation kept at the same entry and position under another
-  RefSeq expression is not listed. The release joins the four as `supporting/variant_changes_excluded_<version>.tsv.gz`.
+  its gene, is listed only if no entry kept it; a variant the entry kept through another of its transcripts or RefSeq
+  expressions is not listed. The release joins the four as `supporting/variant_changes_excluded_<version>.tsv.gz`.
 
 ## CPLM tables
 

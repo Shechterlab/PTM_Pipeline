@@ -218,12 +218,12 @@ def main() -> None:
             bg.append([acc, cls, len(seq) if cls == 'all' else seq.count(cls), a[0], a[1], len(a[2])])
     write_gz(pd.DataFrame(bg, columns=BACKGROUND_COLUMNS), out / 'clinvar_protein_background.tsv.gz')
     # changes left out because the residue of the RefSeq protein's expression differs from the canonical sequence's (a variation
-    # kept at that entry and position under another expression is not left out)
-    kept = {(a, p, v) for a, p, _, v in changes}
+    # the entry kept under another of its expressions is not left out)
+    kept = {(a, v) for a, _, _, v in changes}
     ex = pd.DataFrame([{'canonical_UniProtAC': a, 'position': p, 'alt': al, 'source_id': v,
                         'gene': hgnc.symbol(entrez=gid, name=sym if sym not in ('', '-') else ''), 'source_ref': ref, 'canonical_ref': can,
                         'reason': 'residue_differs' if can else 'position_beyond_sequence'}
-                       for (a, p, al, v), (ref, can, sym, gid) in excluded.items() if (a, p, v) not in kept], columns=EXCLUDED_COLUMNS)
+                       for (a, p, al, v), (ref, can, sym, gid) in excluded.items() if (a, v) not in kept], columns=EXCLUDED_COLUMNS)
     ex['_v'] = pd.to_numeric(ex['source_id'], errors='coerce')
     ex = ex.sort_values(['canonical_UniProtAC', 'position', 'alt', '_v'], kind='stable').drop(columns='_v')
     write_gz(ex, out / 'clinvar_changes_excluded.tsv.gz')

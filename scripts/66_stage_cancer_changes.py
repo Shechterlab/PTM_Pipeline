@@ -196,7 +196,7 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
     best = {}
     for x in sorted(raw, key=lambda x: x[4]):
         best[(x[7], x[0], x[9], x[1], x[2], x[3], x[10], x[11], x[12])] = x
-    rows, placed, seen, excluded, kept_changes = [], [], set(), [], set()
+    rows, placed, seen, excluded, kept_changes, kept_on_entry = [], [], set(), [], set(), set()
     for x in sorted(best.values(), key=lambda x: (x[9], x[0], x[2], x[1], x[3], x[7], x[10], int(x[11]), x[12])):
         acc, ref, pos, alt = x[0], x[1], x[2], x[3]
         if not on_residue(canonical, acc, pos, ref):
@@ -204,6 +204,7 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
             excluded.append(x)
             continue
         kept_changes.add((x[7], x[9], x[1], x[2], x[3], x[10], x[11], x[12]))      # the change, on whichever entry
+        kept_on_entry.add((acc, x[7], x[10], x[11], x[12]))                       # the variant, on this entry
         key = (acc, pos, alt, x[7])
         if key in seen:
             continue
@@ -221,8 +222,10 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
         acc, ref, pos, alt = x[0], x[1], x[2], x[3]
         seq = canonical.get(acc, '')
         can = seq[pos - 1] if 1 <= pos <= len(seq) else ''
-        # a change read on the MAF's own transcript is tried on every entry of its gene: one that another entry kept is not left out
-        if not ({ref, can} & set(CLASSES)) or (x[5] == 'maf_transcript' and (x[7], x[9], x[1], x[2], x[3], x[10], x[11], x[12]) in kept_changes):
+        # a change read on the MAF's own transcript is tried on every entry of its gene: one that another entry kept is not left out;
+        # nor is a variant the entry kept through another of its transcripts
+        if (not ({ref, can} & set(CLASSES)) or (acc, x[7], x[10], x[11], x[12]) in kept_on_entry
+                or (x[5] == 'maf_transcript' and (x[7], x[9], x[1], x[2], x[3], x[10], x[11], x[12]) in kept_changes)):
             continue
         key = (acc, pos, alt, x[7])
         if key in ex_seen:
@@ -261,6 +264,8 @@ def depmap(args, canonical: dict, residues: list[str], counts: Counter, hgnc: HG
                        'canonical_ref': can, 'reason': ['residue_differs' if c else 'position_beyond_sequence' for c in can]})
     ex = ex[ex['source_ref'].isin(CLASSES) | ex['canonical_ref'].isin(CLASSES)]
     m = m[ok].drop_duplicates(['canonical_UniProtAC', 'position', 'alt', 'ModelID'])
+    kept = set(zip(m['canonical_UniProtAC'], m['position'], m['alt'], m['ModelID']))
+    ex = ex[[k not in kept for k in zip(ex['canonical_UniProtAC'], ex['position'], ex['alt'], ex['source_id'])]]
     counts['depmap_changes_placed_all_residues'] = len(m)
     placed = list(zip(m['canonical_UniProtAC'], m['ref'], m['position'], m['alt'], m['ModelID']))
     t = m[m['ref'].isin(residues)]
