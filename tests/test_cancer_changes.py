@@ -42,7 +42,8 @@ def test_change_tables_are_on_their_residue_in_the_arginine_columns(res):
     for name, arginine, sample in ((f'tcga_mc3_changes_{res}.tsv.gz', 'tcga_mc3_arginine_changes.tsv', 'sample_id'),
                                    (f'depmap_24q4_changes_{res}.tsv.gz', 'depmap_24q4_arginine_changes.tsv', 'model_id')):
         t = read(name)
-        assert list(t.columns) == list(pd.read_csv(LAYERS / arginine, sep='\t', nrows=0).columns), name
+        assert list(t.columns) == list(pd.read_csv(LAYERS / arginine, sep='\t', nrows=0).columns) + ['gene'], name
+        assert (t['gene'] != '').all(), name
         assert len(t) > 10000, name
         assert all(CANONICAL[a][int(p) - 1] == res for a, p in zip(t['canonical_UniProtAC'], t['position'])), name
         assert not t.duplicated(['canonical_UniProtAC', 'position', 'alt', sample]).any(), name
@@ -164,3 +165,35 @@ def test_gnomad_background_summary_and_manifest():
         assert (sub.loc[g.index, ['gnomad_variants', 'gnomad_positions']].to_numpy() == g[['n', 'p']].to_numpy()).all(), res
         assert summary['residues'][res]['variants'] == len(x) == int(manifest[f'layers/gnomad_v4_1_changes_{res}.tsv.gz']['rows'])
         assert manifest[f'layers/gnomad_v4_1_changes_{res}.tsv.gz']['md5'] == md5(LAYERS / f'gnomad_v4_1_changes_{res}.tsv.gz')
+
+
+
+def test_arginine_rows_staged_with_gene_are_the_arginine_layer():
+    """scripts/66 stages the TCGA and DepMap arginine rows again, with the gene: the same rows, byte for byte, as the arginine
+    layer tables (left as they are)."""
+    for src in ('tcga_mc3', 'depmap_24q4'):
+        new = read(f'{src}_changes_R.tsv.gz')
+        old = read(f'{src}_arginine_changes.tsv')
+        assert list(new.columns) == list(old.columns) + ['gene'] and new.drop(columns='gene').equals(old), src
+
+
+H4_GENES = {'H4C1', 'H4C2', 'H4C3', 'H4C4', 'H4C5', 'H4C6', 'H4C8', 'H4C9', 'H4C11', 'H4C12', 'H4C13', 'H4C14', 'H4C15', 'H4C16'}
+
+
+def test_histone_h4_rows_name_their_genes():
+    """Histone H4 (P62805) is encoded by 14 genes; every family names the gene of each change by its HGNC approved symbol.
+    Together they name the 12 genes with a change in any source: H4C14 and H4C15 (the chromosome 1 cluster) have none in MC3,
+    DepMap, ClinVar or among gnomAD's passing variants, though UniProt maps their transcripts to P62805."""
+    seen = set()
+    for fam in ('tcga_mc3', 'depmap_24q4', 'clinvar', 'gnomad_v4_1'):
+        for res in CLINVAR:
+            path = LAYERS / f'{fam}_changes_{res}.tsv.gz'
+            if not path.exists():
+                continue
+            t = read(path.name)
+            assert (t['gene'] != '').all(), path.name
+            genes = set(t.loc[t['canonical_UniProtAC'] == 'P62805', 'gene'].str.split(';').explode())
+            assert genes <= H4_GENES, (path.name, genes - H4_GENES)
+            assert not {g for g in t['gene'] if g.startswith('HIST')}, path.name      # 2017 symbols resolved to current ones
+            seen |= genes
+    assert seen == H4_GENES - {'H4C14', 'H4C15'}, (H4_GENES - {'H4C14', 'H4C15'}) ^ seen

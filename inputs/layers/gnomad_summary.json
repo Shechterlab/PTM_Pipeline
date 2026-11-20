@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-19",
+ "generated": "2026-11-20",
  "release": "gnomAD v4.1 exomes (730,947 exomes; files dated 2024-04-17)",
  "license": "CC0 1.0 (gnomAD primary data, https://github.com/broadinstitute/gnomad-browser/blob/main/browser/about/policies/terms.md); SpliceAI (CC BY-NC 4.0) and CADD (non-commercial) annotations not used",
  "citation": "Chen et al., Nature 625:92 (2024), doi:10.1038/s41586-023-06045-0 (gnomAD v4)",
@@ -203,6 +203,17 @@
    "ensembl_md5": "308c33bbed1d7db0f0200434a02a0551",
    "isoforms_md5": "d3ce32007c476fa6c134416594db9de2"
   },
+  "ensembl_gtf": {
+   "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+   "url": "https://ftp.ensembl.org/pub/release-105/gtf/homo_sapiens/Homo_sapiens.GRCh38.105.gtf.gz",
+   "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313"
+  },
+  "hgnc": {
+   "file": "hgnc_complete_set.txt",
+   "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt",
+   "md5": "2a30aa650f51d6fed261f79057463d5a",
+   "license": "CC0"
+  },
   "reference": {
    "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
    "md5": "c75aad9d197cbba00f51063f65a96ac4"
@@ -213,37 +224,43 @@
   "R": {
    "variants": 1133321,
    "positions": 499128,
-   "bytes": 29177727,
-   "md5": "a0591bb714366206d602de7037033304"
+   "bytes": 29535564,
+   "md5": "bca52405d0220bf268b2bc25dcce4f8d"
   },
   "K": {
    "variants": 517573,
    "positions": 354581,
-   "bytes": 12058622,
-   "md5": "feb2f7e5397b2d7b94bd7196994d8d40"
+   "bytes": 12295941,
+   "md5": "f65894ea482ab33e61b0c229d2e0a825"
   },
   "S": {
    "variants": 965320,
    "positions": 603169,
-   "bytes": 22554665,
-   "md5": "84445cb98cd573c78ae17534a6f15f97"
+   "bytes": 22872387,
+   "md5": "a4e411c0958d5471fc7b281d95e1d24e"
   },
   "T": {
    "variants": 678065,
    "positions": 417050,
-   "bytes": 16136434,
-   "md5": "bec07145f3b71d46834111fdb96096e9"
+   "bytes": 16405324,
+   "md5": "cfbcd8a7e8bbc19fe746c006b681d735"
   },
   "Y": {
    "variants": 307801,
    "positions": 194793,
-   "bytes": 7346993,
-   "md5": "3f507133403f89f7ba5bd91530d03419"
+   "bytes": 7533032,
+   "md5": "ae899afacfc592351c7932defc74349c"
   }
+ },
+ "excluded": {
+  "rows": 7078,
+  "proteins": 78,
+  "md5": "6343abf78f09ea26d796683f5a31c93d"
  },
  "background_md5": "22a457f6990f903491e7d47f628b15c5",
  "counts": {
   "changes_placed_all_residues": 12347170,
+  "changes_without_ensembl_105_gene": 0,
   "residue_not_on_canonical": 29870,
   "vep_entries_on_canonical_transcripts": 16787688
  }
