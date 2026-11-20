@@ -1033,6 +1033,38 @@ supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	likely_lof	boolean	True; False		D
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	position	integer			position of the arginine on the canonical sequence
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	variation_id	string			ClinVar variation ID (https://www.ncbi.nlm.nih.gov/clinvar/variation/<ID>/ lists its records)
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	refseq_protein	string			RefSeq protein the change is written on, a displayed isoform of the entry
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	variant_type	string			ClinVar variant type (single nucleotide variant, ...)
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	germline_classification	string			ClinVar aggregate germline classification (Pathogenic, Likely pathogenic, Uncertain significance, ...)
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	clinsig_simple	integer	1; 0; -1	1 = at least one current record pathogenic or likely pathogenic; 0 = none; -1 = no classification	ClinVar ClinSigSimple
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	review_status	string			ClinVar review status of the classification
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	review_stars	integer	0; 1; 2; 3; 4	4 = practice guideline; 3 = reviewed by expert panel; 2 = criteria provided, multiple submitters, no conflicts; 1 = criteria provided, single submitter or conflicting classifications; 0 = otherwise	ClinVar review stars
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	number_submitters	integer			submitters of the variation
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	origin	string			ClinVar OriginSimple (germline, somatic, ...)
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	conditions	string			ClinVar PhenotypeList, separated by | as ClinVar gives them
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	last_evaluated	string			date the classification was last evaluated
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	position	integer			position of the arginine on the canonical sequence
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	variant_id	string			gnomAD variant, GRCh38 chromosome-position-reference-alternate (gnomad.broadinstitute.org/variant/<ID>?dataset=gnomad_r4)
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	ac	integer			allele count in gnomAD v4.1 exomes
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	an	integer			allele number (alleles genotyped)
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	af	number			allele frequency
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	nhomalt	integer			homozygous individuals
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	grpmax	string			genetic ancestry group with the highest allele frequency
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	position	integer			position of the lysine on the canonical sequence
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
@@ -1055,6 +1087,38 @@ supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	likely_lof	boolean	True; False		D
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	position	integer			position of the lysine on the canonical sequence
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	variation_id	string			ClinVar variation ID (https://www.ncbi.nlm.nih.gov/clinvar/variation/<ID>/ lists its records)
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	refseq_protein	string			RefSeq protein the change is written on, a displayed isoform of the entry
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	variant_type	string			ClinVar variant type (single nucleotide variant, ...)
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	germline_classification	string			ClinVar aggregate germline classification (Pathogenic, Likely pathogenic, Uncertain significance, ...)
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	clinsig_simple	integer	1; 0; -1	1 = at least one current record pathogenic or likely pathogenic; 0 = none; -1 = no classification	ClinVar ClinSigSimple
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	review_status	string			ClinVar review status of the classification
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	review_stars	integer	0; 1; 2; 3; 4	4 = practice guideline; 3 = reviewed by expert panel; 2 = criteria provided, multiple submitters, no conflicts; 1 = criteria provided, single submitter or conflicting classifications; 0 = otherwise	ClinVar review stars
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	number_submitters	integer			submitters of the variation
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	origin	string			ClinVar OriginSimple (germline, somatic, ...)
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	conditions	string			ClinVar PhenotypeList, separated by | as ClinVar gives them
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	last_evaluated	string			date the classification was last evaluated
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	position	integer			position of the lysine on the canonical sequence
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	variant_id	string			gnomAD variant, GRCh38 chromosome-position-reference-alternate (gnomad.broadinstitute.org/variant/<ID>?dataset=gnomad_r4)
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	ac	integer			allele count in gnomAD v4.1 exomes
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	an	integer			allele number (alleles genotyped)
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	af	number			allele frequency
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	nhomalt	integer			homozygous individuals
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	grpmax	string			genetic ancestry group with the highest allele frequency
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	position	integer			position of the serine on the canonical sequence
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
@@ -1077,6 +1141,38 @@ supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	likely_lof	boolean	True; False		D
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	position	integer			position of the serine on the canonical sequence
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	variation_id	string			ClinVar variation ID (https://www.ncbi.nlm.nih.gov/clinvar/variation/<ID>/ lists its records)
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	refseq_protein	string			RefSeq protein the change is written on, a displayed isoform of the entry
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	variant_type	string			ClinVar variant type (single nucleotide variant, ...)
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	germline_classification	string			ClinVar aggregate germline classification (Pathogenic, Likely pathogenic, Uncertain significance, ...)
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	clinsig_simple	integer	1; 0; -1	1 = at least one current record pathogenic or likely pathogenic; 0 = none; -1 = no classification	ClinVar ClinSigSimple
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	review_status	string			ClinVar review status of the classification
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	review_stars	integer	0; 1; 2; 3; 4	4 = practice guideline; 3 = reviewed by expert panel; 2 = criteria provided, multiple submitters, no conflicts; 1 = criteria provided, single submitter or conflicting classifications; 0 = otherwise	ClinVar review stars
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	number_submitters	integer			submitters of the variation
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	origin	string			ClinVar OriginSimple (germline, somatic, ...)
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	conditions	string			ClinVar PhenotypeList, separated by | as ClinVar gives them
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	last_evaluated	string			date the classification was last evaluated
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	position	integer			position of the serine on the canonical sequence
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	variant_id	string			gnomAD variant, GRCh38 chromosome-position-reference-alternate (gnomad.broadinstitute.org/variant/<ID>?dataset=gnomad_r4)
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	ac	integer			allele count in gnomAD v4.1 exomes
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	an	integer			allele number (alleles genotyped)
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	af	number			allele frequency
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	nhomalt	integer			homozygous individuals
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	grpmax	string			genetic ancestry group with the highest allele frequency
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	position	integer			position of the threonine on the canonical sequence
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
@@ -1099,6 +1195,38 @@ supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	likely_lof	boolean	True; False		D
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	position	integer			position of the threonine on the canonical sequence
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	variation_id	string			ClinVar variation ID (https://www.ncbi.nlm.nih.gov/clinvar/variation/<ID>/ lists its records)
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	refseq_protein	string			RefSeq protein the change is written on, a displayed isoform of the entry
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	variant_type	string			ClinVar variant type (single nucleotide variant, ...)
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	germline_classification	string			ClinVar aggregate germline classification (Pathogenic, Likely pathogenic, Uncertain significance, ...)
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	clinsig_simple	integer	1; 0; -1	1 = at least one current record pathogenic or likely pathogenic; 0 = none; -1 = no classification	ClinVar ClinSigSimple
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	review_status	string			ClinVar review status of the classification
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	review_stars	integer	0; 1; 2; 3; 4	4 = practice guideline; 3 = reviewed by expert panel; 2 = criteria provided, multiple submitters, no conflicts; 1 = criteria provided, single submitter or conflicting classifications; 0 = otherwise	ClinVar review stars
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	number_submitters	integer			submitters of the variation
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	origin	string			ClinVar OriginSimple (germline, somatic, ...)
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	conditions	string			ClinVar PhenotypeList, separated by | as ClinVar gives them
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	last_evaluated	string			date the classification was last evaluated
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	position	integer			position of the threonine on the canonical sequence
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	variant_id	string			gnomAD variant, GRCh38 chromosome-position-reference-alternate (gnomad.broadinstitute.org/variant/<ID>?dataset=gnomad_r4)
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	ac	integer			allele count in gnomAD v4.1 exomes
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	an	integer			allele number (alleles genotyped)
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	af	number			allele frequency
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	nhomalt	integer			homozygous individuals
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	grpmax	string			genetic ancestry group with the highest allele frequency
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	position	integer			position of the tyrosine on the canonical sequence
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
@@ -1121,6 +1249,50 @@ supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	likely_lof	boolean	True; False		D
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	position	integer			position of the tyrosine on the canonical sequence
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	variation_id	string			ClinVar variation ID (https://www.ncbi.nlm.nih.gov/clinvar/variation/<ID>/ lists its records)
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	refseq_protein	string			RefSeq protein the change is written on, a displayed isoform of the entry
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	variant_type	string			ClinVar variant type (single nucleotide variant, ...)
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	germline_classification	string			ClinVar aggregate germline classification (Pathogenic, Likely pathogenic, Uncertain significance, ...)
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	clinsig_simple	integer	1; 0; -1	1 = at least one current record pathogenic or likely pathogenic; 0 = none; -1 = no classification	ClinVar ClinSigSimple
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	review_status	string			ClinVar review status of the classification
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	review_stars	integer	0; 1; 2; 3; 4	4 = practice guideline; 3 = reviewed by expert panel; 2 = criteria provided, multiple submitters, no conflicts; 1 = criteria provided, single submitter or conflicting classifications; 0 = otherwise	ClinVar review stars
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	number_submitters	integer			submitters of the variation
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	origin	string			ClinVar OriginSimple (germline, somatic, ...)
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	conditions	string			ClinVar PhenotypeList, separated by | as ClinVar gives them
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	last_evaluated	string			date the classification was last evaluated
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	position	integer			position of the tyrosine on the canonical sequence
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	alt	string	ACDEFGHIKLMNPQRSTVWY*		the residue after the change; * a stop
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	variant_id	string			gnomAD variant, GRCh38 chromosome-position-reference-alternate (gnomad.broadinstitute.org/variant/<ID>?dataset=gnomad_r4)
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	ac	integer			allele count in gnomAD v4.1 exomes
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	an	integer			allele number (alleles genotyped)
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	af	number			allele frequency
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	nhomalt	integer			homozygous individuals
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	grpmax	string			genetic ancestry group with the highest allele frequency
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
+supporting/clinvar_protein_background_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/clinvar_protein_background_v1.6.0.tsv.gz	residue	string	R; K; S; T; Y; all		residue class; all = every residue of the protein
+supporting/clinvar_protein_background_v1.6.0.tsv.gz	residues	integer			residues of that class in the canonical sequence (its length for all)
+supporting/clinvar_protein_background_v1.6.0.tsv.gz	clinvar_variants	integer			ClinVar variants on them
+supporting/clinvar_protein_background_v1.6.0.tsv.gz	clinvar_pathogenic	integer			of those, classified pathogenic or likely pathogenic (germline)
+supporting/clinvar_protein_background_v1.6.0.tsv.gz	clinvar_positions	integer			positions changed
+supporting/gnomad_protein_background_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+supporting/gnomad_protein_background_v1.6.0.tsv.gz	residue	string	R; K; S; T; Y; all		residue class; all = every residue of the protein
+supporting/gnomad_protein_background_v1.6.0.tsv.gz	residues	integer			residues of that class in the canonical sequence (its length for all)
+supporting/gnomad_protein_background_v1.6.0.tsv.gz	gnomad_variants	integer			gnomAD v4.1 exome variants on them
+supporting/gnomad_protein_background_v1.6.0.tsv.gz	gnomad_positions	integer			positions changed
+supporting/gnomad_protein_background_v1.6.0.tsv.gz	gnomad_allele_count	integer			summed allele count of those variants
 supporting/cancer_change_protein_background_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/cancer_change_protein_background_v1.6.0.tsv.gz	residue	string	R; K; S; T; Y; all		residue class; all = every residue of the protein
 supporting/cancer_change_protein_background_v1.6.0.tsv.gz	residues	integer			residues of that class in the canonical sequence (its length for all)

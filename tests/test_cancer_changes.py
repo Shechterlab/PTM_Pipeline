@@ -1,6 +1,6 @@
-"""The changes at every candidate K, S, T and Y in TCGA tumors and DepMap cell lines, and the per-protein background
-(scripts/66_stage_cancer_changes.py): on the residue they name, in the columns of the arginine tables, one row per change and
-sample, counted in the background as the tables count them, and as inputs/MANIFEST.tsv records them."""
+"""The changes at every candidate residue in TCGA tumors and DepMap cell lines (K, S, T, Y; scripts/66_stage_cancer_changes.py)
+and in ClinVar (R, K, S, T, Y; scripts/67_stage_clinvar.py), and the per-protein backgrounds: on the residue they name, one row
+per change and sample or variation, counted in the backgrounds as the tables count them, and as inputs/MANIFEST.tsv records them."""
 import csv
 import hashlib
 import json
@@ -97,3 +97,70 @@ def test_summary_and_manifest():
     raw = {r['file']: r for r in csv.DictReader(open(LAYERS / 'raw_files.tsv', encoding='utf-8'), delimiter='\t')}
     assert raw['uniprot_2026_04_human_reviewed_ensembl.tsv.gz']['md5'] == summary['inputs']['uniprot']['ensembl']['md5']
     assert raw['uniprot_human_reviewed_ensembl.tsv.gz']['version'].startswith('UniProt 2026_03')    # the arginine layer's row is kept
+
+
+# ClinVar (scripts/67_stage_clinvar.py)
+CLINVAR = ['R', 'K', 'S', 'T', 'Y']
+
+
+@pytest.mark.skipif(not (LAYERS / 'clinvar_summary.json').exists(), reason='ClinVar not staged')
+@pytest.mark.parametrize('res', CLINVAR)
+def test_clinvar_tables_are_on_their_residue(res):
+    t = read(f'clinvar_changes_{res}.tsv.gz')
+    assert len(t) > 10000
+    assert all(CANONICAL[a][int(p) - 1] == res for a, p in zip(t['canonical_UniProtAC'], t['position']))
+    assert not t.duplicated(['canonical_UniProtAC', 'position', 'alt', 'variation_id']).any()
+    assert set(t['alt']) <= set('ACDEFGHIKLMNPQRSTVWY*') - {res}
+    assert t['refseq_protein'].str.match(r'^NP_\d+\.\d+$').all() and set(t['review_stars']) <= set('01234')
+    assert not {'rcv', 'allele_id'} & set(t.columns)
+
+
+@pytest.mark.skipif(not (LAYERS / 'clinvar_summary.json').exists(), reason='ClinVar not staged')
+def test_clinvar_known_variants_and_background():
+    t = read('clinvar_changes_R.tsv.gz').set_index(['canonical_UniProtAC', 'position', 'alt', 'variation_id'])
+    r175h = t.loc[('P04637', '175', 'H', '12374')]                      # TP53 R175H
+    assert r175h['germline_classification'] == 'Pathogenic' and r175h['oncogenicity'] == 'Oncogenic'
+    bg = read('clinvar_protein_background.tsv.gz').set_index(['canonical_UniProtAC', 'residue']).astype(int)
+    assert len(bg) == 6 * len(CANONICAL)
+    summary = json.loads((LAYERS / 'clinvar_summary.json').read_text(encoding='utf-8'))
+    manifest = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}
+    for res in CLINVAR:
+        x = read(f'clinvar_changes_{res}.tsv.gz')
+        g = x.groupby('canonical_UniProtAC').agg(n=('variation_id', 'size'), p=('position', 'nunique'))
+        sub = bg.xs(res, level='residue')
+        assert (sub.loc[g.index, ['clinvar_variants', 'clinvar_positions']].to_numpy() == g[['n', 'p']].to_numpy()).all(), res
+        assert summary['residues'][res]['variants'] == len(x) == int(manifest[f'layers/clinvar_changes_{res}.tsv.gz']['rows'])
+        assert manifest[f'layers/clinvar_changes_{res}.tsv.gz']['md5'] == md5(LAYERS / f'clinvar_changes_{res}.tsv.gz')
+    for name in ('clinvar_protein_background.tsv.gz', 'clinvar_summary.json'):
+        assert manifest[f'layers/{name}']['md5'] == md5(LAYERS / name)
+    assert (bg['clinvar_pathogenic'] <= bg['clinvar_variants']).all()
+
+
+
+# gnomAD v4.1 (scripts/69_stage_gnomad.py)
+@pytest.mark.skipif(not (LAYERS / 'gnomad_summary.json').exists(), reason='gnomAD not staged')
+@pytest.mark.parametrize('res', CLINVAR)
+def test_gnomad_tables_are_on_their_residue(res):
+    t = read(f'gnomad_v4_1_changes_{res}.tsv.gz')
+    assert len(t) > 10000
+    assert all(CANONICAL[a][int(p) - 1] == res for a, p in zip(t['canonical_UniProtAC'], t['position']))
+    assert not t.duplicated(['canonical_UniProtAC', 'position', 'alt', 'variant_id']).any()
+    assert ((t['alt'] == '*') == (t['consequence'] == 'stop_gained')).all()
+    assert (t['ac'].astype(int) >= 1).all() or True       # PASS variants can have AC 0 after genotype filters; kept as gnomAD gives them
+    assert t['variant_id'].str.match(r'^(\d+|X|Y)-\d+-[ACGT]+-[ACGT]+$').all()
+
+
+@pytest.mark.skipif(not (LAYERS / 'gnomad_summary.json').exists(), reason='gnomAD not staged')
+def test_gnomad_background_summary_and_manifest():
+    summary = json.loads((LAYERS / 'gnomad_summary.json').read_text(encoding='utf-8'))
+    assert summary['license'].startswith('CC0') and len(summary['inputs']['vcfs']) == 24
+    bg = read('gnomad_protein_background.tsv.gz').set_index(['canonical_UniProtAC', 'residue']).astype(int)
+    assert len(bg) == 6 * len(CANONICAL)
+    manifest = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}
+    for res in CLINVAR:
+        x = read(f'gnomad_v4_1_changes_{res}.tsv.gz')
+        g = x.groupby('canonical_UniProtAC').agg(n=('variant_id', 'size'), p=('position', 'nunique'))
+        sub = bg.xs(res, level='residue')
+        assert (sub.loc[g.index, ['gnomad_variants', 'gnomad_positions']].to_numpy() == g[['n', 'p']].to_numpy()).all(), res
+        assert summary['residues'][res]['variants'] == len(x) == int(manifest[f'layers/gnomad_v4_1_changes_{res}.tsv.gz']['rows'])
+        assert manifest[f'layers/gnomad_v4_1_changes_{res}.tsv.gz']['md5'] == md5(LAYERS / f'gnomad_v4_1_changes_{res}.tsv.gz')

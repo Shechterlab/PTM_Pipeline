@@ -1,6 +1,6 @@
 # Changes from v1.5.1 to v1.6.0
 
-Everything of v1.5.1 is in v1.6.0 under this release's names, its data unchanged. v1.6.0 adds the somatic changes at every candidate residue of the site sets, in TCGA tumors and DepMap cell lines.
+Everything of v1.5.1 is in v1.6.0 under this release's names, its data unchanged. v1.6.0 adds the somatic changes at every candidate residue of the site sets, in TCGA tumors and DepMap cell lines, and the germline variants of ClinVar and gnomAD there.
 
 ## New: somatic changes at every candidate residue
 
@@ -27,15 +27,54 @@ The rules are those of the arginine layer of earlier releases (`scripts/44b_extr
 
 `supporting/tcga_mc3_projects_v1.6.0.tsv` names the TCGA projects and their tumor samples, and `supporting/depmap_24q4_change_models_v1.6.0.tsv` the cell lines (name, lineage, primary disease).
 
+## New: germline variants at every candidate residue (ClinVar, gnomAD)
+
+`supporting/clinvar_changes_<residue>_v1.6.0.tsv.gz` and `supporting/gnomad_v4_1_changes_<residue>_v1.6.0.tsv.gz` list the human germline variants that change an arginine, lysine, serine, threonine or tyrosine of a reviewed canonical protein (a substitution or a stop), a known site or not, with `site_sets` as in the cancer tables. ClinVar (files of 2026-11-15 (hgvs4variation), 2026-11-16 (variant_summary)): one row per variation, with its germline classification, review status and stars, submitters, origin, conditions, somatic clinical impact and oncogenicity; the variant counts where one of its protein changes is written on a RefSeq protein UniProt assigns to the entry's displayed isoform. gnomAD v4.1 (730,947 exomes): one row per variant that passes every gnomAD filter, with its allele count and number, frequency, homozygotes, the ancestry group with the highest frequency and the highest filtering allele frequency; the change is VEP's, on a transcript UniProt assigns to the displayed isoform. Either way a variant counts only where the 2026_03 canonical sequence has that residue.
+
+| Residue | ClinVar variants | at known sites | of which pathogenic or likely pathogenic | gnomAD variants | at known sites |
+|---|---:|---:|---:|---:|---:|
+| Arginine (R) | 335,933 | 6,026 | 412 | 1,133,321 | 20,550 |
+| Lysine (K) | 99,522 | 15,986 | 995 | 517,573 | 75,792 |
+| Serine (S) | 186,004 | 23,071 | 947 | 965,320 | 108,765 |
+| Threonine (T) | 142,865 | 9,048 | 194 | 678,065 | 37,713 |
+| Tyrosine (Y) | 64,910 | 2,645 | 522 | 307,801 | 10,081 |
+
+| Site set | Sites | Sites with a ClinVar variant | with a pathogenic or likely pathogenic one | Sites with a gnomAD variant |
+|---|---:|---:|---:|---:|
+| Methylarginine (R) | 11,632 | 4,076 | 328 | 9,139 |
+| Methyllysine (K) | 5,178 | 693 | 46 | 2,819 |
+| Lysine acylation, ubiquitination and SUMOylation (K) | 90,876 | 12,028 | 866 | 49,864 |
+| Phosphorylation (S, T, Y) | 142,415 | 27,085 | 1,316 | 96,387 |
+
+`supporting/clinvar_protein_background_v1.6.0.tsv.gz` and `supporting/gnomad_protein_background_v1.6.0.tsv.gz` give, for each protein and residue class, the residues and the variants on them (and, for ClinVar, those pathogenic or likely pathogenic; for gnomAD, the summed allele count).
+
+NCBI places no restrictions on the use or distribution of ClinVar data (submitters may claim rights in what they submitted); cite ClinVar (Landrum et al., Nucleic Acids Res 46:D1062, 2018). The gnomAD primary data are CC0; cite gnomAD v4 (Chen et al., Nature 625:92, 2024). gnomAD's SpliceAI and CADD annotations, which carry non-commercial terms, are not used. gnomAD was read from Google's public copy (`gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/`), streamed (`scripts/69_stage_gnomad.py`); ClinVar from its FTP tables (`scripts/67_stage_clinvar.py`).
+
+## Corrected: RBDmap and pCLAP in the interaction notes
+
+The interaction notes of v1.5.1's README said, under what the tables of methyllysine, lysine and phospho lack, that the extents of RBDmap fragments and pCLAP peptides are not republished. They are: the methylarginine interaction tables carry each RBDmap fragment and pCLAP peptide with its extent and sequence, credited (RBDmap: Castello et al. 2016, CC BY 4.0; pCLAP: Mullari et al. 2017, called from PRIDE PXD005739 with the rule of Mullari et al. 2023). This README says so; v1.5.1's published folder is left as archived.
+
 ## New files
 
 - `supporting/cancer_change_protein_background_v1.6.0.tsv.gz`
+- `supporting/clinvar_changes_K_v1.6.0.tsv.gz`
+- `supporting/clinvar_changes_R_v1.6.0.tsv.gz`
+- `supporting/clinvar_changes_S_v1.6.0.tsv.gz`
+- `supporting/clinvar_changes_T_v1.6.0.tsv.gz`
+- `supporting/clinvar_changes_Y_v1.6.0.tsv.gz`
+- `supporting/clinvar_protein_background_v1.6.0.tsv.gz`
 - `supporting/depmap_24q4_change_models_v1.6.0.tsv`
 - `supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz`
 - `supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz`
 - `supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz`
 - `supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz`
 - `supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz`
+- `supporting/gnomad_protein_background_v1.6.0.tsv.gz`
+- `supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz`
+- `supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz`
+- `supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz`
+- `supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz`
+- `supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz`
 - `supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz`
 - `supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz`
 - `supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz`
@@ -47,4 +86,4 @@ The rules are those of the arginine layer of earlier releases (`scripts/44b_extr
 
 Every carried file is renamed `_v1.5.1` to `_v1.6.0`, its content unchanged except where it names its version: `STUDIES.md`, `analyses/MD5SUMS`, `analyses/README.md`, `analyses_with_lower_confidence/MD5SUMS`, `analyses_with_lower_confidence/README.md`, `human_methylarginine_sites_v1.6.0.xlsx`. `supporting/site_changes_v1.5.1_to_v1.6.0.tsv` replaces v1.5.1's site changes table; it lists every one of the 11,632 methylarginine sites as kept.
 
-Code: `scripts/66_stage_cancer_changes.py` (the K, S, T and Y change tables and the background), `scripts/68_release_cancer_changes.py` (this release), `scripts/65_carry_release.py` (carrying the previous release), at commit `72818af85bf146475d676a7af35c362cf62fea78`.
+Code: `scripts/66_stage_cancer_changes.py` (the K, S, T and Y change tables and the background), `scripts/67_stage_clinvar.py` (ClinVar), `scripts/69_stage_gnomad.py` (gnomAD), `scripts/68_release_cancer_changes.py` (this release), `scripts/65_carry_release.py` (carrying the previous release), at commit `e7757ee0bf185736ee663ee87eb0f42cb4665346`.
