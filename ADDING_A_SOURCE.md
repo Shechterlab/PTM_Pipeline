@@ -79,7 +79,7 @@ Test the way the other tests are done, so that a layer's numbers mean what the r
 
 - **Per-protein data** go in 64 shard files named by `shard_of(accession)` (as `scripts/44c_export_depmap.py` and
   `scripts/36c` compute it). A page loads only its protein's file. A small layer (a few hundred kB) can write one file,
-  which `loadLayer(name)` in `docs/assets/explorer.js` fetches once, when a card first needs it (`perturbations.json`,
+  which `loadLayer(name)` in `docs/assets/explorer.js` (the old explorer, kept in the `v1.6.0` tag; the explorers are now PTMcontext's) fetches once, when a card first needs it (`perturbations.json`,
   `reactome.json`, `paxdb.json`, `curation.json`).
 - **The release's statistics of the layer** go into the layer's `meta.json` as `stats` rows with `stats_fields`. The
   website then shows the release's own numbers (`layerStats` in `docs/assets/explorer.js`) and does not compute them a
@@ -95,7 +95,7 @@ Test the way the other tests are done, so that a layer's numbers mean what the r
 ## 4. Check it
 
 1. `python scripts/release_layers.py check --inputs inputs`.
-2. Build into scratch, not into `releases/` or `docs/data/`:
+2. Build into scratch, not into `releases/` or `build/explorer_data/`:
 
    ```
    RELEASE_OUT=/tmp/rel SITE_OUT=/tmp/site PREVIOUS=releases/vX.Y.Z bash hpc/build_release.sh vNEXT /tmp/work

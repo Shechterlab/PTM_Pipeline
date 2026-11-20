@@ -14,16 +14,16 @@ domain context of the analyses uses, and interpro_108.0_all_entry_intervals.tsv 
 
 Writes two files:
 
-  docs/data/interpro/pNN.json, for the proteins of the site data (docs/data/methylarg_sites_all.json, which holds the
+  build/explorer_data/interpro/pNN.json, for the proteins of the site data (build/explorer_data/methylarg_sites_all.json, which holds the
   lower-confidence tier's proteins too), one file per shard(accession): {names: [[InterPro accession, name, type]], prot:
   {accession: [domains, families]}}, each [[start, end, index into names, [indices of entries covering the same
-  stretch]?], ...]; and docs/data/pred_iface/pNN.json, the predicted protein-contact runs of scripts/37 (--pred-iface,
+  stretch]?], ...]; and build/explorer_data/pred_iface/pNN.json, the predicted protein-contact runs of scripts/37 (--pred-iface,
   the view with lower-confidence sites, whose proteins include the others'), {prot: {accession: runs}, partners:
   {accession: [[partner, gene, best pDockQ x100, served model order]]}}: a protein page
   reads one small file of each.
 
-  docs/data/methylarg_proteome.json and docs/data/proteome/pNN.json, for the reviewed human proteins of UniProt
-  2026_03 with no site in the default view (docs/data/methylarg_sites.json), which the explorer shows on a light page.
+  build/explorer_data/methylarg_proteome.json and build/explorer_data/proteome/pNN.json, for the reviewed human proteins of UniProt
+  2026_03 with no site in the default view (build/explorer_data/methylarg_sites.json), which the explorer shows on a light page.
   The index is small, for search: {meta, shards, prot: [[accession, gene, lower-confidence sites]]}. Each protein's
   record is in shard shard(accession) (shard() below; the explorer computes the same): {names, prot: {accession:
   [protein name, length, disorder [[start, end]], domains, families, CD-CODE condensate ids, in-cell RNA/DNA evidence
@@ -110,12 +110,12 @@ def main() -> None:
     ap.add_argument('--entries', default='inputs/reference/uniprot_human_reviewed_2026_03_entries.tsv', type=Path)
     ap.add_argument('--disorder', default='inputs/annotation/mobidb_disorder_intervals_2026-03-30.tsv', type=Path)
     ap.add_argument('--cdcode', default='inputs/annotation/cdcode_protein_membership_v2.2.tsv', type=Path)
-    ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json', type=Path)
-    ap.add_argument('--sites-all-json', default='docs/data/methylarg_sites_all.json', type=Path)
-    ap.add_argument('--out-dir', default='docs/data', type=Path, help='writes interpro/ and pred_iface/ shards here')
+    ap.add_argument('--sites-json', default='build/explorer_data/methylarg_sites.json', type=Path)
+    ap.add_argument('--sites-all-json', default='build/explorer_data/methylarg_sites_all.json', type=Path)
+    ap.add_argument('--out-dir', default='build/explorer_data', type=Path, help='writes interpro/ and pred_iface/ shards here')
     ap.add_argument('--pred-iface', required=True, type=Path,
                     help='scripts/37 --pred-iface-out of the view with lower-confidence sites, split into <out-dir>/pred_iface/')
-    ap.add_argument('--proteome-out', default='docs/data/methylarg_proteome.json', type=Path)
+    ap.add_argument('--proteome-out', default='build/explorer_data/methylarg_proteome.json', type=Path)
     ap.add_argument('--shards', type=int, default=64, help='detail files under <proteome-out dir>/proteome/')
     ap.add_argument('--binding', required=True, type=Path, help='the in-cell RNA/DNA evidence of these proteins (scripts/37 --unlisted-out)')
     ap.add_argument('--release', default='InterPro 108.0')
@@ -220,7 +220,7 @@ def main() -> None:
         'generated': dt.date.today().isoformat(),
         'script': 'scripts/36c_export_interpro_domains.py',
         'reference': rel(a.entries), 'disorder': rel(a.disorder), 'condensates': rel(a.cdcode), 'interpro': meta['rule'],
-        'rule': 'Reviewed human proteins of UniProt 2026_03 with no methylarginine site in the default view; lower-confidence sites counted from docs/data/' + a.sites_all_json.name,   # where the website publishes it, wherever this build wrote it
+        'rule': 'Reviewed human proteins of UniProt 2026_03 with no methylarginine site in the default view; lower-confidence sites counted from build/explorer_data/' + a.sites_all_json.name,   # where the website publishes it, wherever this build wrote it
         'proteins': len(index_rows), 'with_lower_confidence_sites': sum(1 for x in index_rows if x[2]),
         'fields': ['accession', 'gene', 'lower_confidence_sites'],
         'shard_fields': ['protein_name', 'length', 'disorder_intervals', 'interpro_domains', 'interpro_families', 'cdcode_condensates', 'in_cell_rna_dna_evidence'],

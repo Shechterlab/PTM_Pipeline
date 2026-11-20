@@ -5,7 +5,8 @@
 The human protein arginine methylation sites of DeAngelo, Silverstein & Shechter, *Protein arginine methylation
 rewires molecular interactions*, Cell Chem Biol 33:1404–1421 (2026),
 [doi:10.1016/j.chembiol.2026.09.011](https://doi.org/10.1016/j.chembiol.2026.09.011): the data, the code that builds
-them, and the [Methylarginine Site Explorer](https://shechterlab.github.io/PTM_Pipeline/) website.
+them. The explorer of these data is PTMcontext's [methylarginine explorer](https://shechterlab.github.io/ptmcontext/methylarginine/)
+(all explorers: https://shechterlab.github.io/ptmcontext/); the pages under `docs/` redirect there.
 
 ## Versions
 
@@ -55,7 +56,7 @@ dictionary and a record of what changed since the release before.
 | Folder | Holds |
 |---|---|
 | [`releases/`](releases/) | the site union, one folder per version |
-| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/`, `docs/v1.3.0/`, `docs/v1.3.1/`, `docs/v1.4.0/`, `docs/v1.4.1/` and `docs/v1.4.2/` the releases since, unchanged |
+| [`docs/`](docs/) | pages that redirect to PTMcontext (GitHub Pages serves them); the Methylarginine Site Explorer that stood here, with its per-version copies, is in the git history |
 | [`inputs/`](inputs/) | every file a release and the website are built from, with `MANIFEST.tsv` |
 | [`provenance/`](provenance/) | where the sites come from, in one page |
 | [`scripts/`](scripts/) | the pipeline, numbered by step |
@@ -102,8 +103,8 @@ places each record on the reference sequences, keeps as sites only the records t
 paralog rule included), keeps the arginines that fail as lower-confidence sites, stops if a record is placed against
 its own evidence or a site is not an arginine, runs the analyses twice (on the sites, and with the lower-confidence
 sites that are surely methylarginine), and writes `releases/VERSION/` (with the changes traced from `PREVIOUS`
-and both analyses' result tables) and the website's data in `docs/data/` (the view with lower-confidence sites as
-`methylarg_*_all.json`). It writes the checksums last and checks them (`md5sum -c MD5SUMS` in the release folder and
+and both analyses' result tables) and the explorer data in `build/explorer_data/` (the view with lower-confidence sites as `methylarg_*_all.json`;
+not kept in git, since the explorers are PTMcontext's). It writes the checksums last and checks them (`md5sum -c MD5SUMS` in the release folder and
 in each analyses folder). v1.1.0, which placed records without localization, is
 rebuilt with `PREVIOUS=releases/v1.0.0 STUDIES='' LOCALISED_ONLY=0 bash hpc/build_release.sh v1.1.0`; the header of
 `hpc/build_release.sh` lists the options. It takes about three hours on one core.
@@ -153,7 +154,7 @@ figures; they read staged files from `PTM_data/` and write `PTM_results/` (paths
 
 Cite the paper and the studies that reported the sites you use (each release's studies table lists them). For the
 data, add their archive on Zenodo, [doi:10.5281/zenodo.22696798](https://doi.org/10.5281/zenodo.22696798), which
-opens the most recent version and lists every version with its own DOI (v1.5.1 is
-[doi:10.5281/zenodo.24373077](https://doi.org/10.5281/zenodo.24373077)). Code is MIT;
+opens the most recent version and lists every version with its own DOI (v1.6.0 is
+[doi:10.5281/zenodo.24406688](https://doi.org/10.5281/zenodo.24406688)). Code is MIT;
 data and content are CC BY-NC-SA 4.0; third-party data keep their own terms, and PhosphoSitePlus®, DisGeNET, CD-CODE,
 the pepR-MS compendium and the Trendel et al. 2025 DNA crosslinks are non-commercial. See [LICENSE.md](LICENSE.md).

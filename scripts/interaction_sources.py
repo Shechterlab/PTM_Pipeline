@@ -909,7 +909,7 @@ def main() -> None:
     import argparse
     ap = argparse.ArgumentParser(description='the website file of the interaction records of a release folder (or of its view with lower-confidence sites)')
     ap.add_argument('--release', required=True)
-    ap.add_argument('--site-out', default='docs/data')
+    ap.add_argument('--site-out', default='build/explorer_data')
     ap.add_argument('--name', default='site_partners.json')
     args = ap.parse_args()
     version = json.loads((Path(args.release) / 'release.json').read_text())['version']
