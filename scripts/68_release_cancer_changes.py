@@ -69,6 +69,7 @@ RIGHT_LINE = ('- RBDmap fragments and pCLAP peptides: `scripts/64` does not read
               '(CC BY 4.0); pCLAP, the RNA-binding peptides of Mullari et al., J Proteome Res 16:2762 (2017), doi:10.1021/acs.jproteome.7b00042, '
               'called by the pipeline from PRIDE PXD005739 with the rule of Mullari et al., Nat Commun 14:4348 (2023).')
 NAMES = {'R': 'arginine', 'K': 'lysine', 'S': 'serine', 'T': 'threonine', 'Y': 'tyrosine'}
+EXCLUDED_COLUMNS = ['canonical_UniProtAC', 'position', 'source', 'source_id', 'gene', 'source_ref', 'canonical_ref', 'alt', 'reason']
 COPIED = {'cancer_change_protein_background.tsv.gz': 'cancer_change_protein_background_{v}.tsv.gz',
           'tcga_mc3_projects.tsv': 'tcga_mc3_projects_{v}.tsv', 'depmap_24q4_change_models.tsv': 'depmap_24q4_change_models_{v}.tsv',
           'clinvar_protein_background.tsv.gz': 'clinvar_protein_background_{v}.tsv.gz',
@@ -76,7 +77,9 @@ COPIED = {'cancer_change_protein_background.tsv.gz': 'cancer_change_protein_back
 
 
 def staged(src: str, res: str) -> Path:
-    return LAYERS / (f'{src}_arginine_changes.tsv' if res == 'R' and src in SOMATIC else f'{src}_changes_{res}.tsv.gz')
+    # every family and residue from its staged table; the TCGA and DepMap arginine rows from scripts/66 (the rows of the arginine
+    # layer, byte for byte, with the gene), the arginine layer tables themselves left as they are
+    return LAYERS / f'{src}_changes_{res}.tsv.gz'
 
 
 def released(src: str, res: str, version: str) -> str:
@@ -135,6 +138,7 @@ def dictionary_rows(version: str) -> list[str]:
                  'DNA, kept in TCGA-OV and TCGA-LAML as Ellrott et al. 2018 kept them', 'MC3 FILTER of the call'),
                 ('tumor_alt_count', 'integer', '', '', 'tumor reads with the variant'),
                 ('tumor_ref_count', 'integer', '', '', 'tumor reads with the reference allele'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the gene of the transcript the change was read on (its Ensembl 105 gene; else the symbol the MC3 MAF gives, resolved through HGNC previous symbols; else the Ensembl gene ID)'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
         f = released('depmap_24q4', res, version)
@@ -149,6 +153,7 @@ def dictionary_rows(version: str) -> list[str]:
                 ('likely_lof', 'boolean', 'True; False', '', 'DepMap marks the change likely loss of function'),
                 ('am_pathogenicity', 'number', '', '', 'AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops'),
                 ('am_class', 'string', 'likely_benign; ambiguous; likely_pathogenic', '', 'AlphaMissense class, as DepMap gives it'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the gene (DepMap\'s Ensembl gene, else its HugoSymbol)'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
         f = released('clinvar', res, version)
@@ -170,6 +175,7 @@ def dictionary_rows(version: str) -> list[str]:
                 ('somatic_clinical_impact', 'string', '', '', 'ClinVar somatic clinical impact classification'),
                 ('oncogenicity', 'string', '', '', 'ClinVar oncogenicity classification'),
                 ('dbsnp', 'string', '', '', 'dbSNP ID'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the gene ClinVar gives the RefSeq protein\'s expression (its NCBI Gene ID; else its symbol, else variant_summary\'s)'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
         f = released('gnomad_v4_1', res, version)
@@ -187,6 +193,7 @@ def dictionary_rows(version: str) -> list[str]:
                 ('af_grpmax', 'number', '', '', 'allele frequency in that group'),
                 ('faf95_max', 'number', '', '', 'highest filtering allele frequency (Poisson 95% CI) across groups'),
                 ('consequence', 'string', 'missense_variant; stop_gained', '', 'VEP consequence of the change'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the Ensembl 105 gene of the transcript VEP read the change on; several separated by semicolons when genes overlap; the Ensembl gene ID for a gene without an HGNC symbol'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
     for name, label in (('clinvar', 'ClinVar'), ('gnomad', 'gnomAD v4.1')):
@@ -200,6 +207,20 @@ def dictionary_rows(version: str) -> list[str]:
                   ('gnomad_allele_count', 'integer', '', 'summed allele count of those variants')])
         for col, typ, vals, desc in cols:
             rows.append('\t'.join([f, col, typ, vals, '', desc]))
+    f = f'supporting/variant_changes_excluded_{version}.tsv.gz'
+    for col, typ, vals, means, desc in (
+            ('canonical_UniProtAC', 'string', '', '', ref),
+            ('position', 'integer', '', '', 'position the source gives on the canonical sequence\'s isoform'),
+            ('source', 'string', 'tcga_mc3; depmap_24q4; clinvar; gnomad_v4_1', '', 'the change table the change would have been in'),
+            ('source_id', 'string', '', '', 'TCGA tumor sample, DepMap model, ClinVar variation or gnomAD variant (GRCh38 chrom-pos-ref-alt)'),
+            ('gene', 'string', '', '', 'HGNC approved symbol of the gene, as in the change tables'),
+            ('source_ref', 'string', '', '', 'the residue the source names at the position'),
+            ('canonical_ref', 'string', '', '', 'the residue of the canonical sequence (UniProt 2026_03) at the position; empty beyond its end'),
+            ('alt', *alt),
+            ('reason', 'string', 'residue_differs; position_beyond_sequence',
+             'residue_differs = the source\'s residue differs from the canonical one; position_beyond_sequence = the position lies beyond the canonical sequence',
+             'why the change is not in the change tables (rows where either residue is R, K, S, T or Y)')):
+        rows.append('\t'.join([f, col, typ, vals, means, desc]))
     f = f'supporting/cancer_change_protein_background_{version}.tsv.gz'
     for col, typ, vals, desc in (
             ('canonical_UniProtAC', 'string', '', ref),
@@ -277,6 +298,16 @@ def main() -> None:
                 stats[f'{src}/{res}'] |= {'pathogenic_rows': int(t['germline_classification'].str.match(PATHOGENIC).sum()),
                                           'pathogenic_rows_at_known_sites': len(patho),
                                           'known_sites_with_pathogenic': int(patho[['canonical_UniProtAC', 'position']].drop_duplicates().shape[0])}
+    # the changes each source places on an entry but the staging left out: the residue it names there differs from the canonical
+    # sequence's (or the position lies beyond it), where either residue is a candidate residue
+    ex = pd.concat([x65.read(LAYERS / f'{src}_changes_excluded.tsv.gz').assign(source=src) for src in SOURCES], ignore_index=True)
+    ex['_p'] = ex['position'].astype(int)
+    ex = ex.sort_values(['canonical_UniProtAC', '_p', 'source', 'source_id', 'alt'], kind='stable')[EXCLUDED_COLUMNS]
+    excluded_name = f'supporting/variant_changes_excluded_{version}.tsv.gz'
+    write_gz(ex, out / excluded_name)
+    excluded_stats = {'rows': len(ex), 'proteins': int(ex['canonical_UniProtAC'].nunique()), 'md5': md5_file(out / excluded_name),
+                      'by_source': {s: int((ex['source'] == s).sum()) for s in SOURCES},
+                      'by_reason': {r: int((ex['reason'] == r).sum()) for r in sorted(set(ex['reason']))}}
     for src_name, dest in COPIED.items():
         name = 'supporting/' + dest.format(v=version)
         shutil.copyfile(LAYERS / src_name, out / name)
@@ -364,7 +395,7 @@ def main() -> None:
         'exomes): one row per variant that passes every gnomAD filter, with its allele count and number, frequency, homozygotes, '
         'the ancestry group with the highest frequency and the highest filtering allele frequency; the change is VEP\'s, on a '
         'transcript UniProt assigns to the displayed isoform. Either way a variant counts only where the 2026_03 canonical sequence '
-        'has that residue.', '',
+        'has that residue. As in the cancer tables, `gene` names the gene of each variant.', '',
         *germline_residue_table(), '',
         *germline_set_table(), '',
         f'`supporting/clinvar_protein_background_{version}.tsv.gz` and `supporting/gnomad_protein_background_{version}.tsv.gz` give, for '
@@ -384,7 +415,9 @@ def main() -> None:
         f'{den["tcga_tumor_samples"]:,} tumor samples in {den["tcga_projects"]} projects) and in DepMap 24Q4 cell lines '
         f'({den["depmap_lines_with_mutation_calls"]:,} lines with mutation calls). One row per tumor sample or cell line and change. '
         'The column `site_sets` names the site sets of this release with a site at that residue (empty: a candidate residue, not '
-        'a known site), so a set\'s changes can be read at every candidate residue or at its known sites only.', '',
+        'a known site), so a set\'s changes can be read at every candidate residue or at its known sites only. The column `gene` '
+        'names the gene each change lies in (its current HGNC approved symbol, for all four sources), which matters where several genes encode one protein: the 14 genes '
+        'of histone H4 (P62805), for example, are pooled under one accession.', '',
         *residue_table(), '',
         *set_table(), '',
         f'`supporting/cancer_change_protein_background_{version}.tsv.gz` gives, for each protein and residue class (and over all '
@@ -406,6 +439,13 @@ def main() -> None:
     carried_text = x65.carried_readme(prev, previous, version, arginine_sets).rstrip('\n')
     fixed_line = WRONG_LINE in carried_text
     carried_text = carried_text.replace(WRONG_LINE, RIGHT_LINE)
+    excluded_section = [
+        '## Changes not shown', '',
+        f'`{excluded_name}` lists the changes a source places on an entry that the change tables leave out because the residue the '
+        'source names there differs from the canonical sequence\'s (UniProt 2026_03), or the position lies beyond it, where either '
+        'residue is R, K, S, T or Y: for example a gene of a protein family whose own protein differs from the canonical one at that '
+        f'position. {excluded_stats["rows"]:,} changes on {excluded_stats["proteins"]:,} proteins: ' +
+        ', '.join(f'{SOURCES[s]} {n:,}' for s, n in excluded_stats['by_source'].items()) + '.', '']
     R = [f'# Human methylarginine sites, context marks, site-level interaction evidence, and cancer and germline variants, {version}', '',
          f'{version} holds everything of {previous} under this release\'s names, its data unchanged: the methylarginine data of '
          'v1.4.3, the tables of context marks and the site-level interaction tables of every site set. It adds, at every candidate '
@@ -414,16 +454,18 @@ def main() -> None:
          'changed.', '',
          *new_section,
          *germline_section,
+         *excluded_section,
          carried_text]
     (out / 'README.md').write_text(x65.americanize('\n'.join(R)) + '\n', encoding='utf-8')
 
-    new_files = sorted(files)
+    new_files = sorted(list(files) + [excluded_name])
     C = [f'# Changes from {previous} to {version}', '',
          f'Everything of {previous} is in {version} under this release\'s names, its data unchanged. {version} adds the somatic changes '
          'at every candidate residue of the site sets, in TCGA tumors and DepMap cell lines, and the germline variants of ClinVar '
          'and gnomAD there.', '',
          *new_section,
          *germline_section,
+         *excluded_section,
          '## Corrected: RBDmap and pCLAP in the interaction notes', '',
          f'The interaction notes of {previous}\'s README said, under what the tables of methyllysine, lysine and phospho lack, that the '
          'extents of RBDmap fragments and pCLAP peptides are not republished. They are: the methylarginine interaction tables carry '
@@ -461,6 +503,7 @@ def main() -> None:
                                      'clinvar': {'inputs': clinvar['inputs'], 'rule': clinvar['rule'], 'license': clinvar['license']},
                                      'gnomad': {'release': gnomad['release'], 'inputs': gnomad['inputs'], 'rule': gnomad['rule'],
                                                 'license': gnomad['license'], 'citation': gnomad['citation']}},
+               'variant_changes_excluded': {'file': excluded_name} | excluded_stats,
                'corrections': ['README: RBDmap and pCLAP extents are carried in the methylarginine tables (the previous README said they '
                                'were not republished)'] if fixed_line else []}
     (out / 'release.json').write_text(json.dumps(release, indent=2, sort_keys=True) + '\n', encoding='utf-8')

@@ -18,53 +18,53 @@
       },
       "supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz": {
         "from": "inputs/layers/depmap_24q4_changes_K.tsv.gz",
-        "from_md5": "579964a2916429cc80fe1ce65c34b186",
-        "md5": "5633878a39673d621ba1d3cd14f170ee"
+        "from_md5": "a556a67ba20c446f62aa258c1836f69d",
+        "md5": "9abba4e226b3bf97ab179bd66d02dfc7"
       },
       "supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz": {
-        "from": "inputs/layers/depmap_24q4_arginine_changes.tsv",
-        "from_md5": "e256cfabef70d7ae423a4e71e2056e07",
-        "md5": "ebaed73e7918be3901642432de48a3c4"
+        "from": "inputs/layers/depmap_24q4_changes_R.tsv.gz",
+        "from_md5": "8d854bf74fbccd73d35d8ff6734a18a6",
+        "md5": "52e1965948bf58e7a2b2ffab54770c92"
       },
       "supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz": {
         "from": "inputs/layers/depmap_24q4_changes_S.tsv.gz",
-        "from_md5": "738fcb18845415f48b388e9e5b714c8f",
-        "md5": "3aa26abc758092764a419d5e8a9cfc92"
+        "from_md5": "a23114b74f210a3047d77b7008a590d1",
+        "md5": "cfa0d44b1193f3e9d5e531bd08598227"
       },
       "supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz": {
         "from": "inputs/layers/depmap_24q4_changes_T.tsv.gz",
-        "from_md5": "dd06b544e1e67011e8d30870d7bbd009",
-        "md5": "6380e4b959446439cd2411d8d19b47b3"
+        "from_md5": "a90e8d94424a9e1f8811654cb627bbef",
+        "md5": "0fa9ef4dafde1469013db2578ff1a420"
       },
       "supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz": {
         "from": "inputs/layers/depmap_24q4_changes_Y.tsv.gz",
-        "from_md5": "0b6d17b589d2bdb983f30ad7449f95e5",
-        "md5": "58bc75f1ca3a77ae055ffac5e59afbc5"
+        "from_md5": "3bb3d069449895dfdcdd78e2a0c2be64",
+        "md5": "8e84b4cb11be159dbec81ecd1ced811f"
       },
       "supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz": {
         "from": "inputs/layers/tcga_mc3_changes_K.tsv.gz",
-        "from_md5": "a029935935404c55f9a6b33891af29cf",
-        "md5": "cc7e2bdf880a6a7a60b61b8e7c330731"
+        "from_md5": "560d580691ff1b23479fe1fda7cd113d",
+        "md5": "98bb86a2123c81ba0ac39140fb4969bc"
       },
       "supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz": {
-        "from": "inputs/layers/tcga_mc3_arginine_changes.tsv",
-        "from_md5": "1df8a9e1bbe305ed37cb1277368c5c8c",
-        "md5": "3c99b1ce625978a58533eb432c85f63d"
+        "from": "inputs/layers/tcga_mc3_changes_R.tsv.gz",
+        "from_md5": "abce6568852ea1f55e60edba3efb0174",
+        "md5": "31583c11cb71773a1b9076823b67e7bf"
       },
       "supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz": {
         "from": "inputs/layers/tcga_mc3_changes_S.tsv.gz",
-        "from_md5": "81b917868bf58db2433b711bd517b3f1",
-        "md5": "ff12e08bebe766a1eb02a99fc72c7681"
+        "from_md5": "248f0536f352a94fbef0e77575803921",
+        "md5": "6b4ff26259a5d3be25d34e6c0f3d8fb9"
       },
       "supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz": {
         "from": "inputs/layers/tcga_mc3_changes_T.tsv.gz",
-        "from_md5": "f68c68bb37f380d85ed7e7ad8a2bae4b",
-        "md5": "bd958ddcba96ab38fab6cdefa5e3e590"
+        "from_md5": "ffc5bd8ef863ef3bf1dcd8d8e05fd302",
+        "md5": "d8068cdf2c8ea6b12f303f143051eeed"
       },
       "supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz": {
         "from": "inputs/layers/tcga_mc3_changes_Y.tsv.gz",
-        "from_md5": "4be9a5fd905e26c4e2e7f5ccae7b71ab",
-        "md5": "ba6ba7ce9f00765bda07f035f049d10b"
+        "from_md5": "ea3978a71f1e5dd5fccbed566ff8aceb",
+        "md5": "e36ef60ecfc6bc6f5972707e37b1c643"
       },
       "supporting/tcga_mc3_projects_v1.6.0.tsv": {
         "from": "inputs/layers/tcga_mc3_projects.tsv",
@@ -207,6 +207,17 @@
         "license": "CC BY 4.0",
         "md5": "7bdba347a1602fe96d5654a74d6e52f1",
         "release": "DepMap Public 24Q4"
+      },
+      "ensembl_gtf": {
+        "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+        "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313",
+        "url": "https://ftp.ensembl.org/pub/release-105/gtf/homo_sapiens/Homo_sapiens.GRCh38.105.gtf.gz"
+      },
+      "hgnc": {
+        "file": "hgnc_complete_set.txt",
+        "license": "CC0",
+        "md5": "2a30aa650f51d6fed261f79057463d5a",
+        "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt"
       },
       "maf": {
         "file": "mc3.v0.2.8.PUBLIC.maf.gz",
@@ -1166,6 +1177,12 @@
     "clinvar": {
       "inputs": {
         "clinvar_files_dated": "2026-11-15 (hgvs4variation), 2026-11-16 (variant_summary)",
+        "hgnc": {
+          "file": "hgnc_complete_set.txt",
+          "license": "CC0",
+          "md5": "2a30aa650f51d6fed261f79057463d5a",
+          "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt"
+        },
         "hgvs4variation": {
           "file": "hgvs4variation.txt.gz",
           "md5": "4e468e2ba462005b9002a6d86dd8dea5",
@@ -1199,28 +1216,28 @@
     "files": {
       "supporting/clinvar_changes_K_v1.6.0.tsv.gz": {
         "from": "inputs/layers/clinvar_changes_K.tsv.gz",
-        "from_md5": "a65cdffdb10cae7cfd832754bb7dd412",
-        "md5": "f013dfe2524dd13b7549de8f943a68fc"
+        "from_md5": "ddc7e87bf37414a5aadb81e3768bb206",
+        "md5": "0b8fe5e9bfe14e8e65e2b8a353c4fc4d"
       },
       "supporting/clinvar_changes_R_v1.6.0.tsv.gz": {
         "from": "inputs/layers/clinvar_changes_R.tsv.gz",
-        "from_md5": "e17900ed2035d70751be5f38712efa0d",
-        "md5": "18a7d9fbc7e05d17fb13d77958ef541e"
+        "from_md5": "21f7985471293f2022a70783d9d42a1d",
+        "md5": "409e4b112fcfbaa191d145f5d2f94e27"
       },
       "supporting/clinvar_changes_S_v1.6.0.tsv.gz": {
         "from": "inputs/layers/clinvar_changes_S.tsv.gz",
-        "from_md5": "b05c8b1d0e9694ae14b3e835df864a8c",
-        "md5": "3ff4d900c857a7c55da649c89f0e8861"
+        "from_md5": "6cae1cab3285b61faf8fb1759f4f3dee",
+        "md5": "daa9bc71bd8c36ac7f5e517cd83818f9"
       },
       "supporting/clinvar_changes_T_v1.6.0.tsv.gz": {
         "from": "inputs/layers/clinvar_changes_T.tsv.gz",
-        "from_md5": "2e70bb578b0bd087a28b710a7187de04",
-        "md5": "bbd8a7e47d875e631c32f2d1ee227f41"
+        "from_md5": "7dce1d64ac1ec498d1442c8b12b20a48",
+        "md5": "c46852217ee78e378a63205b17d818e5"
       },
       "supporting/clinvar_changes_Y_v1.6.0.tsv.gz": {
         "from": "inputs/layers/clinvar_changes_Y.tsv.gz",
-        "from_md5": "36e66ac060fd566d351a54c0a2a5f464",
-        "md5": "23f394215bc9cc8fb343236cbed5bb4a"
+        "from_md5": "65c0bd0c54b5c78dbd46abc49ff267a2",
+        "md5": "74362c70c0590e00084ac0b582a00380"
       },
       "supporting/clinvar_protein_background_v1.6.0.tsv.gz": {
         "from": "inputs/layers/clinvar_protein_background.tsv.gz",
@@ -1234,33 +1251,44 @@
       },
       "supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz": {
         "from": "inputs/layers/gnomad_v4_1_changes_K.tsv.gz",
-        "from_md5": "feb2f7e5397b2d7b94bd7196994d8d40",
-        "md5": "dd5b09b868043c783952f1816fb265f1"
+        "from_md5": "f65894ea482ab33e61b0c229d2e0a825",
+        "md5": "acf63ff665963c33d85b05df6b614193"
       },
       "supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz": {
         "from": "inputs/layers/gnomad_v4_1_changes_R.tsv.gz",
-        "from_md5": "a0591bb714366206d602de7037033304",
-        "md5": "776eb438ce6ef9fb5d3b66f3b68ff6fb"
+        "from_md5": "bca52405d0220bf268b2bc25dcce4f8d",
+        "md5": "69a13e716642c67107ac642250c88da9"
       },
       "supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz": {
         "from": "inputs/layers/gnomad_v4_1_changes_S.tsv.gz",
-        "from_md5": "84445cb98cd573c78ae17534a6f15f97",
-        "md5": "f00e8c1d025daedbb99c2fb5be449717"
+        "from_md5": "a4e411c0958d5471fc7b281d95e1d24e",
+        "md5": "b54c17083223244ac93d80e665fe4764"
       },
       "supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz": {
         "from": "inputs/layers/gnomad_v4_1_changes_T.tsv.gz",
-        "from_md5": "bec07145f3b71d46834111fdb96096e9",
-        "md5": "7710d644b3f4051a097303caa7adacb7"
+        "from_md5": "cfbcd8a7e8bbc19fe746c006b681d735",
+        "md5": "839777896ef0563e8179488dcd025c21"
       },
       "supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz": {
         "from": "inputs/layers/gnomad_v4_1_changes_Y.tsv.gz",
-        "from_md5": "3f507133403f89f7ba5bd91530d03419",
-        "md5": "8eb9a1d01c02f8b972d1dee70ff26f6b"
+        "from_md5": "ae899afacfc592351c7932defc74349c",
+        "md5": "39d38b28204d723805130cd67abd5f9b"
       }
     },
     "gnomad": {
       "citation": "Chen et al., Nature 625:92 (2024), doi:10.1038/s41586-023-06045-0 (gnomAD v4)",
       "inputs": {
+        "ensembl_gtf": {
+          "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+          "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313",
+          "url": "https://ftp.ensembl.org/pub/release-105/gtf/homo_sapiens/Homo_sapiens.GRCh38.105.gtf.gz"
+        },
+        "hgnc": {
+          "file": "hgnc_complete_set.txt",
+          "license": "CC0",
+          "md5": "2a30aa650f51d6fed261f79057463d5a",
+          "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt"
+        },
         "reference": {
           "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
           "md5": "c75aad9d197cbba00f51063f65a96ac4"
@@ -1623,7 +1651,7 @@
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.5.1",
-  "release_code_commit": "e7757ee0bf185736ee663ee87eb0f42cb4665346",
+  "release_code_commit": "36052256146a2c40b83c0e6ef2d58d11ae44f240",
   "release_date": "2026-11-19",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.5.1_to_v1.6.0.tsv",
@@ -1651,5 +1679,21 @@
     "CPLM": "CPLM 4.0 states no license (\"All Rights Reserved\") and compiles sites from other databases as well as from papers; it is not a source of the context marks (decided 17 November 2026)"
   },
   "title": "Human methylarginine sites, context marks, site-level interaction evidence, and cancer and germline variants",
+  "variant_changes_excluded": {
+    "by_reason": {
+      "position_beyond_sequence": 1211,
+      "residue_differs": 40845
+    },
+    "by_source": {
+      "clinvar": 2072,
+      "depmap_24q4": 611,
+      "gnomad_v4_1": 7078,
+      "tcga_mc3": 32295
+    },
+    "file": "supporting/variant_changes_excluded_v1.6.0.tsv.gz",
+    "md5": "e9d043b7798d4317a35a7e6d549dda64",
+    "proteins": 1240,
+    "rows": 42056
+  },
   "version": "v1.6.0"
 }

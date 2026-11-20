@@ -31,9 +31,10 @@ Rules (as for arginines)
 
 Outputs (in --outdir; gzip without a timestamp, so the same input gives the same bytes)
   tcga_mc3_changes_<X>.tsv.gz              per residue X: one row per tumor sample and change at a canonical X, the
-                                           columns of tcga_mc3_arginine_changes.tsv (alt * is a stop)
+                                           columns of tcga_mc3_arginine_changes.tsv (alt * is a stop), and gene: the HGNC
+                                           approved symbol of the transcript's Ensembl 105 gene, else of the MAF's symbol
   depmap_24q4_changes_<X>.tsv.gz           per residue X: one row per cell line and change, the columns of
-                                           depmap_24q4_arginine_changes.tsv
+                                           depmap_24q4_arginine_changes.tsv, and gene (HGNC approved symbol of its Ensembl gene)
   cancer_change_protein_background.tsv.gz  per reference entry and residue class (R, K, S, T, Y, and all residues): the
                                            residues of that class in the canonical sequence (its length for all), and the
                                            TCGA and DepMap changes on them, the samples or lines carrying one and the
@@ -58,6 +59,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ensembl_genes import GTF_105, HGNC, HGNC_URL, transcript_genes
 from common import (entrez_by_symbol, entrez_of_entries, md5_file, own_entrez, parse_fasta, refresh_manifest_row, update_manifest,
                     upsert_tsv_rows)
 
@@ -76,9 +78,12 @@ EFFECT = re.compile(r'^p\.([A-Z][a-z]{2})(\d+)([A-Z][a-z]{2}|Ter)$')
 SHORT = re.compile(rf'^p\.([{AA}])(\d+)([{AA}*])$')
 DEPMAP = re.compile(rf'^p\.([{AA}])(\d+)([{AA}]|Ter)$')
 TCGA_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'project_id', 'sample_id', 'transcript_id', 'mapped_by', 'filter',
-                'tumor_alt_count', 'tumor_ref_count']
+                'tumor_alt_count', 'tumor_ref_count', 'gene']
 DEPMAP_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'protein_change', 'model_id', 'allele_fraction', 'hotspot', 'likely_lof',
-                  'am_pathogenicity', 'am_class']
+                  'am_pathogenicity', 'am_class', 'gene']
+# changes left out because the residue the source names differs from the canonical sequence's (or the position lies beyond
+# it), where either residue is a candidate residue of the site sets
+EXCLUDED_COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'source_id', 'gene', 'source_ref', 'canonical_ref', 'reason']
 BACKGROUND_COLUMNS = ['canonical_UniProtAC', 'residue', 'residues', 'tcga_changes', 'tcga_samples', 'tcga_positions',
                       'depmap_changes', 'depmap_lines', 'depmap_positions']
 
@@ -128,7 +133,12 @@ def on_residue(canonical: dict, acc: str, pos: int, ref: str) -> bool:
     return bool(seq) and 1 <= pos <= len(seq) and seq[pos - 1] == ref
 
 
-def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Counter):
+def gene_name(transcript: str, maf_symbol: str, tx_gene: dict, hgnc: HGNC) -> str:
+    ensg, name = tx_gene.get(transcript.split('.')[0], ('', ''))
+    return (hgnc.symbol(ensg, name=name) if ensg else '') or hgnc.from_symbol(maf_symbol) or ensg
+
+
+def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Counter, tx_gene: dict, hgnc: HGNC):
     """Kept TCGA changes: (rows at the residues asked for, every placed change as (acc, ref, pos, alt, sample), tumor samples
     per project)."""
     project_of = {}
@@ -168,7 +178,7 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
                     if alt == ref:
                         continue
                     for acc in sorted(canon[e[3]]):
-                        raw.append((acc, ref, pos, alt, e[3], 'canonical_transcript') + common)
+                        raw.append((acc, ref, pos, alt, e[3], 'canonical_transcript') + common + (e[0],))
                 continue
             if r[ix['Variant_Classification']] not in s44b.KEEP_TYPES:
                 continue
@@ -180,18 +190,21 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
             if not cands:
                 counts['tcga_maf_transcript_changes_gene_without_entry'] += 1
             for acc in cands:
-                raw.append((acc, ref, pos, alt, r[ix['Transcript_ID']], 'maf_transcript') + common)
+                raw.append((acc, ref, pos, alt, r[ix['Transcript_ID']], 'maf_transcript') + common + (r[ix['Hugo_Symbol']],))
     # as scripts/44b then 44: one transcript per (sample, entry, change, variant) -- the last by transcript ID -- then the
     # residue check, then one row per (entry, position, new residue, sample)
     best = {}
     for x in sorted(raw, key=lambda x: x[4]):
         best[(x[7], x[0], x[9], x[1], x[2], x[3], x[10], x[11], x[12])] = x
-    rows, placed, seen = [], [], set()
+    rows, placed, seen, excluded, kept_changes, kept_on_entry = [], [], set(), [], set(), set()
     for x in sorted(best.values(), key=lambda x: (x[9], x[0], x[2], x[1], x[3], x[7], x[10], int(x[11]), x[12])):
         acc, ref, pos, alt = x[0], x[1], x[2], x[3]
         if not on_residue(canonical, acc, pos, ref):
             counts['tcga_changes_residue_not_on_canonical'] += 1
+            excluded.append(x)
             continue
+        kept_changes.add((x[7], x[9], x[1], x[2], x[3], x[10], x[11], x[12]))      # the change, on whichever entry
+        kept_on_entry.add((acc, x[7], x[10], x[11], x[12]))                       # the variant, on this entry
         key = (acc, pos, alt, x[7])
         if key in seen:
             continue
@@ -199,14 +212,33 @@ def tcga(args, canonical: dict, placer: Placer, residues: list[str], counts: Cou
         placed.append((acc, ref, pos, alt, x[7]))
         if ref in residues:
             rows.append({'canonical_UniProtAC': acc, 'position': pos, 'alt': alt, 'project_id': x[6], 'sample_id': x[7],
-                         'transcript_id': x[4], 'mapped_by': x[5], 'filter': x[8], 'tumor_alt_count': x[13], 'tumor_ref_count': x[14]})
+                         'transcript_id': x[4], 'mapped_by': x[5], 'filter': x[8], 'tumor_alt_count': x[13], 'tumor_ref_count': x[14],
+                         # the HGNC approved symbol of the transcript's Ensembl 105 gene, else of the symbol the MAF gives, else
+                         # the Ensembl gene (a gene without an HGNC symbol)
+                         'gene': gene_name(x[4], x[15], tx_gene, hgnc)})
     counts['tcga_changes_placed_all_residues'] = len(placed)
-    return rows, placed, samples
+    ex_rows, ex_seen = [], set()
+    for x in excluded:
+        acc, ref, pos, alt = x[0], x[1], x[2], x[3]
+        seq = canonical.get(acc, '')
+        can = seq[pos - 1] if 1 <= pos <= len(seq) else ''
+        # a change read on the MAF's own transcript is tried on every entry of its gene: one that another entry kept is not left out;
+        # nor is a variant the entry kept through another of its transcripts
+        if (not ({ref, can} & set(CLASSES)) or (acc, x[7], x[10], x[11], x[12]) in kept_on_entry
+                or (x[5] == 'maf_transcript' and (x[7], x[9], x[1], x[2], x[3], x[10], x[11], x[12]) in kept_changes)):
+            continue
+        key = (acc, pos, alt, x[7])
+        if key in ex_seen:
+            continue
+        ex_seen.add(key)
+        ex_rows.append({'canonical_UniProtAC': acc, 'position': pos, 'alt': alt, 'source_id': x[7], 'gene': gene_name(x[4], x[15], tx_gene, hgnc),
+                        'source_ref': ref, 'canonical_ref': can, 'reason': 'residue_differs' if can else 'position_beyond_sequence'})
+    return rows, placed, samples, ex_rows
 
 
-def depmap(args, canonical: dict, residues: list[str], counts: Counter):
+def depmap(args, canonical: dict, residues: list[str], counts: Counter, hgnc: HGNC):
     mut = pd.read_csv(args.depmap_mutations, dtype=str, keep_default_na=False,
-                      usecols=['ProteinChange', 'UniprotID', 'VepSwissprot', 'ModelID', 'AF', 'Hotspot', 'LikelyLoF', 'AMPathogenicity', 'AMClass'])
+                      usecols=['ProteinChange', 'UniprotID', 'VepSwissprot', 'ModelID', 'AF', 'Hotspot', 'LikelyLoF', 'AMPathogenicity', 'AMClass', 'HugoSymbol', 'EnsemblGeneID'])
     lines = mut['ModelID'].nunique()
     parts = mut['ProteinChange'].str.extract(DEPMAP)
     m = mut[parts[0].notna()].copy()
@@ -225,15 +257,24 @@ def depmap(args, canonical: dict, residues: list[str], counts: Counter):
     m['position'] = m['position'].astype(int)
     ok = [on_residue(canonical, a, p, r) for a, p, r in zip(m['canonical_UniProtAC'], m['position'], m['ref'])]
     counts['depmap_calls_residue_not_on_canonical'] = int(len(m) - sum(ok))
+    bad = m[[not o for o in ok]].drop_duplicates(['canonical_UniProtAC', 'position', 'alt', 'ModelID'])
+    can = [canonical[a][q - 1] if 1 <= q <= len(canonical[a]) else '' for a, q in zip(bad['canonical_UniProtAC'], bad['position'])]
+    ex = pd.DataFrame({'canonical_UniProtAC': bad['canonical_UniProtAC'], 'position': bad['position'], 'alt': bad['alt'], 'source_id': bad['ModelID'],
+                       'gene': [hgnc.symbol(ensg=e, name=s) for e, s in zip(bad['EnsemblGeneID'], bad['HugoSymbol'])], 'source_ref': bad['ref'],
+                       'canonical_ref': can, 'reason': ['residue_differs' if c else 'position_beyond_sequence' for c in can]})
+    ex = ex[ex['source_ref'].isin(CLASSES) | ex['canonical_ref'].isin(CLASSES)]
     m = m[ok].drop_duplicates(['canonical_UniProtAC', 'position', 'alt', 'ModelID'])
+    kept = set(zip(m['canonical_UniProtAC'], m['position'], m['alt'], m['ModelID']))
+    ex = ex[[k not in kept for k in zip(ex['canonical_UniProtAC'], ex['position'], ex['alt'], ex['source_id'])]]
     counts['depmap_changes_placed_all_residues'] = len(m)
     placed = list(zip(m['canonical_UniProtAC'], m['ref'], m['position'], m['alt'], m['ModelID']))
     t = m[m['ref'].isin(residues)]
     rows = pd.DataFrame({'canonical_UniProtAC': t['canonical_UniProtAC'], 'position': t['position'], 'alt': t['alt'],
                          'protein_change': t['ref'] + t['position'].astype(str) + t['alt'], 'model_id': t['ModelID'],
                          'allele_fraction': t['AF'], 'hotspot': t['Hotspot'] == 'True', 'likely_lof': t['LikelyLoF'] == 'True',
-                         'am_pathogenicity': t['AMPathogenicity'], 'am_class': t['AMClass'], 'ref': t['ref']})
-    return rows, placed, lines
+                         'am_pathogenicity': t['AMPathogenicity'], 'am_class': t['AMClass'],
+                         'gene': [hgnc.symbol(ensg=e, name=s) for e, s in zip(t['EnsemblGeneID'], t['HugoSymbol'])], 'ref': t['ref']})
+    return rows, placed, lines, ex
 
 
 def background(canonical: dict, tplaced, dplaced) -> pd.DataFrame:
@@ -287,11 +328,11 @@ def write_manifest(manifest: Path, out: Path, args, residues: list[str], downloa
         rows.append({'file': f'{folder}/tcga_mc3_changes_{res}.tsv.gz', 'content': f'TCGA MC3 somatic missense and stop changes at every {name} '
                      f'({res}) of reviewed canonical proteins, a known site or not: one row per tumor sample and change (residue * a stop), calls '
                      'with FILTER PASS (OV and LAML also wga alone, as Ellrott et al. 2018), with the Ensembl transcript, its FILTER and the '
-                     'tumor read counts; the columns of tcga_mc3_arginine_changes.tsv (gzip)', 'source': tc_src, 'version_or_date': tc_ver,
+                     'tumor read counts; the columns of tcga_mc3_arginine_changes.tsv and the gene (HGNC approved symbol of the transcript\'s gene) (gzip)', 'source': tc_src, 'version_or_date': tc_ver,
                      'citation': s44.TC_CIT, 'licence': TC_LICENSE, 'derived_from': 'mc3.v0.2.8.PUBLIC.maf.gz; gdc_tcga_cases (fetched ' + downloaded + ')'})
         rows.append({'file': f'{folder}/depmap_24q4_changes_{res}.tsv.gz', 'content': f'DepMap somatic missense and stop changes at every {name} '
                      f'({res}) of reviewed canonical proteins, a known site or not: one row per cell line and change, with allele fraction, '
-                     'hotspot, likely loss of function and AlphaMissense as DepMap gives them; the columns of depmap_24q4_arginine_changes.tsv (gzip)',
+                     'hotspot, likely loss of function and AlphaMissense as DepMap gives them; the columns of depmap_24q4_arginine_changes.tsv and the gene (HGNC approved symbol) (gzip)',
                      'source': s44.DM_SRC, 'version_or_date': s44.DM_VER, 'citation': s44.DM_CIT + '; AlphaMissense: Cheng et al., Science 381:eadg7492 (2023)',
                      'licence': 'CC BY 4.0', 'derived_from': 'OmicsSomaticMutations.csv'})
     rows.append({'file': f'{folder}/cancer_change_protein_background.tsv.gz', 'content': 'Per reviewed canonical entry and residue class (R, K, '
@@ -303,6 +344,15 @@ def write_manifest(manifest: Path, out: Path, args, residues: list[str], downloa
     for r in rows:
         path = out / r['file'].split('/', 1)[1]
         r.update({'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': gz_rows(path), 'redistribution': 'git', 'how_made_or_checked': HOW})
+    for src, label in (('tcga_mc3', 'TCGA MC3'), ('depmap_24q4', 'DepMap 24Q4')):
+        path = out / f'{src}_changes_excluded.tsv.gz'
+        rows.append({'file': f'{folder}/{path.name}', 'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': gz_rows(path), 'redistribution': 'git',
+                     'content': f'{label} changes left out of the change tables because the residue the source names differs from the canonical '
+                     'sequence\'s at that position (or lies beyond it), where either residue is R, K, S, T or Y: entry, position, new residue, '
+                     'sample or cell line, gene, both residues, reason (gzip)',
+                     'source': tc_src if src == 'tcga_mc3' else s44.DM_SRC, 'version_or_date': tc_ver if src == 'tcga_mc3' else s44.DM_VER,
+                     'citation': s44.TC_CIT if src == 'tcga_mc3' else s44.DM_CIT, 'licence': TC_LICENSE if src == 'tcga_mc3' else 'CC BY 4.0',
+                     'derived_from': 'mc3.v0.2.8.PUBLIC.maf.gz' if src == 'tcga_mc3' else 'OmicsSomaticMutations.csv', 'how_made_or_checked': HOW})
     models = out / 'depmap_24q4_change_models.tsv'
     if models.exists():
         rows.append({'file': f'{folder}/depmap_24q4_change_models.tsv', 'bytes': models.stat().st_size, 'md5': md5_file(models),
@@ -322,7 +372,9 @@ def write_manifest(manifest: Path, out: Path, args, residues: list[str], downloa
                            (Path(args.uniprot_ensembl), s44b.UNIPROT_ENSEMBL_URL, f'UniProt {args.uniprot_release}, Ensembl cross-references'),
                            (Path(args.uniprot_isoforms), s44b.UNIPROT_ISOFORMS_URL, f'UniProt {args.uniprot_release}, alternative products'),
                            (Path(args.crispr_gene_effect), 'https://ndownloader.figshare.com/files/51064667 (bytes 0 to the end of the first line)',
-                            'DepMap Public 24Q4, the header line of CRISPRGeneEffect.csv (the genes screened)')):
+                            'DepMap Public 24Q4, the header line of CRISPRGeneEffect.csv (the genes screened)'),
+                           (Path(args.ensembl_gtf), GTF_105, 'Ensembl release 105 GTF (Ensembl CHECKSUMS sum 40862 49638 matched)'),
+                           (Path(args.hgnc), HGNC_URL, 'HGNC complete set, file of 2026-11-13 (CC0)')):
         raw.append({'file': path.name, 'url': url, 'bytes': path.stat().st_size, 'md5': md5_file(path), 'sha256': sha256(path),
                     'downloaded': downloaded, 'version': ver, 'kept': 'release_asset'})
     upsert_tsv_rows(out / 'raw_files.tsv', raw)
@@ -336,6 +388,8 @@ def main() -> None:
     ap.add_argument('--depmap-mutations', required=True, help='DepMap 24Q4 OmicsSomaticMutations.csv')
     ap.add_argument('--crispr-gene-effect', required=True, help='DepMap 24Q4 CRISPRGeneEffect.csv, or its header line: the genes screened, '
                     'which decide an entry\'s Entrez gene as in scripts/44')
+    ap.add_argument('--ensembl-gtf', required=True, help=f'Ensembl 105 GTF ({GTF_105}): each transcript\'s gene name')
+    ap.add_argument('--hgnc', required=True, help=f'HGNC complete set ({HGNC_URL}): current approved symbols')
     ap.add_argument('--depmap-models', default='', help='DepMap 24Q4 Model.csv: write depmap_24q4_change_models.tsv')
     ap.add_argument('--uniprot-ensembl', required=True, help='UniProt reviewed human: Entry, Entry Name, Ensembl (TSV, gzip)')
     ap.add_argument('--uniprot-isoforms', required=True, help='UniProt reviewed human: Entry, Alternative products (TSV, gzip)')
@@ -357,8 +411,9 @@ def main() -> None:
 
     screened = {m.group(1) for c in pd.read_csv(args.crispr_gene_effect, nrows=0).columns if (m := re.match(r'^.+ \((\d+)\)$', str(c)))}
     placer = Placer(args.fasta, args.entries, args.symbol_entrez, canonical, screened)
-    trows, tplaced, samples = tcga(args, canonical, placer, residues, counts)
-    drows, dplaced, lines = depmap(args, canonical, residues, counts)
+    tx_gene, hgnc = transcript_genes(args.ensembl_gtf), HGNC(args.hgnc)
+    trows, tplaced, samples, tex = tcga(args, canonical, placer, residues, counts, tx_gene, hgnc)
+    drows, dplaced, lines, dex = depmap(args, canonical, residues, counts, hgnc)
 
     tt = pd.DataFrame(trows, columns=TCGA_COLUMNS)
     ref_of = {(a, p): canonical[a][p - 1] for a, p in zip(tt['canonical_UniProtAC'], tt['position'])}
@@ -375,6 +430,11 @@ def main() -> None:
                         'depmap_lines': int(d['model_id'].nunique()),
                         'md5': {f'tcga_mc3_changes_{res}.tsv.gz': md5_file(out / f'tcga_mc3_changes_{res}.tsv.gz'),
                                 f'depmap_24q4_changes_{res}.tsv.gz': md5_file(out / f'depmap_24q4_changes_{res}.tsv.gz')}}
+    excluded = {}
+    for src, ex in (('tcga_mc3', pd.DataFrame(tex, columns=EXCLUDED_COLUMNS)), ('depmap_24q4', dex[EXCLUDED_COLUMNS])):
+        ex = ex.sort_values(['canonical_UniProtAC', 'position', 'alt', 'source_id'], kind='stable')
+        write_gz(ex, out / f'{src}_changes_excluded.tsv.gz')
+        excluded[src] = {'rows': len(ex), 'proteins': int(ex['canonical_UniProtAC'].nunique()), 'md5': md5_file(out / f'{src}_changes_excluded.tsv.gz')}
     bg = background(canonical, tplaced, dplaced)
     write_gz(bg, out / 'cancer_change_protein_background.tsv.gz')
     if args.depmap_models:
@@ -397,6 +457,8 @@ def main() -> None:
                                                  'md5_of_file_read': md5_file(args.crispr_gene_effect),
                                                  'note': 'the header line of CRISPRGeneEffect.csv (DepMap 24Q4, MD5 of the whole file 6edf7ade09b9b34199210b559d4745d3)'},
                    'depmap_models': ({'file': Path(args.depmap_models).name, 'md5': md5_file(args.depmap_models)} if args.depmap_models else None),
+                   'ensembl_gtf': {'file': Path(args.ensembl_gtf).name, 'url': GTF_105, 'md5': md5_file(args.ensembl_gtf)},
+                   'hgnc': {'file': Path(args.hgnc).name, 'url': HGNC_URL, 'md5': md5_file(args.hgnc), 'license': 'CC0'},
                    'reference': {'fasta': args.fasta, 'md5': md5_file(args.fasta)}},
         'rule': {'tcga': 'FILTER PASS; in TCGA-OV and TCGA-LAML also FILTER wga alone (Ellrott et al. 2018); a missense or stop change '
                          'on a transcript UniProt assigns to a reviewed entry\'s displayed isoform (all_effects); where the variant falls '
@@ -409,6 +471,7 @@ def main() -> None:
         'denominators': {'tcga_tumor_samples': sum(len(v) for k, v in samples.items() if k),
                          'tcga_projects': len([k for k in samples if k]), 'depmap_lines_with_mutation_calls': int(lines)},
         'residues': written,
+        'excluded': excluded,
         'background_md5': md5_file(out / 'cancer_change_protein_background.tsv.gz'),
         'counts': dict(sorted(counts.items())),
     }

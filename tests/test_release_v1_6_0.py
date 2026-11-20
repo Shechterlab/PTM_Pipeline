@@ -70,10 +70,9 @@ def test_previous_release_is_carried_unchanged():
 @pytest.mark.parametrize('res', RESIDUES)
 def test_change_tables_are_the_staged_layer_with_site_sets(res):
     for src in ('tcga_mc3', 'depmap_24q4', 'clinvar', 'gnomad_v4_1'):
-        somatic_arginine = res == 'R' and src in ('tcga_mc3', 'depmap_24q4')
-        staged = read(LAYERS / (f'{src}_arginine_changes.tsv' if somatic_arginine else f'{src}_changes_{res}.tsv.gz'))
+        staged = read(LAYERS / f'{src}_changes_{res}.tsv.gz')
         t = read(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz')
-        assert list(t.columns) == list(staged.columns) + ['site_sets']
+        assert list(t.columns) == list(staged.columns) + ['site_sets'] and list(t.columns)[-2:] == ['gene', 'site_sets']
         assert t.drop(columns='site_sets').equals(staged), (src, res)
         with open(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz', 'rb') as fh:
             assert fh.read(10)[4:8] == b'\x00\x00\x00\x00'     # gzip without a timestamp
@@ -138,3 +137,33 @@ def test_rbdmap_pclap_line_corrected_and_previous_release_untouched():
     # the published v1.5.1 folder is left as archived
     assert 'their extents are not republished' in (PREV / 'README.md').read_text(encoding='utf-8')
     assert RELEASE['germline_variants']['gnomad']['license'].startswith('CC0')
+
+
+def test_changes_not_shown():
+    """supporting/variant_changes_excluded: the changes a source places on an entry whose residue there differs from the canonical
+    sequence's (or lies beyond it), where either residue is a candidate residue; none of them is in a change table."""
+    import sys
+    sys.path.insert(0, str(ROOT / 'scripts'))
+    from common import parse_fasta  # noqa: E402
+    seqs = parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    ex = read(REL / 'supporting' / 'variant_changes_excluded_v1.6.0.tsv.gz')
+    assert list(ex.columns) == ['canonical_UniProtAC', 'position', 'source', 'source_id', 'gene', 'source_ref', 'canonical_ref', 'alt', 'reason']
+    assert set(ex['source']) == {'tcga_mc3', 'depmap_24q4', 'clinvar', 'gnomad_v4_1'} and set(ex['reason']) <= {'residue_differs', 'position_beyond_sequence'}
+    assert (ex['source_ref'] != ex['canonical_ref']).all()
+    assert (ex['source_ref'].isin(list('RKSTY')) | ex['canonical_ref'].isin(list('RKSTY'))).all()
+    for a, p, c, why in zip(ex['canonical_UniProtAC'], ex['position'].astype(int), ex['canonical_ref'], ex['reason']):
+        seq = seqs[a]
+        assert (c == seq[p - 1]) if why == 'residue_differs' else (c == '' and p > len(seq))
+    for src in ('tcga_mc3', 'depmap_24q4', 'clinvar', 'gnomad_v4_1'):
+        who = {'tcga_mc3': 'sample_id', 'depmap_24q4': 'model_id', 'clinvar': 'variation_id', 'gnomad_v4_1': 'variant_id'}[src]
+        kept = set()
+        for res in RESIDUES:
+            t = read(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz')
+            kept |= set(zip(t['canonical_UniProtAC'], t['position'], t['alt'], t[who]))
+        e = ex[ex['source'] == src]
+        assert not kept & set(zip(e['canonical_UniProtAC'], e['position'], e['alt'], e['source_id'])), src
+        if src in ('clinvar', 'gnomad_v4_1'):        # a variant the entry kept under another expression or transcript is not listed
+            assert not {(a, w) for a, _, _, w in kept} & set(zip(e['canonical_UniProtAC'], e['source_id'])), src
+    dd = read(REL / 'data_dictionary.tsv')
+    assert list(dd.loc[dd['file'] == 'supporting/variant_changes_excluded_v1.6.0.tsv.gz', 'column']) == list(ex.columns)
+    assert RELEASE['variant_changes_excluded']['rows'] == len(ex)
