@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Encode a release (releases/VERSION/) as the Methylarginine Site Explorer's site and evidence data.
 
-    python scripts/36_export_site_explorer_data.py --release releases/v1.1.0 --outdir docs/data
+    python scripts/36_export_site_explorer_data.py --release releases/v1.1.0 --outdir build/explorer_data
 
-Writes docs/data/methylarg_sites.json (proteins, sites, vocabularies, overview tests), methylarg_disease.json (the DisGeNET terms of
+Writes build/explorer_data/methylarg_sites.json (proteins, sites, vocabularies, overview tests), methylarg_disease.json (the DisGeNET terms of
 the proteins, for the protein pages) and methylarg_evidence.json (per-site
 source records, disease terms), the format docs/assets/explorer.js reads: vocabularies, bit masks and arrays. Every value
 comes from the release tables. Sites the release keeps pending (flag one_sided_window) are left out, as they are of
@@ -176,7 +176,7 @@ def main() -> None:
     ap.add_argument('--disgenet-terms', default='disease/dose_4.4.0_disgenet_term_genes.tsv',
                     help='DOSE\'s DisGeNET term-gene table, relative to --inputs: the largest terms of each disease family')
     ap.add_argument('--panther-groups', default='config/panther_class_groups.json')
-    ap.add_argument('--outdir', default='docs/data')
+    ap.add_argument('--outdir', default='build/explorer_data')
     ap.add_argument('--check', action='store_true', help='decode the written files and compare them with the release tables')
     args = ap.parse_args()
     rel, inputs, outdir = Path(args.release), Path(args.inputs), Path(args.outdir)

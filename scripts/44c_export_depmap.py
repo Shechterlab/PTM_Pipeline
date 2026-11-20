@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Export the staged DepMap, PRISM and TCGA layers (scripts/44_stage_depmap.py, inputs/layers/) for the website.
 
-Writes docs/data/depmap/:
+Writes build/explorer_data/depmap/:
   pNN.json    per UniProt accession, in the 64 files of the other per-protein data (shard as scripts/36c):
                 g: [lines, mean, median, q05, q25, q75, q95, min, max, dependent lines, lines with a probability,
                     common essential (0/1), histogram counts, [[lineage index, lines, mean], ...]]
@@ -88,7 +88,7 @@ def layer_stats(args, layers: Path) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--layers', default='inputs/layers')
-    ap.add_argument('--out', default='docs/data/depmap')
+    ap.add_argument('--out', default='build/explorer_data/depmap')
     ap.add_argument('--sites', default='releases/v1.3.1/human_methylarginine_sites_v1.3.1.tsv', help='the release site table')
     ap.add_argument('--statistics', default='', help="the release's statistics table (default: next to --sites, when it exists)")
     ap.add_argument('--fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta')

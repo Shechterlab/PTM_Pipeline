@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Export interaction context for the Site Explorer to docs/data/methylarg_interactions.json.
+"""Export interaction context for the Site Explorer to build/explorer_data/methylarg_interactions.json.
 
-Run after 36_export_site_explorer_data.py (it reads docs/data/methylarg_sites.json for the protein and
+Run after 36_export_site_explorer_data.py (it reads build/explorer_data/methylarg_sites.json for the protein and
 site lists). Public sources are downloaded once into --cache (default PTM_data/interactions_cache, which Git
 ignores) and reused; pass --refresh to download them again.
 
@@ -27,7 +27,7 @@ the website and supporting/complexes show, still count every protein of the expl
 
 It also writes --pred-iface-out: every residue of an explorer protein at a ProtVar predicted interface, as runs with
 the number of partners, the best pDockQ and the partners along each run, and every partner with its gene, best pDockQ
-and whether the ProtVar API serves the model; scripts/36c splits it into docs/data/pred_iface/pNN.json, which the
+and whether the ProtVar API serves the model; scripts/36c splits it into build/explorer_data/pred_iface/pNN.json, which the
 explorer loads per protein.
 
 Stages that make many requests cache every answer: the PDBe interface lookup (about 5,000 calls) and the
@@ -2603,10 +2603,10 @@ SITE_EVIDENCE = ['rna_crosslink', 'rbdmap_fragment', 'capri_xl_peptide', 'capri_
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json')
-    ap.add_argument('--out', default='docs/data/methylarg_interactions.json')
+    ap.add_argument('--sites-json', default='build/explorer_data/methylarg_sites.json')
+    ap.add_argument('--out', default='build/explorer_data/methylarg_interactions.json')
     ap.add_argument('--pred-iface-out', default='PTM_data/methylarg_pred_iface.json',
-                    help='every predicted interface residue of the explorer proteins (scripts/36c splits it into docs/data/pred_iface/)')
+                    help='every predicted interface residue of the explorer proteins (scripts/36c splits it into build/explorer_data/pred_iface/)')
     ap.add_argument('--cache', default='PTM_data/interactions_cache')
     ap.add_argument('--string-min-score', type=int, default=700, help='STRING physical score floor (0-1000); 700 = high confidence. Protein pages fetch lower-confidence links live.')
     ap.add_argument('--workers', type=int, default=6, help='parallel PDBe requests')

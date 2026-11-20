@@ -14,7 +14,7 @@ Each layer is registered once, in LAYERS, with its staged files and what the bui
 
     python scripts/release_layers.py check --inputs inputs
         every registered file is present and matches MANIFEST.tsv (hpc/build_release.sh runs it first)
-    python scripts/release_layers.py website --release releases/v1.4.0 --inputs inputs --site-out docs/data
+    python scripts/release_layers.py website --release releases/v1.4.0 --inputs inputs --site-out build/explorer_data
         each layer's website files, from the release (hpc/build_release.sh runs it last)
 
 ADDING_A_SOURCE.md says how to add a layer. The layers registered before this file existed (CPLM 4.0, the CARM1
@@ -1008,7 +1008,7 @@ def main() -> None:
     w = sub.add_parser('website')
     w.add_argument('--release', required=True)
     w.add_argument('--inputs', default='inputs')
-    w.add_argument('--site-out', default='docs/data')
+    w.add_argument('--site-out', default='build/explorer_data')
     args = ap.parse_args()
     inputs = Path(args.inputs)
     if args.cmd == 'check':
