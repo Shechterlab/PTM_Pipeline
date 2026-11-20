@@ -29,7 +29,8 @@ Outputs (in --outdir; gzip without a timestamp)
                                          its simple form (1 = pathogenic or likely pathogenic in some submission), review
                                          status and stars, submitters, origin, conditions, last evaluated, the somatic
                                          clinical impact and oncogenicity classifications, and the dbSNP ID (the
-                                         variation's ClinVar page, by its ID, lists its RCV records)
+                                         variation's ClinVar page, by its ID, lists its RCV records), and gene: the HGNC
+                                         approved symbol of the gene ClinVar gives the expression (NCBI Gene ID)
   clinvar_protein_background.tsv.gz      per reference entry and residue class (R, K, S, T, Y, all): the residues of that
                                          class, and the ClinVar variants on them, those classified pathogenic or likely
                                          pathogenic (germline), and the positions they change
@@ -50,6 +51,7 @@ from pathlib import Path
 import pandas as pd
 
 from common import md5_file, parse_fasta, refresh_manifest_row, update_manifest, upsert_tsv_rows
+from ensembl_genes import HGNC, HGNC_URL
 
 AA = 'ACDEFGHIKLMNPQRSTVWY'
 CLASSES = ['R', 'K', 'S', 'T', 'Y']
@@ -60,7 +62,7 @@ STARS = {'practice guideline': 4, 'reviewed by expert panel': 3, 'criteria provi
          'criteria provided, single submitter': 1, 'criteria provided, conflicting classifications': 1}
 COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'variation_id', 'refseq_protein', 'variant_type', 'germline_classification',
            'clinsig_simple', 'review_status', 'review_stars', 'number_submitters', 'origin', 'conditions', 'last_evaluated',
-           'somatic_clinical_impact', 'oncogenicity', 'dbsnp']     # the variation's page lists its RCV records
+           'somatic_clinical_impact', 'oncogenicity', 'dbsnp', 'gene']     # the variation's page lists its RCV records
 BACKGROUND_COLUMNS = ['canonical_UniProtAC', 'residue', 'residues', 'clinvar_variants', 'clinvar_pathogenic', 'clinvar_positions']
 PATHOGENIC = re.compile(r'^(Pathogenic|Likely pathogenic|Pathogenic/Likely pathogenic)(;|$|,)', re.I)
 URLS = {'hgvs4variation': 'https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/hgvs4variation.txt.gz',
@@ -110,6 +112,7 @@ def main() -> None:
     ap.add_argument('--uniprot-isoforms', required=True, help='UniProt reviewed human: Entry, Alternative products (TSV, gzip)')
     ap.add_argument('--uniprot-release', required=True)
     ap.add_argument('--clinvar-date', required=True, help='the date of the ClinVar files (their Last-Modified on the FTP)')
+    ap.add_argument('--hgnc', required=True, help=f'HGNC complete set ({HGNC_URL}): current approved symbols')
     ap.add_argument('--fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta')
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--manifest', default='', help='inputs/MANIFEST.tsv: write the rows of the staged files and of the downloads')
@@ -150,7 +153,7 @@ def main() -> None:
                     continue
                 key = (acc, pos, alt, r[ix['VariationID']])
                 if key not in changes:
-                    changes[key] = (ref, r[ix['AlleleID']], r[ix['ProteinExpression']].split(':')[0])
+                    changes[key] = (ref, r[ix['AlleleID']], r[ix['ProteinExpression']].split(':')[0], r[ix['Symbol']], r[ix['GeneID']])
     counts['changes_placed_all_residues'] = len(changes)
 
     # each variation's classifications (GRCh38 rows of variant_summary)
@@ -170,15 +173,19 @@ def main() -> None:
                          'review_stars': STARS.get(r[ix['ReviewStatus']], 0), 'number_submitters': r[ix['NumberSubmitters']],
                          'origin': r[ix['OriginSimple']], 'conditions': r[ix['PhenotypeList']], 'last_evaluated': r[ix['LastEvaluated']],
                          'somatic_clinical_impact': r[ix['SomaticClinicalImpact']], 'oncogenicity': r[ix['Oncogenicity']],
-                         'dbsnp': '' if rs in ('-1', '') else 'rs' + rs, 'rcv': r[ix['RCVaccession']]}
+                         'dbsnp': '' if rs in ('-1', '') else 'rs' + rs, 'rcv': r[ix['RCVaccession']], 'summary_gene': r[ix['GeneSymbol']]}
     counts['variations_without_summary'] = len(wanted - set(info))
 
     rows = []
-    for (acc, pos, alt, vid), (ref, allele, np_) in changes.items():
+    hgnc = HGNC(args.hgnc)
+    for (acc, pos, alt, vid), (ref, allele, np_, symbol, gene_id) in changes.items():
         if vid not in info:
             continue
+        # the HGNC approved symbol of the NCBI gene ClinVar gives the RefSeq protein's expression, else of its symbol, else of
+        # the variation's gene in variant_summary
+        gene = hgnc.symbol(entrez=gene_id, name=symbol if symbol not in ('', '-') else info[vid]['summary_gene'])
         rows.append({'canonical_UniProtAC': acc, 'position': pos, 'alt': alt, 'variation_id': vid, 'allele_id': allele,
-                     'refseq_protein': np_, 'ref': ref} | info[vid])
+                     'refseq_protein': np_, 'ref': ref, 'gene': gene} | info[vid])
     t = pd.DataFrame(rows)
     t['variation_id_num'] = t['variation_id'].astype(int)
     t = t.sort_values(['canonical_UniProtAC', 'position', 'alt', 'variation_id_num'], kind='stable')
@@ -215,6 +222,7 @@ def main() -> None:
                    'uniprot': {'release': args.uniprot_release,
                                'refseq': {'file': Path(args.uniprot_refseq).name, 'url': URLS['uniprot_refseq'], 'md5': md5_file(args.uniprot_refseq)},
                                'isoforms': {'file': Path(args.uniprot_isoforms).name, 'md5': md5_file(args.uniprot_isoforms)}},
+                   'hgnc': {'file': Path(args.hgnc).name, 'url': HGNC_URL, 'md5': md5_file(args.hgnc), 'license': 'CC0'},
                    'reference': {'fasta': args.fasta, 'md5': md5_file(args.fasta)}},
         'license': 'NCBI places no restrictions on the use or distribution of ClinVar data; submitters may claim rights in what they submitted',
         'rule': 'a single-residue substitution or stop on a RefSeq protein UniProt assigns to a reviewed entry\'s displayed isoform, '
@@ -275,7 +283,8 @@ def write_manifest(manifest: Path, out: Path, args) -> None:
     raw = []
     for path, url, v in ((Path(args.hgvs4variation), URLS['hgvs4variation'], f'ClinVar, dated {args.clinvar_date}'),
                          (Path(args.variant_summary), URLS['variant_summary'], f'ClinVar, dated {args.clinvar_date}'),
-                         (Path(args.uniprot_refseq), URLS['uniprot_refseq'], f'UniProt {args.uniprot_release}, RefSeq cross-references')):
+                         (Path(args.uniprot_refseq), URLS['uniprot_refseq'], f'UniProt {args.uniprot_release}, RefSeq cross-references'),
+                         (Path(args.hgnc), HGNC_URL, 'HGNC complete set, file of 2026-11-13 (CC0)')):
         raw.append({'file': path.name, 'url': url, 'bytes': path.stat().st_size, 'md5': md5_file(path), 'sha256': sha256(path),
                     'downloaded': args.downloaded, 'version': v, 'kept': 'release_asset'})
     upsert_tsv_rows(out / 'raw_files.tsv', raw)

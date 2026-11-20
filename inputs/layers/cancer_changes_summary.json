@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-19",
+ "generated": "2026-11-20",
  "inputs": {
   "maf": {
    "file": "mc3.v0.2.8.PUBLIC.maf.gz",
@@ -41,6 +41,17 @@
    "file": "Model.csv",
    "md5": "675210d17675f3517b0ce39a3c274f16"
   },
+  "ensembl_gtf": {
+   "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+   "url": "https://ftp.ensembl.org/pub/release-105/gtf/homo_sapiens/Homo_sapiens.GRCh38.105.gtf.gz",
+   "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313"
+  },
+  "hgnc": {
+   "file": "hgnc_complete_set.txt",
+   "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt",
+   "md5": "2a30aa650f51d6fed261f79057463d5a",
+   "license": "CC0"
+  },
   "reference": {
    "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
    "md5": "c75aad9d197cbba00f51063f65a96ac4"
@@ -57,6 +68,18 @@
   "depmap_lines_with_mutation_calls": 1929
  },
  "residues": {
+  "R": {
+   "tcga_changes": 274408,
+   "tcga_positions": 180641,
+   "tcga_samples": 9064,
+   "depmap_changes": 53209,
+   "depmap_positions": 44657,
+   "depmap_lines": 1924,
+   "md5": {
+    "tcga_mc3_changes_R.tsv.gz": "abce6568852ea1f55e60edba3efb0174",
+    "depmap_24q4_changes_R.tsv.gz": "8d854bf74fbccd73d35d8ff6734a18a6"
+   }
+  },
   "K": {
    "tcga_changes": 61510,
    "tcga_positions": 55672,
@@ -65,8 +88,8 @@
    "depmap_positions": 18961,
    "depmap_lines": 1858,
    "md5": {
-    "tcga_mc3_changes_K.tsv.gz": "a029935935404c55f9a6b33891af29cf",
-    "depmap_24q4_changes_K.tsv.gz": "579964a2916429cc80fe1ce65c34b186"
+    "tcga_mc3_changes_K.tsv.gz": "560d580691ff1b23479fe1fda7cd113d",
+    "depmap_24q4_changes_K.tsv.gz": "a556a67ba20c446f62aa258c1836f69d"
    }
   },
   "S": {
@@ -77,8 +100,8 @@
    "depmap_positions": 39102,
    "depmap_lines": 1927,
    "md5": {
-    "tcga_mc3_changes_S.tsv.gz": "81b917868bf58db2433b711bd517b3f1",
-    "depmap_24q4_changes_S.tsv.gz": "738fcb18845415f48b388e9e5b714c8f"
+    "tcga_mc3_changes_S.tsv.gz": "248f0536f352a94fbef0e77575803921",
+    "depmap_24q4_changes_S.tsv.gz": "a23114b74f210a3047d77b7008a590d1"
    }
   },
   "T": {
@@ -89,8 +112,8 @@
    "depmap_positions": 20489,
    "depmap_lines": 1911,
    "md5": {
-    "tcga_mc3_changes_T.tsv.gz": "f68c68bb37f380d85ed7e7ad8a2bae4b",
-    "depmap_24q4_changes_T.tsv.gz": "dd06b544e1e67011e8d30870d7bbd009"
+    "tcga_mc3_changes_T.tsv.gz": "ffc5bd8ef863ef3bf1dcd8d8e05fd302",
+    "depmap_24q4_changes_T.tsv.gz": "a90e8d94424a9e1f8811654cb627bbef"
    }
   },
   "Y": {
@@ -101,8 +124,8 @@
    "depmap_positions": 11879,
    "depmap_lines": 1787,
    "md5": {
-    "tcga_mc3_changes_Y.tsv.gz": "4be9a5fd905e26c4e2e7f5ccae7b71ab",
-    "depmap_24q4_changes_Y.tsv.gz": "0b6d17b589d2bdb983f30ad7449f95e5"
+    "tcga_mc3_changes_Y.tsv.gz": "ea3978a71f1e5dd5fccbed566ff8aceb",
+    "depmap_24q4_changes_Y.tsv.gz": "3bb3d069449895dfdcdd78e2a0c2be64"
    }
   }
  },

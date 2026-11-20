@@ -23,7 +23,9 @@ Outputs (in --outdir; gzip without a timestamp)
   gnomad_v4_1_changes_<X>.tsv.gz         per residue X (R, K, S, T, Y): one row per entry, position, new residue and
                                          variant (GRCh38 chrom-pos-ref-alt), with dbSNP ID, allele count and number,
                                          allele frequency, homozygotes, the group with the highest frequency and its
-                                         frequency, and the highest filtering allele frequency (95%)
+                                         frequency, and the highest filtering allele frequency (95%), and gene: the HGNC
+                                         approved symbol of the Ensembl 105 gene of the transcript VEP read the change on
+                                         (';' between overlapping genes)
   gnomad_protein_background.tsv.gz       per reference entry and residue class (R, K, S, T, Y, all): residues, variants,
                                          positions changed, and the summed allele count
   gnomad_summary.json                    inputs (bytes and MD5 read per chromosome, file dates), rules and counts
@@ -49,6 +51,7 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from common import md5_file, parse_fasta, refresh_manifest_row, update_manifest, upsert_tsv_rows  # noqa: E402
+from ensembl_genes import GTF_105, HGNC, HGNC_URL, transcript_genes  # noqa: E402
 
 BASE = 'https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.{chrom}.vcf.bgz'
 CHROMS = [f'chr{i}' for i in range(1, 23)] + ['chrX', 'chrY']
@@ -57,7 +60,7 @@ AA = set('ACDEFGHIKLMNPQRSTVWY')
 KEYS = ('AC', 'AN', 'AF', 'nhomalt', 'grpmax', 'AF_grpmax', 'fafmax_faf95_max')
 PARTIAL = ['chrom', 'pos', 'ref', 'alt', 'rsid'] + list(KEYS) + ['transcript', 'protein_position', 'ref_aa', 'alt_aa', 'consequence']
 COLUMNS = ['canonical_UniProtAC', 'position', 'alt', 'variant_id', 'dbsnp', 'ac', 'an', 'af', 'nhomalt', 'grpmax', 'af_grpmax',
-           'faf95_max', 'consequence']
+           'faf95_max', 'consequence', 'gene']
 BACKGROUND_COLUMNS = ['canonical_UniProtAC', 'residue', 'residues', 'gnomad_variants', 'gnomad_positions', 'gnomad_allele_count']
 LICENSE = ('CC0 1.0 (gnomAD primary data, https://github.com/broadinstitute/gnomad-browser/blob/main/browser/about/policies/terms.md); '
            'SpliceAI (CC BY-NC 4.0) and CADD (non-commercial) annotations not used')
@@ -169,6 +172,8 @@ def stage(args) -> None:
     canonical = parse_fasta(args.fasta)
     canon = canonical_transcripts(args.uniprot_ensembl, args.uniprot_isoforms)
     tx_acc = pd.DataFrame([(tx, a) for tx, accs in canon.items() for a in sorted(accs)], columns=['transcript', 'canonical_UniProtAC'])
+    tx_gene, hgnc = transcript_genes(args.ensembl_gtf), HGNC(args.hgnc)
+    gene_of = {tx: hgnc.symbol(*eg) or eg[0] for tx, eg in tx_gene.items()}     # the Ensembl gene for a gene without an HGNC symbol
     work = partials / 'staged'
     work.mkdir(exist_ok=True)
     counts = Counter()
@@ -187,7 +192,13 @@ def stage(args) -> None:
         p = p.drop(columns=['ref', 'alt'])          # the alleles live in variant_id; alt is the new residue below
         p = p.rename(columns={'alt_aa': 'alt_res', 'rsid': 'dbsnp', 'AC': 'ac', 'AN': 'an', 'AF': 'af', 'nhomalt': 'nhomalt',
                               'grpmax': 'grpmax', 'AF_grpmax': 'af_grpmax', 'fafmax_faf95_max': 'faf95_max'})
-        p = p.drop_duplicates(['canonical_UniProtAC', 'position', 'alt_res', 'variant_id'])
+        # the gene: Ensembl 105 name of the transcript VEP read the change on; the names of every such transcript of the same
+        # change, separated by ';' (overlapping genes)
+        p['gene'] = p['transcript'].map(gene_of).fillna('')
+        key = ['canonical_UniProtAC', 'position', 'alt_res', 'variant_id']
+        genes = p.groupby(key)['gene'].agg(lambda s: ';'.join(sorted({g for g in s if g}))).rename('genes').reset_index()
+        p = p.drop_duplicates(key).drop(columns='gene').merge(genes, on=key, how='left').rename(columns={'genes': 'gene'})
+        counts['changes_without_ensembl_105_gene'] += int((p['gene'] == '').sum())
         p['dbsnp'] = p['dbsnp'].replace('.', '')
         p['consequence'] = ['stop_gained' if a == '*' else 'missense_variant' for a in p['alt_res']]
         counts['changes_placed_all_residues'] += len(p)
@@ -225,6 +236,8 @@ def stage(args) -> None:
                'license': LICENSE, 'citation': CITATION,
                'inputs': {'vcfs': fetched, 'uniprot': {'release': args.uniprot_release, 'ensembl_md5': md5_file(args.uniprot_ensembl),
                                                        'isoforms_md5': md5_file(args.uniprot_isoforms)},
+                          'ensembl_gtf': {'file': Path(args.ensembl_gtf).name, 'url': GTF_105, 'md5': md5_file(args.ensembl_gtf)},
+                          'hgnc': {'file': Path(args.hgnc).name, 'url': HGNC_URL, 'md5': md5_file(args.hgnc), 'license': 'CC0'},
                           'reference': {'fasta': args.fasta, 'md5': md5_file(args.fasta)}},
                'rule': 'FILTER PASS; a missense or stop-gained VEP consequence on a transcript UniProt assigns to a reviewed entry\'s '
                        'displayed isoform, kept where the 2026_03 canonical sequence has the residue VEP names at the protein '
@@ -267,6 +280,13 @@ def write_manifest(manifest: Path, out: Path, args, fetched: dict) -> None:
     raw = [{'file': Path(v['url']).name, 'url': v['url'], 'bytes': v['bytes'], 'md5': v['md5'], 'sha256': '',
             'downloaded': v['fetched'][:10], 'version': 'gnomAD v4.1 exomes, sites VCF (streamed, not stored)',
             'kept': 'not kept: served by Google Cloud public datasets at this URL (CC0); MD5 of the bytes read identifies it'} for v in fetched.values()]
+    gtf = Path(args.ensembl_gtf)
+    raw.append({'file': gtf.name, 'url': GTF_105, 'bytes': gtf.stat().st_size, 'md5': md5_file(gtf), 'sha256': '', 'downloaded': args.downloaded,
+                'version': 'Ensembl release 105 GTF (Ensembl CHECKSUMS sum 40862 49638 matched); transcript gene names',
+                'kept': 'not kept: served by Ensembl at this URL; MD5 identifies it'})
+    hg = Path(args.hgnc)
+    raw.append({'file': hg.name, 'url': HGNC_URL, 'bytes': hg.stat().st_size, 'md5': md5_file(hg), 'sha256': '', 'downloaded': args.downloaded,
+                'version': 'HGNC complete set, file of 2026-11-13 (CC0)', 'kept': 'release_asset'})
     upsert_tsv_rows(out / 'raw_files.tsv', raw)
     refresh_manifest_row(manifest, out / 'raw_files.tsv', f'{folder}/raw_files.tsv')
 
@@ -284,6 +304,8 @@ def main() -> None:
     s.add_argument('--uniprot-ensembl', required=True)
     s.add_argument('--uniprot-isoforms', required=True)
     s.add_argument('--uniprot-release', required=True)
+    s.add_argument('--hgnc', required=True, help=f'HGNC complete set ({HGNC_URL}): current approved symbols')
+    s.add_argument('--ensembl-gtf', required=True, help=f'Ensembl 105 GTF ({GTF_105}): each transcript\'s gene name')
     s.add_argument('--fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta')
     s.add_argument('--outdir', required=True)
     s.add_argument('--manifest', default='')

@@ -77,11 +77,20 @@ the best reliability and counts a location as main when any of the genes has it 
 - **`tcga_mc3_changes_{K,S,T,Y}.tsv.gz`** and **`depmap_24q4_changes_{K,S,T,Y}.tsv.gz`**: the somatic missense and stop
   changes at every lysine, serine, threonine and tyrosine of reviewed canonical proteins, a known site or not, in TCGA
   tumors and DepMap cell lines, for the lysine, methyllysine and phosphorylation site sets. They have the columns of the
-  arginine tables and follow their rules: rerun on arginines, `scripts/66_stage_cancer_changes.py` writes
+  arginine tables, and `gene`, and follow their rules: rerun on arginines, `scripts/66_stage_cancer_changes.py` writes
   `tcga_mc3_arginine_changes.tsv` and `depmap_24q4_arginine_changes.tsv` byte for byte. The Ensembl transcripts of the
   canonical isoforms come from UniProt 2026_04, the current release on the day of staging; positions are checked on the
   2026_03 reference, as for arginines. TCGA rows: K 61,510, S 142,576, T 59,012, Y 25,757; DepMap rows: K 20,835,
   S 44,341, T 24,605, Y 13,533. The files are gzip-compressed without a timestamp, so restaging gives the same bytes.
+  `tcga_mc3_changes_R.tsv.gz` and `depmap_24q4_changes_R.tsv.gz` are the arginine tables' rows, byte for byte, with `gene`;
+  the release reads them, and the arginine tables stay as they are.
+- **`gene`**, in every change table here (TCGA, DepMap, ClinVar, gnomAD): the HGNC approved symbol of the gene the
+  change lies in. It matters where several genes encode one protein: the 14 genes of histone H4 (P62805) are pooled
+  under one accession. The sources name genes in different years' terms, so each row's gene is resolved through a stable
+  identifier where the source gives one (the Ensembl 105 gene of the transcript for TCGA and gnomAD, DepMap's Ensembl
+  gene, ClinVar's NCBI Gene ID), else through its symbol (approved, a unique previous symbol, a unique alias), with the
+  HGNC complete set of 13 November 2026 (CC0, https://genenames.org/about/license) and the Ensembl 105 GTF
+  (`scripts/ensembl_genes.py`).
 - **`cancer_change_protein_background.tsv.gz`** (122,496 rows): for each reviewed canonical entry and residue class (R, K,
   S, T, Y, and all residues), the residues of that class in its sequence and the TCGA and DepMap changes on them, with
   the tumor samples or cell lines that carry one and the positions changed. A site's changes can be compared with those

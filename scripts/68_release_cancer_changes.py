@@ -76,7 +76,9 @@ COPIED = {'cancer_change_protein_background.tsv.gz': 'cancer_change_protein_back
 
 
 def staged(src: str, res: str) -> Path:
-    return LAYERS / (f'{src}_arginine_changes.tsv' if res == 'R' and src in SOMATIC else f'{src}_changes_{res}.tsv.gz')
+    # every family and residue from its staged table; the TCGA and DepMap arginine rows from scripts/66 (the rows of the arginine
+    # layer, byte for byte, with the gene), the arginine layer tables themselves left as they are
+    return LAYERS / f'{src}_changes_{res}.tsv.gz'
 
 
 def released(src: str, res: str, version: str) -> str:
@@ -135,6 +137,7 @@ def dictionary_rows(version: str) -> list[str]:
                  'DNA, kept in TCGA-OV and TCGA-LAML as Ellrott et al. 2018 kept them', 'MC3 FILTER of the call'),
                 ('tumor_alt_count', 'integer', '', '', 'tumor reads with the variant'),
                 ('tumor_ref_count', 'integer', '', '', 'tumor reads with the reference allele'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the gene of the transcript the change was read on (its Ensembl 105 gene; else the symbol the MC3 MAF gives, resolved through HGNC previous symbols; else the Ensembl gene ID)'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
         f = released('depmap_24q4', res, version)
@@ -149,6 +152,7 @@ def dictionary_rows(version: str) -> list[str]:
                 ('likely_lof', 'boolean', 'True; False', '', 'DepMap marks the change likely loss of function'),
                 ('am_pathogenicity', 'number', '', '', 'AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops'),
                 ('am_class', 'string', 'likely_benign; ambiguous; likely_pathogenic', '', 'AlphaMissense class, as DepMap gives it'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the gene (DepMap\'s Ensembl gene, else its HugoSymbol)'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
         f = released('clinvar', res, version)
@@ -170,6 +174,7 @@ def dictionary_rows(version: str) -> list[str]:
                 ('somatic_clinical_impact', 'string', '', '', 'ClinVar somatic clinical impact classification'),
                 ('oncogenicity', 'string', '', '', 'ClinVar oncogenicity classification'),
                 ('dbsnp', 'string', '', '', 'dbSNP ID'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the gene ClinVar gives the RefSeq protein\'s expression (its NCBI Gene ID; else its symbol, else variant_summary\'s)'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
         f = released('gnomad_v4_1', res, version)
@@ -187,6 +192,7 @@ def dictionary_rows(version: str) -> list[str]:
                 ('af_grpmax', 'number', '', '', 'allele frequency in that group'),
                 ('faf95_max', 'number', '', '', 'highest filtering allele frequency (Poisson 95% CI) across groups'),
                 ('consequence', 'string', 'missense_variant; stop_gained', '', 'VEP consequence of the change'),
+                ('gene', 'string', '', '', 'HGNC approved symbol of the Ensembl 105 gene of the transcript VEP read the change on; several separated by semicolons when genes overlap; the Ensembl gene ID for a gene without an HGNC symbol'),
                 ('site_sets', 'string', '', '', site_sets)):
             rows.append('\t'.join([f, col, typ, vals, means, desc]))
     for name, label in (('clinvar', 'ClinVar'), ('gnomad', 'gnomAD v4.1')):
@@ -364,7 +370,7 @@ def main() -> None:
         'exomes): one row per variant that passes every gnomAD filter, with its allele count and number, frequency, homozygotes, '
         'the ancestry group with the highest frequency and the highest filtering allele frequency; the change is VEP\'s, on a '
         'transcript UniProt assigns to the displayed isoform. Either way a variant counts only where the 2026_03 canonical sequence '
-        'has that residue.', '',
+        'has that residue. As in the cancer tables, `gene` names the gene of each variant.', '',
         *germline_residue_table(), '',
         *germline_set_table(), '',
         f'`supporting/clinvar_protein_background_{version}.tsv.gz` and `supporting/gnomad_protein_background_{version}.tsv.gz` give, for '
@@ -384,7 +390,9 @@ def main() -> None:
         f'{den["tcga_tumor_samples"]:,} tumor samples in {den["tcga_projects"]} projects) and in DepMap 24Q4 cell lines '
         f'({den["depmap_lines_with_mutation_calls"]:,} lines with mutation calls). One row per tumor sample or cell line and change. '
         'The column `site_sets` names the site sets of this release with a site at that residue (empty: a candidate residue, not '
-        'a known site), so a set\'s changes can be read at every candidate residue or at its known sites only.', '',
+        'a known site), so a set\'s changes can be read at every candidate residue or at its known sites only. The column `gene` '
+        'names the gene each change lies in (its current HGNC approved symbol, for all four sources), which matters where several genes encode one protein: the 14 genes '
+        'of histone H4 (P62805), for example, are pooled under one accession.', '',
         *residue_table(), '',
         *set_table(), '',
         f'`supporting/cancer_change_protein_background_{version}.tsv.gz` gives, for each protein and residue class (and over all '

@@ -70,10 +70,9 @@ def test_previous_release_is_carried_unchanged():
 @pytest.mark.parametrize('res', RESIDUES)
 def test_change_tables_are_the_staged_layer_with_site_sets(res):
     for src in ('tcga_mc3', 'depmap_24q4', 'clinvar', 'gnomad_v4_1'):
-        somatic_arginine = res == 'R' and src in ('tcga_mc3', 'depmap_24q4')
-        staged = read(LAYERS / (f'{src}_arginine_changes.tsv' if somatic_arginine else f'{src}_changes_{res}.tsv.gz'))
+        staged = read(LAYERS / f'{src}_changes_{res}.tsv.gz')
         t = read(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz')
-        assert list(t.columns) == list(staged.columns) + ['site_sets']
+        assert list(t.columns) == list(staged.columns) + ['site_sets'] and list(t.columns)[-2:] == ['gene', 'site_sets']
         assert t.drop(columns='site_sets').equals(staged), (src, res)
         with open(REL / 'supporting' / f'{src}_changes_{res}_v1.6.0.tsv.gz', 'rb') as fh:
             assert fh.read(10)[4:8] == b'\x00\x00\x00\x00'     # gzip without a timestamp

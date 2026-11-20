@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-19",
+ "generated": "2026-11-20",
  "inputs": {
   "hgvs4variation": {
    "file": "hgvs4variation.txt.gz",
@@ -24,6 +24,12 @@
     "md5": "d3ce32007c476fa6c134416594db9de2"
    }
   },
+  "hgnc": {
+   "file": "hgnc_complete_set.txt",
+   "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt",
+   "md5": "2a30aa650f51d6fed261f79057463d5a",
+   "license": "CC0"
+  },
   "reference": {
    "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
    "md5": "c75aad9d197cbba00f51063f65a96ac4"
@@ -36,31 +42,31 @@
    "variants": 335933,
    "positions": 226113,
    "pathogenic_or_likely": 20501,
-   "md5": "e17900ed2035d70751be5f38712efa0d"
+   "md5": "21f7985471293f2022a70783d9d42a1d"
   },
   "K": {
    "variants": 99522,
    "positions": 81744,
    "pathogenic_or_likely": 6025,
-   "md5": "a65cdffdb10cae7cfd832754bb7dd412"
+   "md5": "ddc7e87bf37414a5aadb81e3768bb206"
   },
   "S": {
    "variants": 186004,
    "positions": 151519,
    "pathogenic_or_likely": 8572,
-   "md5": "b05c8b1d0e9694ae14b3e835df864a8c"
+   "md5": "6cae1cab3285b61faf8fb1759f4f3dee"
   },
   "T": {
    "variants": 142865,
    "positions": 117373,
    "pathogenic_or_likely": 2621,
-   "md5": "2e70bb578b0bd087a28b710a7187de04"
+   "md5": "7dce1d64ac1ec498d1442c8b12b20a48"
   },
   "Y": {
    "variants": 64910,
    "positions": 50892,
    "pathogenic_or_likely": 12099,
-   "md5": "36e66ac060fd566d351a54c0a2a5f464"
+   "md5": "65c0bd0c54b5c78dbd46abc49ff267a2"
   }
  },
  "background_md5": "81929ddfc93711ff5b968b36d01d4d52",
