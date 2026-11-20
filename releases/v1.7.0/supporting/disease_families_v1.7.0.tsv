@@ -1,0 +1,24 @@
+family	audited	n_terms	n_genes	n_methylated_genes	n_genes_tested	n_methylated_genes_tested	fold_enrichment	q
+Cancer / neoplasia	true	3256	13599	3577	16986	4164	1.07298	2.60031e-28
+Ataxia / cerebellar degeneration	true	304	1828	626	16986	4164	1.39694	9.79539e-23
+Developmental / congenital syndromes	true	3233	8694	2361	16986	4164	1.10779	3.46308e-16
+Myopathy / muscle / cardiomyopathy	true	455	2800	834	16986	4164	1.21503	3.60512e-12
+ALS / motor neuron / FTD	true	86	1506	480	16986	4164	1.30016	1.22431e-11
+Alzheimer / tau / dementia	true	73	3437	968	16986	4164	1.14888	2.74431e-08
+Parkinsonism	true	62	2104	587	16986	4164	1.13808	8.78035e-05
+Immune / inflammatory	true	521	6534	1655	16986	4164	1.03324	0.0267119
+Neurological signs	false	439	3323	1049	16986	4164	1.28773	5.34044e-24
+Neurodevelopmental and behavioural	false	594	5870	1709	16986	4164	1.18764	4.46479e-23
+Cancer-related (other)	false	344	5604	1638	16986	4164	1.19233	9.26699e-23
+Neurodegeneration and neuromuscular (other)	false	910	4721	1368	16986	4164	1.18204	2.37679e-16
+Pregnancy, birth and growth	false	182	3398	1015	16986	4164	1.21849	2.5162e-15
+Craniofacial, skeletal and limb features	false	2158	6889	1890	16986	4164	1.11914	4.41811e-13
+Eye and ear	false	501	3805	1105	16986	4164	1.18464	4.41811e-13
+Infection	false	475	4629	1302	16986	4164	1.14737	3.415e-11
+Blood and haematological	false	314	3510	1012	16986	4164	1.17613	4.24766e-11
+Digestive and liver	false	543	5966	1632	16986	4164	1.11588	2.52412e-10
+Skin, hair and nails	false	546	3419	977	16986	4164	1.16567	8.24905e-10
+Cardiovascular	false	654	5630	1528	16986	4164	1.10712	1.75415e-08
+Kidney, urinary and reproductive	false	453	4315	1190	16986	4164	1.12498	5.01636e-08
+Respiratory	false	172	2576	709	16986	4164	1.12274	8.00608e-05
+Metabolic and mitochondrial	false	465	5660	1461	16986	4164	1.05297	0.00293288

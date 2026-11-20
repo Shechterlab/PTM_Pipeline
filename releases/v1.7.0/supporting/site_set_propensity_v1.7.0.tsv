@@ -1,0 +1,37 @@
+site_set	label	residue	source	cohort	proteins	sites	residues_in_proteins	observed	expected	oe	expected_unweighted	oe_unweighted	p_upper	p_lower	iterations	seed	oe_status
+methylarginine	Methylarginine (R)	R	tcga_mc3	all	4148	10944	194815	4462	5091.52	0.876359	5023.79	0.888175	1	9.999e-05	10000	20261120	test
+methylarginine	Methylarginine (R)	R	tcga_mc3	no_hypermutated	3615	9923	182629	1192	1417.96	0.840646	1382.05	0.862487	1	9.999e-05	10000	20261121	test
+methylarginine	Methylarginine (R)	R	depmap_24q4	all	3171	8571	154082	1034	1165.18	0.887417	1166.23	0.886618	1	9.999e-05	10000	20261122	test
+methylarginine	Methylarginine (R)	R	depmap_24q4	no_hypermutated	2067	5917	117793	317	372.739	0.850462	366.791	0.864253	0.9994	0.0006999	10000	20261123	test
+methylarginine	Methylarginine (R)	R	clinvar	all	4102	10770	193864	5979	5667.09	1.05504	5845.43	1.02285	9.999e-05	1	10000	20261124	descriptive
+methylarginine	Methylarginine (R)	R	gnomad_v4_1	all	4293	11210	198956	20460	18953.6	1.07948	19652.5	1.04109	9.999e-05	1	10000	20261125	test
+methyllysine	Methyllysine (K)	K	tcga_mc3	all	2426	4475	172371	452	507.256	0.891069	518.706	0.871399	0.9965	0.0046	10000	20261126	test
+methyllysine	Methyllysine (K)	K	tcga_mc3	no_hypermutated	1716	3406	142535	128	158.393	0.808115	162.011	0.790068	0.9974	0.0033	10000	20261127	test
+methyllysine	Methyllysine (K)	K	depmap_24q4	all	1727	3213	127339	171	185.103	0.92381	186.982	0.914526	0.8773	0.1371	10000	20261128	test
+methyllysine	Methyllysine (K)	K	depmap_24q4	no_hypermutated	1027	2089	89648	74	70.7614	1.04577	72.0627	1.02688	0.3529	0.6968	10000	20261129	test
+methyllysine	Methyllysine (K)	K	clinvar	all	2415	4464	170231	808	884.604	0.913403	887.915	0.909997	0.9964	0.004	10000	20261130	descriptive
+methyllysine	Methyllysine (K)	K	gnomad_v4_1	all	2716	4956	181327	4179	4321.48	0.967031	4326.5	0.965907	0.9885	0.0119	10000	20261131	test
+lysine	Lysine acylation, ubiquitination and SUMOylation (K)	K	tcga_mc3	all	8333	79669	388094	7494	7557.22	0.991635	7748.59	0.967144	0.8218	0.1823	10000	20261132	test
+lysine	Lysine acylation, ubiquitination and SUMOylation (K)	K	tcga_mc3	no_hypermutated	5071	55196	286028	2117	2103.37	1.00648	2141.02	0.988779	0.3506	0.6594	10000	20261133	test
+lysine	Lysine acylation, ubiquitination and SUMOylation (K)	K	depmap_24q4	all	5429	56386	277060	2718	2769.09	0.981548	2796.04	0.972087	0.8931	0.1119	10000	20261134	test
+lysine	Lysine acylation, ubiquitination and SUMOylation (K)	K	depmap_24q4	no_hypermutated	2921	33578	175506	968	990.807	0.976982	999.675	0.968315	0.8331	0.1771	10000	20261135	test
+lysine	Lysine acylation, ubiquitination and SUMOylation (K)	K	clinvar	all	8572	80663	390623	15284	15530.6	0.984121	15569	0.981697	0.9935	0.006999	10000	20261136	descriptive
+lysine	Lysine acylation, ubiquitination and SUMOylation (K)	K	gnomad_v4_1	all	10170	88582	423459	72657	72561.4	1.00132	72804.2	0.997978	0.3204	0.6812	10000	20261137	test
+phospho	Phosphorylation (S, T, Y)	S	tcga_mc3	all	10256	94548	631104	14033	14180.3	0.98961	14067.6	0.997537	0.926	0.07519	10000	20261138	test
+phospho	Phosphorylation (S, T, Y)	S	tcga_mc3	no_hypermutated	7920	82362	558481	3948	3986.99	0.99022	3962.08	0.996447	0.7718	0.234	10000	20261139	test
+phospho	Phosphorylation (S, T, Y)	S	depmap_24q4	all	7601	72277	493781	4180	4326.8	0.966073	4319.22	0.967767	0.9963	0.0039	10000	20261140	test
+phospho	Phosphorylation (S, T, Y)	S	depmap_24q4	no_hypermutated	4764	52712	368902	1397	1483.44	0.941733	1481.9	0.94271	0.9971	0.0033	10000	20261141	test
+phospho	Phosphorylation (S, T, Y)	S	clinvar	all	10203	94081	625186	22921	22485.3	1.01938	22468.8	1.02013	0.0003	0.9999	10000	20261142	descriptive
+phospho	Phosphorylation (S, T, Y)	S	gnomad_v4_1	all	11156	98141	653733	108538	104819	1.03548	104823	1.03544	9.999e-05	1	10000	20261143	test
+phospho	Phosphorylation (S, T, Y)	T	tcga_mc3	all	6374	26606	289307	2771	2804.82	0.987941	2810.68	0.985882	0.7648	0.2397	10000	20261144	test
+phospho	Phosphorylation (S, T, Y)	T	tcga_mc3	no_hypermutated	4168	19317	223769	904	888.797	1.01711	892.874	1.01246	0.2904	0.7237	10000	20261145	test
+phospho	Phosphorylation (S, T, Y)	T	depmap_24q4	all	4461	18878	212939	1257	1174.32	1.0704	1175.66	1.06918	0.0048	0.9953	10000	20261146	test
+phospho	Phosphorylation (S, T, Y)	T	depmap_24q4	no_hypermutated	2513	11860	141814	484	423.358	1.14324	423.989	1.14154	0.0006999	0.9994	10000	20261147	test
+phospho	Phosphorylation (S, T, Y)	T	clinvar	all	7060	28461	301041	8972	8190.65	1.0954	8280.37	1.08353	9.999e-05	1	10000	20261148	descriptive
+phospho	Phosphorylation (S, T, Y)	T	gnomad_v4_1	all	7800	30260	316249	37670	35232.4	1.06919	35396.7	1.06422	9.999e-05	1	10000	20261149	test
+phospho	Phosphorylation (S, T, Y)	Y	tcga_mc3	all	2913	7182	74441	904	890.92	1.01468	893.181	1.01211	0.3145	0.6993	10000	20261150	test
+phospho	Phosphorylation (S, T, Y)	Y	tcga_mc3	no_hypermutated	1746	4668	50834	363	376.408	0.96438	370.973	0.978508	0.8021	0.2171	10000	20261151	test
+phospho	Phosphorylation (S, T, Y)	Y	depmap_24q4	all	2010	5035	52567	490	485.727	1.0088	489.848	1.00031	0.4141	0.6078	10000	20261152	test
+phospho	Phosphorylation (S, T, Y)	Y	depmap_24q4	no_hypermutated	881	2301	27077	152	150.339	1.01105	149.84	1.01441	0.454	0.5799	10000	20261153	test
+phospho	Phosphorylation (S, T, Y)	Y	clinvar	all	3356	8045	80188	2628	2547.82	1.03147	2534.74	1.03679	0.0347	0.9673	10000	20261154	descriptive
+phospho	Phosphorylation (S, T, Y)	Y	gnomad_v4_1	all	4326	9773	91174	10070	9785.1	1.02912	9716.14	1.03642	0.0004	0.9997	10000	20261155	test
