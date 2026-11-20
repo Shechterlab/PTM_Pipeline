@@ -1021,6 +1021,7 @@ supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz	mapped_by	string	canonical_transcrip
 supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz	filter	string	PASS; wga	PASS = passed every MC3 filter; wga = flagged only as from whole-genome-amplified DNA, kept in TCGA-OV and TCGA-LAML as Ellrott et al. 2018 kept them	MC3 FILTER of the call
 supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz	tumor_alt_count	integer			tumor reads with the variant
 supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz	tumor_ref_count	integer			tumor reads with the reference allele
+supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene of the transcript the change was read on (its Ensembl 105 gene; else the symbol the MC3 MAF gives, resolved through HGNC previous symbols; else the Ensembl gene ID)
 supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	position	integer			position of the arginine on the canonical sequence
@@ -1032,6 +1033,7 @@ supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	hotspot	boolean	True; False		DepM
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	likely_lof	boolean	True; False		DepMap marks the change likely loss of function
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
+supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene (DepMap's Ensembl gene, else its HugoSymbol)
 supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/clinvar_changes_R_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/clinvar_changes_R_v1.6.0.tsv.gz	position	integer			position of the arginine on the canonical sequence
@@ -1050,6 +1052,7 @@ supporting/clinvar_changes_R_v1.6.0.tsv.gz	last_evaluated	string			date the clas
 supporting/clinvar_changes_R_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
 supporting/clinvar_changes_R_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
 supporting/clinvar_changes_R_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_R_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene ClinVar gives the RefSeq protein's expression (its NCBI Gene ID; else its symbol, else variant_summary's)
 supporting/clinvar_changes_R_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	position	integer			position of the arginine on the canonical sequence
@@ -1064,6 +1067,7 @@ supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	grpmax	string			genetic ancestry 
 supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
 supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
 supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the Ensembl 105 gene of the transcript VEP read the change on; several separated by semicolons when genes overlap; the Ensembl gene ID for a gene without an HGNC symbol
 supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	position	integer			position of the lysine on the canonical sequence
@@ -1075,6 +1079,7 @@ supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	mapped_by	string	canonical_transcrip
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	filter	string	PASS; wga	PASS = passed every MC3 filter; wga = flagged only as from whole-genome-amplified DNA, kept in TCGA-OV and TCGA-LAML as Ellrott et al. 2018 kept them	MC3 FILTER of the call
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	tumor_alt_count	integer			tumor reads with the variant
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	tumor_ref_count	integer			tumor reads with the reference allele
+supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene of the transcript the change was read on (its Ensembl 105 gene; else the symbol the MC3 MAF gives, resolved through HGNC previous symbols; else the Ensembl gene ID)
 supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	position	integer			position of the lysine on the canonical sequence
@@ -1086,6 +1091,7 @@ supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	hotspot	boolean	True; False		DepM
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	likely_lof	boolean	True; False		DepMap marks the change likely loss of function
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
+supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene (DepMap's Ensembl gene, else its HugoSymbol)
 supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/clinvar_changes_K_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/clinvar_changes_K_v1.6.0.tsv.gz	position	integer			position of the lysine on the canonical sequence
@@ -1104,6 +1110,7 @@ supporting/clinvar_changes_K_v1.6.0.tsv.gz	last_evaluated	string			date the clas
 supporting/clinvar_changes_K_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
 supporting/clinvar_changes_K_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
 supporting/clinvar_changes_K_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_K_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene ClinVar gives the RefSeq protein's expression (its NCBI Gene ID; else its symbol, else variant_summary's)
 supporting/clinvar_changes_K_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	position	integer			position of the lysine on the canonical sequence
@@ -1118,6 +1125,7 @@ supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	grpmax	string			genetic ancestry 
 supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
 supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
 supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the Ensembl 105 gene of the transcript VEP read the change on; several separated by semicolons when genes overlap; the Ensembl gene ID for a gene without an HGNC symbol
 supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	position	integer			position of the serine on the canonical sequence
@@ -1129,6 +1137,7 @@ supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	mapped_by	string	canonical_transcrip
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	filter	string	PASS; wga	PASS = passed every MC3 filter; wga = flagged only as from whole-genome-amplified DNA, kept in TCGA-OV and TCGA-LAML as Ellrott et al. 2018 kept them	MC3 FILTER of the call
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	tumor_alt_count	integer			tumor reads with the variant
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	tumor_ref_count	integer			tumor reads with the reference allele
+supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene of the transcript the change was read on (its Ensembl 105 gene; else the symbol the MC3 MAF gives, resolved through HGNC previous symbols; else the Ensembl gene ID)
 supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	position	integer			position of the serine on the canonical sequence
@@ -1140,6 +1149,7 @@ supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	hotspot	boolean	True; False		DepM
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	likely_lof	boolean	True; False		DepMap marks the change likely loss of function
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
+supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene (DepMap's Ensembl gene, else its HugoSymbol)
 supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/clinvar_changes_S_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/clinvar_changes_S_v1.6.0.tsv.gz	position	integer			position of the serine on the canonical sequence
@@ -1158,6 +1168,7 @@ supporting/clinvar_changes_S_v1.6.0.tsv.gz	last_evaluated	string			date the clas
 supporting/clinvar_changes_S_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
 supporting/clinvar_changes_S_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
 supporting/clinvar_changes_S_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_S_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene ClinVar gives the RefSeq protein's expression (its NCBI Gene ID; else its symbol, else variant_summary's)
 supporting/clinvar_changes_S_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	position	integer			position of the serine on the canonical sequence
@@ -1172,6 +1183,7 @@ supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	grpmax	string			genetic ancestry 
 supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
 supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
 supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the Ensembl 105 gene of the transcript VEP read the change on; several separated by semicolons when genes overlap; the Ensembl gene ID for a gene without an HGNC symbol
 supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	position	integer			position of the threonine on the canonical sequence
@@ -1183,6 +1195,7 @@ supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	mapped_by	string	canonical_transcrip
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	filter	string	PASS; wga	PASS = passed every MC3 filter; wga = flagged only as from whole-genome-amplified DNA, kept in TCGA-OV and TCGA-LAML as Ellrott et al. 2018 kept them	MC3 FILTER of the call
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	tumor_alt_count	integer			tumor reads with the variant
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	tumor_ref_count	integer			tumor reads with the reference allele
+supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene of the transcript the change was read on (its Ensembl 105 gene; else the symbol the MC3 MAF gives, resolved through HGNC previous symbols; else the Ensembl gene ID)
 supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	position	integer			position of the threonine on the canonical sequence
@@ -1194,6 +1207,7 @@ supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	hotspot	boolean	True; False		DepM
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	likely_lof	boolean	True; False		DepMap marks the change likely loss of function
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
+supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene (DepMap's Ensembl gene, else its HugoSymbol)
 supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/clinvar_changes_T_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/clinvar_changes_T_v1.6.0.tsv.gz	position	integer			position of the threonine on the canonical sequence
@@ -1212,6 +1226,7 @@ supporting/clinvar_changes_T_v1.6.0.tsv.gz	last_evaluated	string			date the clas
 supporting/clinvar_changes_T_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
 supporting/clinvar_changes_T_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
 supporting/clinvar_changes_T_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_T_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene ClinVar gives the RefSeq protein's expression (its NCBI Gene ID; else its symbol, else variant_summary's)
 supporting/clinvar_changes_T_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	position	integer			position of the threonine on the canonical sequence
@@ -1226,6 +1241,7 @@ supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	grpmax	string			genetic ancestry 
 supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
 supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
 supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the Ensembl 105 gene of the transcript VEP read the change on; several separated by semicolons when genes overlap; the Ensembl gene ID for a gene without an HGNC symbol
 supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	position	integer			position of the tyrosine on the canonical sequence
@@ -1237,6 +1253,7 @@ supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	mapped_by	string	canonical_transcrip
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	filter	string	PASS; wga	PASS = passed every MC3 filter; wga = flagged only as from whole-genome-amplified DNA, kept in TCGA-OV and TCGA-LAML as Ellrott et al. 2018 kept them	MC3 FILTER of the call
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	tumor_alt_count	integer			tumor reads with the variant
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	tumor_ref_count	integer			tumor reads with the reference allele
+supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene of the transcript the change was read on (its Ensembl 105 gene; else the symbol the MC3 MAF gives, resolved through HGNC previous symbols; else the Ensembl gene ID)
 supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	position	integer			position of the tyrosine on the canonical sequence
@@ -1248,6 +1265,7 @@ supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	hotspot	boolean	True; False		DepM
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	likely_lof	boolean	True; False		DepMap marks the change likely loss of function
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	am_pathogenicity	number			AlphaMissense pathogenicity (0 to 1), as DepMap gives it; empty for stops
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	am_class	string	likely_benign; ambiguous; likely_pathogenic		AlphaMissense class, as DepMap gives it
+supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene (DepMap's Ensembl gene, else its HugoSymbol)
 supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/clinvar_changes_Y_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/clinvar_changes_Y_v1.6.0.tsv.gz	position	integer			position of the tyrosine on the canonical sequence
@@ -1266,6 +1284,7 @@ supporting/clinvar_changes_Y_v1.6.0.tsv.gz	last_evaluated	string			date the clas
 supporting/clinvar_changes_Y_v1.6.0.tsv.gz	somatic_clinical_impact	string			ClinVar somatic clinical impact classification
 supporting/clinvar_changes_Y_v1.6.0.tsv.gz	oncogenicity	string			ClinVar oncogenicity classification
 supporting/clinvar_changes_Y_v1.6.0.tsv.gz	dbsnp	string			dbSNP ID
+supporting/clinvar_changes_Y_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the gene ClinVar gives the RefSeq protein's expression (its NCBI Gene ID; else its symbol, else variant_summary's)
 supporting/clinvar_changes_Y_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	position	integer			position of the tyrosine on the canonical sequence
@@ -1280,6 +1299,7 @@ supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	grpmax	string			genetic ancestry 
 supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	af_grpmax	number			allele frequency in that group
 supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	faf95_max	number			highest filtering allele frequency (Poisson 95% CI) across groups
 supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	consequence	string	missense_variant; stop_gained		VEP consequence of the change
+supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	gene	string			HGNC approved symbol of the Ensembl 105 gene of the transcript VEP read the change on; several separated by semicolons when genes overlap; the Ensembl gene ID for a gene without an HGNC symbol
 supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz	site_sets	string			the site sets of this release with a site at this accession and position (config/site_sets.json), separated by semicolons; empty: a candidate residue, not a known site
 supporting/clinvar_protein_background_v1.6.0.tsv.gz	canonical_UniProtAC	string			reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
 supporting/clinvar_protein_background_v1.6.0.tsv.gz	residue	string	R; K; S; T; Y; all		residue class; all = every residue of the protein
