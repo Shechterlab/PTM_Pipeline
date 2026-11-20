@@ -21,7 +21,7 @@
 #   6. the website's data from the release and from that view (scripts/36) and the interaction evidence of their sites
 #      (scripts/37, from inputs/interactions/), then scripts/build_release.py again with the interaction tables, which
 #      writes releases/VERSION/ with the statistics of the second run and both analyses' result tables (analyses/,
-#      analyses_with_lower_confidence/); the website data go to docs/data/ (SITE_OUT), the view's as methylarg_*_all.json;
+#      analyses_with_lower_confidence/); the website data go to build/explorer_data/ (SITE_OUT), the view's as methylarg_*_all.json;
 #   7. the annotation layers (scripts/release_layers.py): checked against MANIFEST.tsv first; each build_release.py pass
 #      adds their site and protein columns and statistics, and their website files are written from the release last.
 # Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git, and the pCLAP and
@@ -30,7 +30,7 @@
 # writing the release, and says how to stage it.
 #
 # Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.2.0); RELEASE_OUT, where
-# the release goes (default releases/VERSION); SITE_OUT, where the website data go (default docs/data); STUDIES, the
+# the release goes (default releases/VERSION); SITE_OUT, where the website data go (default build/explorer_data); STUDIES, the
 # study tables read (default all seventeen, inputs/sources/<study>_methylarginine_records.tsv); LOCALISED_ONLY (default 1),
 # 0 to place records without localisation as v1.1.0 did. v1.1.0 itself: PREVIOUS=releases/v1.0.0 STUDIES=''
 # LOCALISED_ONLY=0.
@@ -45,7 +45,7 @@ OUT=${RELEASE_OUT:-$CODE/releases/$VERSION}
 PREVIOUS=${PREVIOUS:-$CODE/releases/v1.2.0}
 STUDIES=${STUDIES-larsen2016 maron2021 guo2014 musiani2019 fong2019 li2021 fedoriw2019 uniprot lim2020 wei2020 iedb hartel2019 geoghegan2015 sylvestersen2014 lu2025 ma2023 lu2024}
 LOCALISED_ONLY=${LOCALISED_ONLY:-1}
-SITE_OUT=${SITE_OUT:-$CODE/docs/data}
+SITE_OUT=${SITE_OUT:-$CODE/build/explorer_data}
 FASTA="$IN/reference/uniprot_human_reviewed_2026_03.fasta"
 ENTRIES="$IN/reference/uniprot_human_reviewed_2026_03_entries.tsv"
 mkdir -p "$WORK"

@@ -40,3 +40,7 @@ inputs/annotation/cplm4_lysine_methylation_*.zip
 /*.out
 /*.png
 /scratch/
+
+# Explorer data the methylarginine build still writes (scripts 36, 36c, 37, 43f, 44c, release_layers website). The explorer
+# moved to PTMcontext and docs/ holds only redirect pages, so these files are build output, not served or kept in git.
+build/

@@ -103,8 +103,8 @@ places each record on the reference sequences, keeps as sites only the records t
 paralog rule included), keeps the arginines that fail as lower-confidence sites, stops if a record is placed against
 its own evidence or a site is not an arginine, runs the analyses twice (on the sites, and with the lower-confidence
 sites that are surely methylarginine), and writes `releases/VERSION/` (with the changes traced from `PREVIOUS`
-and both analyses' result tables) and the website's data in `docs/data/` (the view with lower-confidence sites as
-`methylarg_*_all.json`). It writes the checksums last and checks them (`md5sum -c MD5SUMS` in the release folder and
+and both analyses' result tables) and the explorer data in `build/explorer_data/` (the view with lower-confidence sites as `methylarg_*_all.json`;
+not kept in git, since the explorers are PTMcontext's). It writes the checksums last and checks them (`md5sum -c MD5SUMS` in the release folder and
 in each analyses folder). v1.1.0, which placed records without localization, is
 rebuilt with `PREVIOUS=releases/v1.0.0 STUDIES='' LOCALISED_ONLY=0 bash hpc/build_release.sh v1.1.0`; the header of
 `hpc/build_release.sh` lists the options. It takes about three hours on one core.

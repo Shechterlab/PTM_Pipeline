@@ -17,7 +17,7 @@ top peaks or windows are aligned into one logo:
 An experiment with fewer than --min-kmers placed 5-mers gets no logo. The logo summarises the enriched 5-mers; it is
 not a binding model fitted to the peaks.
 
-Writes docs/data/methylarg_eclip_logos.json: {meta, logos: [[experiment, source, uniprot_accession, cell_line,
+Writes build/explorer_data/methylarg_eclip_logos.json: {meta, logos: [[experiment, source, uniprot_accession, cell_line,
 [[A, C, G, U] per column], [[kmer, R, offset] per placed 5-mer]]]}.
 """
 from __future__ import annotations
@@ -84,7 +84,7 @@ def logo(kmers: list[tuple[str, float]]) -> tuple[list[list[float]], list[list]]
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--inputs', default='inputs/nucleic_acid', type=Path)
-    ap.add_argument('--out', default='docs/data/methylarg_eclip_logos.json', type=Path)
+    ap.add_argument('--out', default='build/explorer_data/methylarg_eclip_logos.json', type=Path)
     ap.add_argument('--background', choices=['other', 'flank'], default='other')
     ap.add_argument('--min-r', type=float, default=1.5)
     ap.add_argument('--min-z', type=float, default=3.0)

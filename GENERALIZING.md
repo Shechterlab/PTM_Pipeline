@@ -1,5 +1,7 @@
 # Generalising the pipeline and explorer beyond methylarginine
 
+> **Note (20 November 2026):** the Methylarginine Site Explorer described here, `docs/assets/explorer.js` and `docs/data/`, moved to PTMcontext (https://shechterlab.github.io/ptmcontext/). `docs/` now holds redirect pages; the files this plan refers to are in the `v1.6.0` tag.
+
 The aim is to extract a codebase that builds the same release and website for another modification (phosphosites, lysine methylation, acetylation …). This note records what is generic already, what ties the code to methylarginine, and an order of work that keeps the site working at every step. New code should follow it now.
 
 ## Generic already
