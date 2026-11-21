@@ -1,0 +1,137 @@
+{
+ "generated": "2026-11-20",
+ "inputs": {
+  "genome": {
+   "file": "Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz",
+   "md5": "f58a039f83d8944ceb79cdd16cbda583"
+  },
+  "chain": {
+   "file": "GRCh38_to_GRCh37.chain.gz",
+   "md5": "9573fe0b0a4715f0dd4fa62d5bd7810d"
+  },
+  "methylation": {
+   "file": "gnomad_v2_1_1_methylation.txt.bgz",
+   "md5": "a935986b782da3ce584430de1c0c2e26"
+  },
+  "rates": {
+   "file": "mutation_rate_methylation_bins.txt.bgz",
+   "md5": "a089b6921f1061985af476aa3459a79e"
+  },
+  "maf": {
+   "file": "mc3.v0.2.8.PUBLIC.maf.gz",
+   "md5": "639ad8f8386e98dacc22e439188aa8fa"
+  },
+  "cases": {
+   "file": "gdc_tcga_cases_2026-11-19.tsv",
+   "md5": "082220b82e7c3cf039650330310ab735"
+  },
+  "depmap_mutations": {
+   "file": "OmicsSomaticMutations.csv",
+   "md5": "7bdba347a1602fe96d5654a74d6e52f1"
+  },
+  "depmap_models": {
+   "file": "Model.csv",
+   "md5": "675210d17675f3517b0ce39a3c274f16"
+  },
+  "crispr_gene_effect": {
+   "file": "depmap_24q4_CRISPRGeneEffect_header.csv",
+   "md5": "96b62faadbcf32aced3124e65e4c62f4"
+  },
+  "ensembl_gtf": {
+   "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+   "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313"
+  },
+  "hgnc": {
+   "file": "hgnc_complete_set.txt",
+   "md5": "2a30aa650f51d6fed261f79057463d5a"
+  },
+  "uniprot_ensembl": {
+   "file": "uniprot_2026_04_human_reviewed_ensembl.tsv.gz",
+   "md5": "308c33bbed1d7db0f0200434a02a0551"
+  },
+  "uniprot_isoforms": {
+   "file": "uniprot_2026_04_human_reviewed_altprod.tsv.gz",
+   "md5": "d3ce32007c476fa6c134416594db9de2"
+  },
+  "fasta": {
+   "file": "uniprot_human_reviewed_2026_03.fasta",
+   "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  }
+ },
+ "urls": {
+  "genome": "https://ftp.ensembl.org/pub/release-105/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz",
+  "chain": "https://ftp.ensembl.org/pub/assembly_mapping/homo_sapiens/GRCh38_to_GRCh37.chain.gz",
+  "methylation": "https://storage.googleapis.com/gcp-public-data--gnomad/papers/2019-flagship-lof/v1.0/model/methylation.txt.bgz",
+  "rates": "https://storage.googleapis.com/gcp-public-data--gnomad/papers/2019-flagship-lof/v1.0/model/mutation_rate_methylation_bins.txt.bgz",
+  "ensembl_gtf": "https://ftp.ensembl.org/pub/release-105/gtf/homo_sapiens/Homo_sapiens.GRCh38.105.gtf.gz",
+  "hgnc": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt"
+ },
+ "uniprot_release": "2026_04",
+ "rules": {
+  "coding_sequence": "Ensembl 105 transcripts UniProt assigns to the displayed isoform (scripts/44b canonical_transcripts) whose GTF CDS records on the GRCh38 primary assembly translate with the standard code to the 2026_03 canonical sequence",
+  "methylation": "gnomAD v2.1.1 flagship methylation table (GRCh37) at the GRCh38 position lifted with Ensembl GRCh38_to_GRCh37; gnomad_lof constraint_utils/constraint_basics.py, prepare_ht (https://github.com/macarthur-lab/gnomad_lof): methylation_level 2 where a CpG transition's methylation MEAN > 0.6, 1 where > 0.2, else 0",
+  "germline_rates": "gnomAD mutation_rate_methylation_bins (Karczewski et al., Nature 581:434 (2020), doi:10.1038/s41586-020-2308-7), CC0, bytes unchanged",
+  "somatic_spectra": "residue-changing SNVs in the coding positions over the residue-changing substitutions there, 96 pyrimidine-centered classes; TCGA kept calls (scripts/66 rules) placed on GRCh38 through the lifted coding positions; DepMap SNVs",
+  "burden": "coding calls per Mb of coding sequence (32301341 bp, each GRCh38 position once); hypermutated above 10 per Mb (Campbell et al., Cell 171:1042 (2017), doi:10.1016/j.cell.2017.09.048); DepMap OmicsSomaticMutations.csv keeps synonymous calls only where they touch a splice region",
+  "h3": "TCGA and DepMap changes at every residue of the entries named Histone H3*, by the rules of scripts/66"
+ },
+ "coding_bp": 32301341,
+ "entries": 20416,
+ "entries_by_status": {
+  "matched": 18717,
+  "no_transcript_assigned": 1287,
+  "translation_differs": 169,
+  "not_in_ensembl_105": 144,
+  "not_in_ensembl_105;translation_differs": 83,
+  "not_on_chromosomes_1_22_X_Y": 16
+ },
+ "coding_sequences": 19032,
+ "matched_transcripts": 27369,
+ "tcga_samples": 10294,
+ "tcga_hypermutated": 1298,
+ "depmap_lines": 1929,
+ "depmap_hypermutated": 449,
+ "h3_entries": [
+  "P0DPK2",
+  "P0DPK5",
+  "P49450",
+  "P68431",
+  "P84243",
+  "Q16695",
+  "Q5TEC6",
+  "Q6NXT2",
+  "Q71DI3"
+ ],
+ "counts": {
+  "chain_block_overlaps": 1344,
+  "coding_positions": 32301341,
+  "coding_positions_lifted_to_grch37": 32013107,
+  "cpg_coding_bases": 2122302,
+  "cpg_coding_bases_level_0": 504617,
+  "cpg_coding_bases_level_1": 123353,
+  "cpg_coding_bases_level_2": 1494332,
+  "cpg_coding_bases_no_value": 74711,
+  "cpg_coding_bases_with_value": 2047591,
+  "cpg_coding_positions": 2107174,
+  "cpg_coding_positions_lifted": 2089688,
+  "entries_matched": 18717,
+  "entries_no_transcript_assigned": 1287,
+  "entries_no_transcript_matches": 412,
+  "h3_depmap_changes": 275,
+  "h3_entries": 9,
+  "h3_tcga_changes": 463,
+  "tcga_snv_reference_differs_from_grch38": 6,
+  "uniprot_canonical_transcripts": 72613,
+  "uniprot_entries_with_a_canonical_transcript": 19129,
+  "uniprot_other_isoform_transcripts": 26120
+ },
+ "md5": {
+  "propensity_cds.tsv.gz": "cac831d4004a91cefb68c49ea6e23522",
+  "propensity_cds_status.tsv": "78b7d585fb78b1b7c1e79f0966f1f913",
+  "propensity_sample_burden.tsv": "53b848b583f3f936d2684635b256257d",
+  "propensity_somatic_spectra.tsv": "65e390f1a6d9254a8494d76620f17129",
+  "gnomad_v2_1_1_mutation_rates.txt.bgz": "a089b6921f1061985af476aa3459a79e",
+  "tcga_mc3_changes_h3_all_residues.tsv.gz": "241ef719702a71cf1528f97fbd447425",
+  "depmap_24q4_changes_h3_all_residues.tsv.gz": "0925244b5662d4334511b63c65de46a1"
+ }
+}

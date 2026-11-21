@@ -14,6 +14,7 @@ the release (`../../ADDING_A_SOURCE.md` says how to add one).
 | Cancer changes at every candidate K, S, T and Y (v1.6.0), and each protein's background: the TCGA MC3 calls and DepMap 24Q4 by the rules of the arginine layer | `scripts/66_stage_cancer_changes.py` (from the MC3 public MAF and OmicsSomaticMutations.csv of the arginine layer, the GDC cases of TCGA, UniProt's Ensembl cross-references and the genes DepMap screened) | `tcga_mc3_changes_{K,S,T,Y}.tsv.gz`, `depmap_24q4_changes_{K,S,T,Y}.tsv.gz`, `cancer_change_protein_background.tsv.gz`, `cancer_changes_summary.json` |
 | ClinVar variants at every candidate R, K, S, T and Y (v1.6.0), and each protein's background | `scripts/67_stage_clinvar.py` (from ClinVar's hgvs4variation and variant_summary tables and UniProt's RefSeq cross-references) | `clinvar_changes_{R,K,S,T,Y}.tsv.gz`, `clinvar_protein_background.tsv.gz`, `clinvar_summary.json` |
 | gnomAD v4.1 exome variants at every candidate R, K, S, T and Y (v1.6.0), and each protein's background | `scripts/69_stage_gnomad.py` (streamed from Google's public copy, `gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/`) | `gnomad_v4_1_changes_{R,K,S,T,Y}.tsv.gz`, `gnomad_protein_background.tsv.gz`, `gnomad_summary.json` |
+| Mutation propensity inputs (v1.7.0): coding sequences with their genomic neighbors and CpG methylation, the TCGA and DepMap spectra, gnomAD's germline rates, each sample's coding mutation burden, and the TCGA and DepMap changes at every residue of H3 | `scripts/70_stage_propensity.py` (from the Ensembl 105 GRCh38 genome and GTF, Ensembl's GRCh38-to-GRCh37 chain, gnomAD's methylation and mutation-rate tables of the v2.1.1 flagship paper, and the inputs of scripts/66); the release computes the propensity (`scripts/propensity.py`, `scripts/71_release_propensity.py`) | `propensity_cds.tsv.gz`, `propensity_cds_status.tsv`, `gnomad_v2_1_1_mutation_rates.txt.bgz`, `propensity_somatic_spectra.tsv`, `propensity_sample_burden.tsv`, `tcga_mc3_changes_h3_all_residues.tsv.gz`, `depmap_24q4_changes_h3_all_residues.tsv.gz`, `propensity_inputs_summary.json` |
 | Writer perturbations: PRMT7 knockout (Szewczyk et al. 2020), PRMT1 knockdown (Hartel et al. 2019), PRMT5 inhibitor (Lu et al. 2024), PRMT7, CARM1 and PRMT5 knockdowns and the PRMT7 inhibitor SGC3027 (Li et al. 2021) | `scripts/45_stage_prmt7_szewczyk2020.py`, `scripts/46_stage_hartel2019_prmt1_kd.py`, `scripts/51_stage_lu2024_prmt5.py`, `scripts/50_stage_li2021_perturbations.py` | `prmt7_ko_*`, `hartel2019_prmt1_kd_*`, `lu2024_prmt5_*`, `li2021_*` |
 | PaxDb 6.1 protein abundance | `scripts/47_stage_paxdb.py` | `paxdb_human_integrated_abundance.tsv`, `paxdb_summary.json` |
 | Reactome 97 pathways | `scripts/48_stage_reactome.py` | `reactome_human_protein_pathways.tsv`, `reactome_human_pathways.tsv`, `reactome_summary.json` |
@@ -126,6 +127,32 @@ the best reliability and counts a location as main when any of the genes has it 
   both residues and the reason. A TCGA change read on the MAF's own transcript, which the staging tries on every entry of
   its gene, is listed only if no entry kept it; a variant the entry kept through another of its transcripts or RefSeq
   expressions is not listed. The release joins the four as `supporting/variant_changes_excluded_<version>.tsv.gz`.
+
+- **`propensity_cds.tsv.gz`** (19,032 rows): for each reviewed entry, each Ensembl 105 coding sequence that translates, with
+  the standard code, to its 2026_03 canonical sequence, among the transcripts UniProt assigns to its displayed isoform
+  (transcripts with the same coding exons share a row, the others named in `same_cds_transcripts`): gene, chromosome,
+  strand, the coding sequence (transcript strand, no stop codon), the genomic bases just before and after it
+  (`flank_5`, `flank_3`), the intron bases at each exon junction (`junctions`, `i:XY`: X follows coding base i-1, Y
+  precedes coding base i), and the CpG methylation level of its CpG bases where it is 1 or 2 (`cpg_methylation`, `i:level`;
+  every other base is 0). The level is gnomAD's: the mean methylation of gnomAD's v2.1.1 table (GRCh37) at the position
+  lifted with Ensembl's GRCh38-to-GRCh37 chain, 2 above 0.6, 1 above 0.2 (gnomad_lof, `constraint_utils/constraint_basics.py`).
+  18,717 of 20,416 entries have one.
+- **`propensity_cds_status.tsv`**: every reviewed entry, the transcripts UniProt assigns, those that match, and why none
+  does (no transcript assigned, not in Ensembl 105, translation differs, not on chromosomes 1-22, X or Y).
+- **`gnomad_v2_1_1_mutation_rates.txt.bgz`**: gnomAD's `mutation_rate_methylation_bins` (Karczewski et al., Nature
+  581:434, 2020; CC0), the bytes downloaded: the germline rate per trinucleotide, substitution and methylation level.
+- **`propensity_somatic_spectra.tsv`** (384 rows): for TCGA and DepMap, all samples and without the hypermutated ones, per
+  pyrimidine-centered trinucleotide class, the residue-changing SNVs in the coding sequences above, the positions there
+  where the class would change the residue (each genomic position once), and their ratio. TCGA calls (GRCh37) are placed on
+  GRCh38 through the lift of the coding positions.
+- **`propensity_sample_burden.tsv`** (12,223 rows): every TCGA tumor sample of the MAF with a GDC project (10,294) and
+  DepMap line with mutation calls (1,929): project or lineage, coding calls by kind, burden per Mb of coding sequence
+  (32.3 Mb, each position once) and hypermutated (above 10 per Mb, Campbell et al., Cell 171:1042, 2017).
+- **`{tcga_mc3,depmap_24q4}_changes_h3_all_residues.tsv.gz`**: the changes at every residue of the entries named Histone
+  H3*, by the rules of scripts/66, with the residue: the oncohistone controls (H3K27, H3K36 and H3G34 are K28, K37 and G35
+  in UniProt numbering, which counts the initiator methionine).
+- The genome (881 MB) and gnomAD's methylation table (247 MB) are not kept; `raw_files.tsv` gives their URLs, MD5 and
+  SHA-256.
 
 ## CPLM tables
 
