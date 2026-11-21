@@ -1,0 +1,5618 @@
+{
+  "cancer_changes": {
+    "denominators": {
+      "depmap_lines_with_mutation_calls": 1929,
+      "tcga_projects": 33,
+      "tcga_tumor_samples": 10294
+    },
+    "files": {
+      "supporting/cancer_change_protein_background_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/cancer_change_protein_background.tsv.gz",
+        "from_md5": "03537973ea1bbde64735a38c84bd7405",
+        "md5": "03537973ea1bbde64735a38c84bd7405"
+      },
+      "supporting/depmap_24q4_change_models_v1.7.0.tsv": {
+        "from": "inputs/layers/depmap_24q4_change_models.tsv",
+        "from_md5": "5239230e6d3cd08658b9681477a5a8f8",
+        "md5": "5239230e6d3cd08658b9681477a5a8f8"
+      },
+      "supporting/depmap_24q4_changes_K_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/depmap_24q4_changes_K.tsv.gz",
+        "from_md5": "a556a67ba20c446f62aa258c1836f69d",
+        "md5": "9abba4e226b3bf97ab179bd66d02dfc7"
+      },
+      "supporting/depmap_24q4_changes_R_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/depmap_24q4_changes_R.tsv.gz",
+        "from_md5": "8d854bf74fbccd73d35d8ff6734a18a6",
+        "md5": "52e1965948bf58e7a2b2ffab54770c92"
+      },
+      "supporting/depmap_24q4_changes_S_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/depmap_24q4_changes_S.tsv.gz",
+        "from_md5": "a23114b74f210a3047d77b7008a590d1",
+        "md5": "cfa0d44b1193f3e9d5e531bd08598227"
+      },
+      "supporting/depmap_24q4_changes_T_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/depmap_24q4_changes_T.tsv.gz",
+        "from_md5": "a90e8d94424a9e1f8811654cb627bbef",
+        "md5": "0fa9ef4dafde1469013db2578ff1a420"
+      },
+      "supporting/depmap_24q4_changes_Y_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/depmap_24q4_changes_Y.tsv.gz",
+        "from_md5": "3bb3d069449895dfdcdd78e2a0c2be64",
+        "md5": "8e84b4cb11be159dbec81ecd1ced811f"
+      },
+      "supporting/tcga_mc3_changes_K_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/tcga_mc3_changes_K.tsv.gz",
+        "from_md5": "560d580691ff1b23479fe1fda7cd113d",
+        "md5": "98bb86a2123c81ba0ac39140fb4969bc"
+      },
+      "supporting/tcga_mc3_changes_R_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/tcga_mc3_changes_R.tsv.gz",
+        "from_md5": "abce6568852ea1f55e60edba3efb0174",
+        "md5": "31583c11cb71773a1b9076823b67e7bf"
+      },
+      "supporting/tcga_mc3_changes_S_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/tcga_mc3_changes_S.tsv.gz",
+        "from_md5": "248f0536f352a94fbef0e77575803921",
+        "md5": "6b4ff26259a5d3be25d34e6c0f3d8fb9"
+      },
+      "supporting/tcga_mc3_changes_T_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/tcga_mc3_changes_T.tsv.gz",
+        "from_md5": "ffc5bd8ef863ef3bf1dcd8d8e05fd302",
+        "md5": "d8068cdf2c8ea6b12f303f143051eeed"
+      },
+      "supporting/tcga_mc3_changes_Y_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/tcga_mc3_changes_Y.tsv.gz",
+        "from_md5": "ea3978a71f1e5dd5fccbed566ff8aceb",
+        "md5": "e36ef60ecfc6bc6f5972707e37b1c643"
+      },
+      "supporting/tcga_mc3_projects_v1.7.0.tsv": {
+        "from": "inputs/layers/tcga_mc3_projects.tsv",
+        "from_md5": "891b8caf4f6bf049e619e82a56b4b037",
+        "md5": "891b8caf4f6bf049e619e82a56b4b037"
+      }
+    },
+    "per_residue": {
+      "depmap_24q4/K": {
+        "known_sites_changed": 2566,
+        "positions": 18961,
+        "rows": 20835,
+        "rows_at_known_sites": 2841
+      },
+      "depmap_24q4/R": {
+        "known_sites_changed": 849,
+        "positions": 44657,
+        "rows": 53209,
+        "rows_at_known_sites": 1041
+      },
+      "depmap_24q4/S": {
+        "known_sites_changed": 3780,
+        "positions": 39102,
+        "rows": 44341,
+        "rows_at_known_sites": 4203
+      },
+      "depmap_24q4/T": {
+        "known_sites_changed": 1088,
+        "positions": 20489,
+        "rows": 24605,
+        "rows_at_known_sites": 1262
+      },
+      "depmap_24q4/Y": {
+        "known_sites_changed": 435,
+        "positions": 11879,
+        "rows": 13533,
+        "rows_at_known_sites": 493
+      },
+      "tcga_mc3/K": {
+        "known_sites_changed": 7295,
+        "positions": 55672,
+        "rows": 61510,
+        "rows_at_known_sites": 7926
+      },
+      "tcga_mc3/R": {
+        "known_sites_changed": 3100,
+        "positions": 180641,
+        "rows": 274408,
+        "rows_at_known_sites": 4522
+      },
+      "tcga_mc3/S": {
+        "known_sites_changed": 12171,
+        "positions": 120889,
+        "rows": 142576,
+        "rows_at_known_sites": 14218
+      },
+      "tcga_mc3/T": {
+        "known_sites_changed": 2484,
+        "positions": 52588,
+        "rows": 59012,
+        "rows_at_known_sites": 2810
+      },
+      "tcga_mc3/Y": {
+        "known_sites_changed": 824,
+        "positions": 23958,
+        "rows": 25757,
+        "rows_at_known_sites": 919
+      }
+    },
+    "per_site_set": [
+      {
+        "clinvar_pathogenic_sites": 328,
+        "clinvar_sites_changed": 4076,
+        "depmap_24q4_sites_changed": 849,
+        "gnomad_v4_1_sites_changed": 9139,
+        "label": "Methylarginine (R)",
+        "residues": "R",
+        "set": "methylarginine",
+        "sites": 11632,
+        "tcga_mc3_sites_changed": 3100
+      },
+      {
+        "clinvar_pathogenic_sites": 46,
+        "clinvar_sites_changed": 693,
+        "depmap_24q4_sites_changed": 151,
+        "gnomad_v4_1_sites_changed": 2819,
+        "label": "Methyllysine (K)",
+        "residues": "K",
+        "set": "methyllysine",
+        "sites": 5178,
+        "tcga_mc3_sites_changed": 415
+      },
+      {
+        "clinvar_pathogenic_sites": 866,
+        "clinvar_sites_changed": 12028,
+        "depmap_24q4_sites_changed": 2466,
+        "gnomad_v4_1_sites_changed": 49864,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "residues": "K",
+        "set": "lysine",
+        "sites": 90876,
+        "tcga_mc3_sites_changed": 6984
+      },
+      {
+        "clinvar_pathogenic_sites": 1316,
+        "clinvar_sites_changed": 27085,
+        "depmap_24q4_sites_changed": 5303,
+        "gnomad_v4_1_sites_changed": 96387,
+        "label": "Phosphorylation (S, T, Y)",
+        "residues": "STY",
+        "set": "phospho",
+        "sites": 142415,
+        "tcga_mc3_sites_changed": 15479
+      }
+    ],
+    "rules": {
+      "background": "every change kept by these rules, at any residue, counted per entry and residue class",
+      "depmap": "a missense or stop call on the canonical isoform (UniprotID unlabelled or -1, else VepSwissprot) whose residue the 2026_03 canonical sequence has at the position; one row per (entry, position, new residue, line)",
+      "tcga": "FILTER PASS; in TCGA-OV and TCGA-LAML also FILTER wga alone (Ellrott et al. 2018); a missense or stop change on a transcript UniProt assigns to a reviewed entry's displayed isoform (all_effects); where the variant falls in no such transcript, a Missense_Mutation or Nonsense_Mutation of the MAF transcript (HGVSp_Short), placed on the entry SWISSPROT names, else on the entries of the gene symbol; kept where the 2026_03 canonical sequence has the changed residue at the position; one row per (entry, position, new residue, tumor sample)"
+    },
+    "staging_inputs": {
+      "cases": {
+        "file": "gdc_tcga_cases_2026-11-19.tsv",
+        "md5": "082220b82e7c3cf039650330310ab735",
+        "url": "https://api.gdc.cancer.gov/cases (filter project.program.name = TCGA; fields submitter_id, project.project_id, project.name)"
+      },
+      "crispr_gene_effect_header": {
+        "file": "depmap_24q4_CRISPRGeneEffect_header.csv",
+        "genes": 17916,
+        "md5_of_file_read": "96b62faadbcf32aced3124e65e4c62f4",
+        "note": "the header line of CRISPRGeneEffect.csv (DepMap 24Q4, MD5 of the whole file 6edf7ade09b9b34199210b559d4745d3)"
+      },
+      "depmap_models": {
+        "file": "Model.csv",
+        "md5": "675210d17675f3517b0ce39a3c274f16"
+      },
+      "depmap_mutations": {
+        "doi": "10.25452/figshare.plus.27993248",
+        "file": "OmicsSomaticMutations.csv",
+        "license": "CC BY 4.0",
+        "md5": "7bdba347a1602fe96d5654a74d6e52f1",
+        "release": "DepMap Public 24Q4"
+      },
+      "ensembl_gtf": {
+        "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+        "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313",
+        "url": "https://ftp.ensembl.org/pub/release-105/gtf/homo_sapiens/Homo_sapiens.GRCh38.105.gtf.gz"
+      },
+      "hgnc": {
+        "file": "hgnc_complete_set.txt",
+        "license": "CC0",
+        "md5": "2a30aa650f51d6fed261f79057463d5a",
+        "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt"
+      },
+      "maf": {
+        "file": "mc3.v0.2.8.PUBLIC.maf.gz",
+        "md5": "639ad8f8386e98dacc22e439188aa8fa",
+        "url": "https://api.gdc.cancer.gov/data/1c8cfe5f-e52d-41ba-94da-f15ea1337efc"
+      },
+      "reference": {
+        "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+        "md5": "c75aad9d197cbba00f51063f65a96ac4"
+      },
+      "uniprot": {
+        "ensembl": {
+          "file": "uniprot_2026_04_human_reviewed_ensembl.tsv.gz",
+          "md5": "308c33bbed1d7db0f0200434a02a0551",
+          "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,id,xref_ensembl&format=tsv&compressed=true"
+        },
+        "isoforms": {
+          "file": "uniprot_2026_04_human_reviewed_altprod.tsv.gz",
+          "md5": "d3ce32007c476fa6c134416594db9de2",
+          "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,cc_alternative_products&format=tsv&compressed=true"
+        },
+        "release": "2026_04"
+      }
+    }
+  },
+  "carried_over": {
+    "STUDIES.md": {
+      "from": "STUDIES.md",
+      "from_md5": "17dec6180dbf7e5651d215f0e6a38f4e",
+      "md5": "e7d235fede99a4d31fe05f50131872a7"
+    },
+    "analyses/MD5SUMS": {
+      "from": "analyses/MD5SUMS",
+      "from_md5": "7cc1fb9e797b1dcc1a8198a4d9c0e8dd",
+      "md5": "3c768d9746809accbafcc44cb2ce5adf"
+    },
+    "analyses/README.md": {
+      "from": "analyses/README.md",
+      "from_md5": "b779587713cdad0cb3dd351b5b97a371",
+      "md5": "d2a58dc3f63659eb8fc2da8c1455be7c"
+    },
+    "analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv": {
+      "from": "analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv",
+      "from_md5": "61c1f5efc826b84542ae11b9cd0f8e95",
+      "md5": "61c1f5efc826b84542ae11b9cd0f8e95"
+    },
+    "analyses/clustering/arg_methyl_multiscale_density_window_summary.tsv": {
+      "from": "analyses/clustering/arg_methyl_multiscale_density_window_summary.tsv",
+      "from_md5": "2145ed307ddc19f433f75321575029ba",
+      "md5": "2145ed307ddc19f433f75321575029ba"
+    },
+    "analyses/clustering/nearest_neighbor_curve_vs_null.tsv": {
+      "from": "analyses/clustering/nearest_neighbor_curve_vs_null.tsv",
+      "from_md5": "2394905c3998788fa92cf9c399064883",
+      "md5": "2394905c3998788fa92cf9c399064883"
+    },
+    "analyses/clustering/nearest_neighbor_summary_5_10_20.tsv": {
+      "from": "analyses/clustering/nearest_neighbor_summary_5_10_20.tsv",
+      "from_md5": "d58897d3516b1ff8fd7dbf5da01782d0",
+      "md5": "d58897d3516b1ff8fd7dbf5da01782d0"
+    },
+    "analyses/condensates/condensate_enrichment.tsv": {
+      "from": "analyses/condensates/condensate_enrichment.tsv",
+      "from_md5": "cef7dd5bbcf1f11a403cb0d7a63c0268",
+      "md5": "cef7dd5bbcf1f11a403cb0d7a63c0268"
+    },
+    "analyses/condensates/condensate_summary.tsv": {
+      "from": "analyses/condensates/condensate_summary.tsv",
+      "from_md5": "ab37583d1ed7df8eb34c5f98881d8717",
+      "md5": "ab37583d1ed7df8eb34c5f98881d8717"
+    },
+    "analyses/disease/disease_families.tsv": {
+      "from": "analyses/disease/disease_families.tsv",
+      "from_md5": "cb1b8d49397963db450e3c6265dc3dd7",
+      "md5": "cb1b8d49397963db450e3c6265dc3dd7"
+    },
+    "analyses/disease/disease_input_summary.tsv": {
+      "from": "analyses/disease/disease_input_summary.tsv",
+      "from_md5": "7d4212b8944d17a9690b4a65e24f4737",
+      "md5": "7d4212b8944d17a9690b4a65e24f4737"
+    },
+    "analyses/disease/disease_ontology.tsv": {
+      "from": "analyses/disease/disease_ontology.tsv",
+      "from_md5": "7b370a95a592374537815c372619fc31",
+      "md5": "7b370a95a592374537815c372619fc31"
+    },
+    "analyses/disease/disease_terms.tsv": {
+      "from": "analyses/disease/disease_terms.tsv",
+      "from_md5": "817b2d5b042019e374179121613e6f86",
+      "md5": "817b2d5b042019e374179121613e6f86"
+    },
+    "analyses/disorder/disorder_context_summary.tsv": {
+      "from": "analyses/disorder/disorder_context_summary.tsv",
+      "from_md5": "af3e6ce228ac5287456ed851beb3017b",
+      "md5": "af3e6ce228ac5287456ed851beb3017b"
+    },
+    "analyses/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv": {
+      "from": "analyses/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv",
+      "from_md5": "1ee54b9043f1fa188a99e8c45c6682cc",
+      "md5": "1ee54b9043f1fa188a99e8c45c6682cc"
+    },
+    "analyses/disorder/idr_enrichment_vs_all_arginines.tsv": {
+      "from": "analyses/disorder/idr_enrichment_vs_all_arginines.tsv",
+      "from_md5": "257340b9bd56036294d5cb09439fc4f0",
+      "md5": "257340b9bd56036294d5cb09439fc4f0"
+    },
+    "analyses/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv": {
+      "from": "analyses/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv",
+      "from_md5": "79e64d1d34a9a87edb5315f2c620716d",
+      "md5": "79e64d1d34a9a87edb5315f2c620716d"
+    },
+    "analyses/domains/domain_class_enrichment.tsv": {
+      "from": "analyses/domains/domain_class_enrichment.tsv",
+      "from_md5": "9915e080b05686b29dae01ed3a30d772",
+      "md5": "9915e080b05686b29dae01ed3a30d772"
+    },
+    "analyses/domains/domain_cluster_architecture_summary_ge3.tsv": {
+      "from": "analyses/domains/domain_cluster_architecture_summary_ge3.tsv",
+      "from_md5": "8a426005e389a6660443e88d6c22cd3c",
+      "md5": "8a426005e389a6660443e88d6c22cd3c"
+    },
+    "analyses/domains/domain_context_enrichment.tsv": {
+      "from": "analyses/domains/domain_context_enrichment.tsv",
+      "from_md5": "34135f09c00704f5ac0f52ed042dc2e0",
+      "md5": "34135f09c00704f5ac0f52ed042dc2e0"
+    },
+    "analyses/domains/domain_context_summary.tsv": {
+      "from": "analyses/domains/domain_context_summary.tsv",
+      "from_md5": "2fa5b11be38792cdc41a05a63090328e",
+      "md5": "2fa5b11be38792cdc41a05a63090328e"
+    },
+    "analyses/domains/domain_edge_distance_summary.tsv": {
+      "from": "analyses/domains/domain_edge_distance_summary.tsv",
+      "from_md5": "6e866de265d05597709e379ffb4fcf9b",
+      "md5": "6e866de265d05597709e379ffb4fcf9b"
+    },
+    "analyses/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv": {
+      "from": "analyses/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv",
+      "from_md5": "073b6726ea3018ca6e403cf17d2bcb07",
+      "md5": "073b6726ea3018ca6e403cf17d2bcb07"
+    },
+    "analyses/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv": {
+      "from": "analyses/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv",
+      "from_md5": "8d1c88ed4f8fd73b6fdc604f4b593333",
+      "md5": "8d1c88ed4f8fd73b6fdc604f4b593333"
+    },
+    "analyses/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv": {
+      "from": "analyses/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv",
+      "from_md5": "4757560db55dec0cb9f9c53ecd13de31",
+      "md5": "4757560db55dec0cb9f9c53ecd13de31"
+    },
+    "analyses/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv": {
+      "from": "analyses/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv",
+      "from_md5": "cf65868f1e1cf33af5faf139e364237f",
+      "md5": "cf65868f1e1cf33af5faf139e364237f"
+    },
+    "analyses/motifs/positional_amino_acid_enrichment.tsv": {
+      "from": "analyses/motifs/positional_amino_acid_enrichment.tsv",
+      "from_md5": "dbc5ef74f494e3346185348d0013ef07",
+      "md5": "dbc5ef74f494e3346185348d0013ef07"
+    },
+    "analyses/other_ptms/ptm_context_comparison.tsv": {
+      "from": "analyses/other_ptms/ptm_context_comparison.tsv",
+      "from_md5": "324914c595e0aa139cbfcc708054e5e8",
+      "md5": "324914c595e0aa139cbfcc708054e5e8"
+    },
+    "analyses/other_ptms/ptm_idr_binary_comparison.tsv": {
+      "from": "analyses/other_ptms/ptm_idr_binary_comparison.tsv",
+      "from_md5": "b339d930145ccd5e3753b36c2e576baa",
+      "md5": "b339d930145ccd5e3753b36c2e576baa"
+    },
+    "analyses/panther/panther_class_enrichment.tsv": {
+      "from": "analyses/panther/panther_class_enrichment.tsv",
+      "from_md5": "4c3fd9d1bf6ecf5b317fd2272fcd302a",
+      "md5": "4c3fd9d1bf6ecf5b317fd2272fcd302a"
+    },
+    "analyses/statistics_v1.7.0.tsv": {
+      "from": "analyses/statistics_v1.6.0.tsv",
+      "from_md5": "1d9e86eef4677fe1cb7dc6fca9fde767",
+      "md5": "1d9e86eef4677fe1cb7dc6fca9fde767"
+    },
+    "analyses_with_lower_confidence/MD5SUMS": {
+      "from": "analyses_with_lower_confidence/MD5SUMS",
+      "from_md5": "f90879cdaaaf458d4bd096ac1cae53bd",
+      "md5": "519ba57f8ce767e1f603c76c286abd0e"
+    },
+    "analyses_with_lower_confidence/README.md": {
+      "from": "analyses_with_lower_confidence/README.md",
+      "from_md5": "5fc8c443b006cf24d95f1f88b719f190",
+      "md5": "ea7c04f311db7d3775f367d26f82cbad"
+    },
+    "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_significant_regions.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_significant_regions.tsv",
+      "from_md5": "1fa9b3ff653b047a02ec1abf5dd07056",
+      "md5": "1fa9b3ff653b047a02ec1abf5dd07056"
+    },
+    "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_window_summary.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_window_summary.tsv",
+      "from_md5": "c4668613c3dd90dea0cd625057d29cba",
+      "md5": "c4668613c3dd90dea0cd625057d29cba"
+    },
+    "analyses_with_lower_confidence/clustering/nearest_neighbor_curve_vs_null.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/nearest_neighbor_curve_vs_null.tsv",
+      "from_md5": "fa79434b32a98055d532a4af72819b28",
+      "md5": "fa79434b32a98055d532a4af72819b28"
+    },
+    "analyses_with_lower_confidence/clustering/nearest_neighbor_summary_5_10_20.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/nearest_neighbor_summary_5_10_20.tsv",
+      "from_md5": "90fe7773b9e02fa1f1de62315e0da72a",
+      "md5": "90fe7773b9e02fa1f1de62315e0da72a"
+    },
+    "analyses_with_lower_confidence/condensates/condensate_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/condensates/condensate_enrichment.tsv",
+      "from_md5": "8644b6fddfd2ed08c9ab55e35cddf1ec",
+      "md5": "8644b6fddfd2ed08c9ab55e35cddf1ec"
+    },
+    "analyses_with_lower_confidence/condensates/condensate_summary.tsv": {
+      "from": "analyses_with_lower_confidence/condensates/condensate_summary.tsv",
+      "from_md5": "833fa6be0001fef1c5d85b6e519db58d",
+      "md5": "833fa6be0001fef1c5d85b6e519db58d"
+    },
+    "analyses_with_lower_confidence/disease/disease_families.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_families.tsv",
+      "from_md5": "bb9fa8237390d21da56c1b45095ab604",
+      "md5": "bb9fa8237390d21da56c1b45095ab604"
+    },
+    "analyses_with_lower_confidence/disease/disease_input_summary.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_input_summary.tsv",
+      "from_md5": "dd7a70f0c391c98035029343b74c6fb1",
+      "md5": "dd7a70f0c391c98035029343b74c6fb1"
+    },
+    "analyses_with_lower_confidence/disease/disease_ontology.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_ontology.tsv",
+      "from_md5": "6f797a78b9ac5d00cf0f627733a93581",
+      "md5": "6f797a78b9ac5d00cf0f627733a93581"
+    },
+    "analyses_with_lower_confidence/disease/disease_terms.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_terms.tsv",
+      "from_md5": "aea09b24e34256243d8c2c1438027a77",
+      "md5": "aea09b24e34256243d8c2c1438027a77"
+    },
+    "analyses_with_lower_confidence/disorder/disorder_context_summary.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/disorder_context_summary.tsv",
+      "from_md5": "423ca6626719d370ca1cee181c88a951",
+      "md5": "423ca6626719d370ca1cee181c88a951"
+    },
+    "analyses_with_lower_confidence/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv",
+      "from_md5": "ac1baf54bcaffff6cb788d6948c7f3dc",
+      "md5": "ac1baf54bcaffff6cb788d6948c7f3dc"
+    },
+    "analyses_with_lower_confidence/disorder/idr_enrichment_vs_all_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/idr_enrichment_vs_all_arginines.tsv",
+      "from_md5": "18433ed3d47568809b060e7cf69199cf",
+      "md5": "18433ed3d47568809b060e7cf69199cf"
+    },
+    "analyses_with_lower_confidence/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv",
+      "from_md5": "69400d536102139777b08ac4e3cfcf64",
+      "md5": "69400d536102139777b08ac4e3cfcf64"
+    },
+    "analyses_with_lower_confidence/domains/domain_class_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_class_enrichment.tsv",
+      "from_md5": "eff6fc09668f0edd7b820de005c86e8c",
+      "md5": "eff6fc09668f0edd7b820de005c86e8c"
+    },
+    "analyses_with_lower_confidence/domains/domain_cluster_architecture_summary_ge3.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_cluster_architecture_summary_ge3.tsv",
+      "from_md5": "1ca006309cdb651b1e41b5ce8d214543",
+      "md5": "1ca006309cdb651b1e41b5ce8d214543"
+    },
+    "analyses_with_lower_confidence/domains/domain_context_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_context_enrichment.tsv",
+      "from_md5": "6373d0160e8aceaa7a011c47ebfe75db",
+      "md5": "6373d0160e8aceaa7a011c47ebfe75db"
+    },
+    "analyses_with_lower_confidence/domains/domain_context_summary.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_context_summary.tsv",
+      "from_md5": "0f5957ff64c168732aeb434d4f94250e",
+      "md5": "0f5957ff64c168732aeb434d4f94250e"
+    },
+    "analyses_with_lower_confidence/domains/domain_edge_distance_summary.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_edge_distance_summary.tsv",
+      "from_md5": "14abf4fdbfc886a7eee334c2cf2cef23",
+      "md5": "14abf4fdbfc886a7eee334c2cf2cef23"
+    },
+    "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv",
+      "from_md5": "f78221d8a738f49be38e02034ee68b99",
+      "md5": "f78221d8a738f49be38e02034ee68b99"
+    },
+    "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv",
+      "from_md5": "8326ec42097a17cc28daf6b935d70d6d",
+      "md5": "8326ec42097a17cc28daf6b935d70d6d"
+    },
+    "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv",
+      "from_md5": "2cc483640e47a358a40df9a7fca8bd93",
+      "md5": "2cc483640e47a358a40df9a7fca8bd93"
+    },
+    "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv",
+      "from_md5": "8f4f3ef89de247fbce7b19e56b65e2ca",
+      "md5": "8f4f3ef89de247fbce7b19e56b65e2ca"
+    },
+    "analyses_with_lower_confidence/motifs/positional_amino_acid_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/motifs/positional_amino_acid_enrichment.tsv",
+      "from_md5": "33174dad0efd596c827b9befeb569cbf",
+      "md5": "33174dad0efd596c827b9befeb569cbf"
+    },
+    "analyses_with_lower_confidence/other_ptms/ptm_context_comparison.tsv": {
+      "from": "analyses_with_lower_confidence/other_ptms/ptm_context_comparison.tsv",
+      "from_md5": "ed0652550dcabf98079e38b851bb1c6b",
+      "md5": "ed0652550dcabf98079e38b851bb1c6b"
+    },
+    "analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv": {
+      "from": "analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv",
+      "from_md5": "f2283b91ae43de2999770de4baba8cf7",
+      "md5": "f2283b91ae43de2999770de4baba8cf7"
+    },
+    "analyses_with_lower_confidence/panther/panther_class_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/panther/panther_class_enrichment.tsv",
+      "from_md5": "d7101c4b50ca7ee889196ff39af19c8e",
+      "md5": "d7101c4b50ca7ee889196ff39af19c8e"
+    },
+    "analyses_with_lower_confidence/statistics_v1.7.0.tsv": {
+      "from": "analyses_with_lower_confidence/statistics_v1.6.0.tsv",
+      "from_md5": "943dff2c27d23c73c39201ba1053a801",
+      "md5": "943dff2c27d23c73c39201ba1053a801"
+    },
+    "human_acetylation_sites_v1.7.0.tsv": {
+      "from": "human_acetylation_sites_v1.6.0.tsv",
+      "from_md5": "079ce9e22305fcb01fb9f035fca778f7",
+      "md5": "079ce9e22305fcb01fb9f035fca778f7"
+    },
+    "human_lysine_acylation_sites_v1.7.0.tsv": {
+      "from": "human_lysine_acylation_sites_v1.6.0.tsv",
+      "from_md5": "4164819cece8710a79904b9901cfa2bf",
+      "md5": "4164819cece8710a79904b9901cfa2bf"
+    },
+    "human_methylarginine_crosscheck_v1.7.0.tsv": {
+      "from": "human_methylarginine_crosscheck_v1.6.0.tsv",
+      "from_md5": "fb9f5aeaddc1520e1c260c127b05b5ab",
+      "md5": "fb9f5aeaddc1520e1c260c127b05b5ab"
+    },
+    "human_methylarginine_lower_confidence_sites_v1.7.0.tsv": {
+      "from": "human_methylarginine_lower_confidence_sites_v1.6.0.tsv",
+      "from_md5": "165074c4b977aa6ea8e0937ff6e92772",
+      "md5": "165074c4b977aa6ea8e0937ff6e92772"
+    },
+    "human_methylarginine_proteins_v1.7.0.tsv": {
+      "from": "human_methylarginine_proteins_v1.6.0.tsv",
+      "from_md5": "05bb44ce35959d5749b474a0c5c690eb",
+      "md5": "05bb44ce35959d5749b474a0c5c690eb"
+    },
+    "human_methylarginine_sites_v1.7.0.tsv": {
+      "from": "human_methylarginine_sites_v1.6.0.tsv",
+      "from_md5": "50dd293d1a3dd94ce7a0fb3168eae3bd",
+      "md5": "50dd293d1a3dd94ce7a0fb3168eae3bd"
+    },
+    "human_methylarginine_sites_v1.7.0.xlsx": {
+      "from": "human_methylarginine_sites_v1.6.0.xlsx",
+      "from_md5": "10014f3b632765ffa4ce31544653c8e1",
+      "md5": "1a250e3806b2837cd59811ed3c2afdd2"
+    },
+    "human_methyllysine_sites_v1.7.0.tsv": {
+      "from": "human_methyllysine_sites_v1.6.0.tsv",
+      "from_md5": "911a56655d3d0c3ba80a63981fdd28dd",
+      "md5": "911a56655d3d0c3ba80a63981fdd28dd"
+    },
+    "human_phosphorylation_sites_v1.7.0.tsv": {
+      "from": "human_phosphorylation_sites_v1.6.0.tsv",
+      "from_md5": "2b4cacbbedf48862d8c2816b9157c8fe",
+      "md5": "2b4cacbbedf48862d8c2816b9157c8fe"
+    },
+    "human_sumoylation_sites_v1.7.0.tsv": {
+      "from": "human_sumoylation_sites_v1.6.0.tsv",
+      "from_md5": "e01697c623934b97357e04a654fa07bd",
+      "md5": "e01697c623934b97357e04a654fa07bd"
+    },
+    "human_ubiquitination_sites_v1.7.0.tsv": {
+      "from": "human_ubiquitination_sites_v1.6.0.tsv",
+      "from_md5": "6e6491617eb7ff03429eee4a6a42cc2a",
+      "md5": "6e6491617eb7ff03429eee4a6a42cc2a"
+    },
+    "statistics_v1.7.0.tsv": {
+      "from": "statistics_v1.6.0.tsv",
+      "from_md5": "bdeb58f4dbbc713a3059930c363b074a",
+      "md5": "bdeb58f4dbbc713a3059930c363b074a"
+    },
+    "statistics_with_lower_confidence_v1.7.0.tsv": {
+      "from": "statistics_with_lower_confidence_v1.6.0.tsv",
+      "from_md5": "c62a97c257bd354b8f4a336d9d9e65e9",
+      "md5": "c62a97c257bd354b8f4a336d9d9e65e9"
+    },
+    "studies_v1.7.0.tsv": {
+      "from": "studies_v1.6.0.tsv",
+      "from_md5": "2132e4b6c309d92628360cddbccad3a9",
+      "md5": "2132e4b6c309d92628360cddbccad3a9"
+    },
+    "supporting/arginine_background_v1.7.0.tsv": {
+      "from": "supporting/arginine_background_v1.6.0.tsv",
+      "from_md5": "1632ace3df199a4d6263da727aff0e64",
+      "md5": "1632ace3df199a4d6263da727aff0e64"
+    },
+    "supporting/arginine_nucleic_acid_distances_v1.7.0.tsv": {
+      "from": "supporting/arginine_nucleic_acid_distances_v1.6.0.tsv",
+      "from_md5": "78f34a90f671ebdf75e8e1c19862d403",
+      "md5": "78f34a90f671ebdf75e8e1c19862d403"
+    },
+    "supporting/cancer_change_protein_background_v1.7.0.tsv.gz": {
+      "from": "supporting/cancer_change_protein_background_v1.6.0.tsv.gz",
+      "from_md5": "03537973ea1bbde64735a38c84bd7405",
+      "md5": "03537973ea1bbde64735a38c84bd7405"
+    },
+    "supporting/carm1_ko_v1.7.0.tsv": {
+      "from": "supporting/carm1_ko_v1.6.0.tsv",
+      "from_md5": "1421435d03bec729120fd941f11390d0",
+      "md5": "1421435d03bec729120fd941f11390d0"
+    },
+    "supporting/clinvar_changes_K_v1.7.0.tsv.gz": {
+      "from": "supporting/clinvar_changes_K_v1.6.0.tsv.gz",
+      "from_md5": "0b8fe5e9bfe14e8e65e2b8a353c4fc4d",
+      "md5": "0b8fe5e9bfe14e8e65e2b8a353c4fc4d"
+    },
+    "supporting/clinvar_changes_R_v1.7.0.tsv.gz": {
+      "from": "supporting/clinvar_changes_R_v1.6.0.tsv.gz",
+      "from_md5": "409e4b112fcfbaa191d145f5d2f94e27",
+      "md5": "409e4b112fcfbaa191d145f5d2f94e27"
+    },
+    "supporting/clinvar_changes_S_v1.7.0.tsv.gz": {
+      "from": "supporting/clinvar_changes_S_v1.6.0.tsv.gz",
+      "from_md5": "daa9bc71bd8c36ac7f5e517cd83818f9",
+      "md5": "daa9bc71bd8c36ac7f5e517cd83818f9"
+    },
+    "supporting/clinvar_changes_T_v1.7.0.tsv.gz": {
+      "from": "supporting/clinvar_changes_T_v1.6.0.tsv.gz",
+      "from_md5": "c46852217ee78e378a63205b17d818e5",
+      "md5": "c46852217ee78e378a63205b17d818e5"
+    },
+    "supporting/clinvar_changes_Y_v1.7.0.tsv.gz": {
+      "from": "supporting/clinvar_changes_Y_v1.6.0.tsv.gz",
+      "from_md5": "74362c70c0590e00084ac0b582a00380",
+      "md5": "74362c70c0590e00084ac0b582a00380"
+    },
+    "supporting/clinvar_protein_background_v1.7.0.tsv.gz": {
+      "from": "supporting/clinvar_protein_background_v1.6.0.tsv.gz",
+      "from_md5": "81929ddfc93711ff5b968b36d01d4d52",
+      "md5": "81929ddfc93711ff5b968b36d01d4d52"
+    },
+    "supporting/complexes_v1.7.0.tsv": {
+      "from": "supporting/complexes_v1.6.0.tsv",
+      "from_md5": "e7b088eed51884aa6cd45e277763bcab",
+      "md5": "e7b088eed51884aa6cd45e277763bcab"
+    },
+    "supporting/condensates_v1.7.0.tsv": {
+      "from": "supporting/condensates_v1.6.0.tsv",
+      "from_md5": "a5c0a4fba53cef8c778455562f76ac6f",
+      "md5": "a5c0a4fba53cef8c778455562f76ac6f"
+    },
+    "supporting/density_windows_v1.7.0.tsv": {
+      "from": "supporting/density_windows_v1.6.0.tsv",
+      "from_md5": "d707433811f76cd9659ff6c61e892c86",
+      "md5": "d707433811f76cd9659ff6c61e892c86"
+    },
+    "supporting/depmap_24q4_change_models_v1.7.0.tsv": {
+      "from": "supporting/depmap_24q4_change_models_v1.6.0.tsv",
+      "from_md5": "5239230e6d3cd08658b9681477a5a8f8",
+      "md5": "5239230e6d3cd08658b9681477a5a8f8"
+    },
+    "supporting/depmap_24q4_changes_K_v1.7.0.tsv.gz": {
+      "from": "supporting/depmap_24q4_changes_K_v1.6.0.tsv.gz",
+      "from_md5": "9abba4e226b3bf97ab179bd66d02dfc7",
+      "md5": "9abba4e226b3bf97ab179bd66d02dfc7"
+    },
+    "supporting/depmap_24q4_changes_R_v1.7.0.tsv.gz": {
+      "from": "supporting/depmap_24q4_changes_R_v1.6.0.tsv.gz",
+      "from_md5": "52e1965948bf58e7a2b2ffab54770c92",
+      "md5": "52e1965948bf58e7a2b2ffab54770c92"
+    },
+    "supporting/depmap_24q4_changes_S_v1.7.0.tsv.gz": {
+      "from": "supporting/depmap_24q4_changes_S_v1.6.0.tsv.gz",
+      "from_md5": "cfa0d44b1193f3e9d5e531bd08598227",
+      "md5": "cfa0d44b1193f3e9d5e531bd08598227"
+    },
+    "supporting/depmap_24q4_changes_T_v1.7.0.tsv.gz": {
+      "from": "supporting/depmap_24q4_changes_T_v1.6.0.tsv.gz",
+      "from_md5": "0fa9ef4dafde1469013db2578ff1a420",
+      "md5": "0fa9ef4dafde1469013db2578ff1a420"
+    },
+    "supporting/depmap_24q4_changes_Y_v1.7.0.tsv.gz": {
+      "from": "supporting/depmap_24q4_changes_Y_v1.6.0.tsv.gz",
+      "from_md5": "8e84b4cb11be159dbec81ecd1ced811f",
+      "md5": "8e84b4cb11be159dbec81ecd1ced811f"
+    },
+    "supporting/disease_families_v1.7.0.tsv": {
+      "from": "supporting/disease_families_v1.6.0.tsv",
+      "from_md5": "2512f4b5cdf6897913d08ed3035c34e5",
+      "md5": "2512f4b5cdf6897913d08ed3035c34e5"
+    },
+    "supporting/disease_ontology_v1.7.0.tsv": {
+      "from": "supporting/disease_ontology_v1.6.0.tsv",
+      "from_md5": "efe543b7019105127166e47d5030b233",
+      "md5": "efe543b7019105127166e47d5030b233"
+    },
+    "supporting/disease_terms_tested_v1.7.0.tsv": {
+      "from": "supporting/disease_terms_tested_v1.6.0.tsv",
+      "from_md5": "ed047e8b2ece3d24b8f2a6bcae6900e3",
+      "md5": "ed047e8b2ece3d24b8f2a6bcae6900e3"
+    },
+    "supporting/disease_terms_v1.7.0.tsv": {
+      "from": "supporting/disease_terms_v1.6.0.tsv",
+      "from_md5": "cc8ac3be3307a3e9d91b765435e3116f",
+      "md5": "cc8ac3be3307a3e9d91b765435e3116f"
+    },
+    "supporting/dna_motifs_v1.7.0.tsv": {
+      "from": "supporting/dna_motifs_v1.6.0.tsv",
+      "from_md5": "b5ee0ac01e31897bd36ca2b7bc3cef0b",
+      "md5": "b5ee0ac01e31897bd36ca2b7bc3cef0b"
+    },
+    "supporting/eclip_rna_compartments_v1.7.0.tsv": {
+      "from": "supporting/eclip_rna_compartments_v1.6.0.tsv",
+      "from_md5": "feaed0917ea9ed25898d6f179b12b608",
+      "md5": "feaed0917ea9ed25898d6f179b12b608"
+    },
+    "supporting/eclip_v1.7.0.tsv": {
+      "from": "supporting/eclip_v1.6.0.tsv",
+      "from_md5": "acfdad3a4a6f82f9d07866e3ced0a249",
+      "md5": "acfdad3a4a6f82f9d07866e3ced0a249"
+    },
+    "supporting/functional_experiments_v1.7.0.tsv": {
+      "from": "supporting/functional_experiments_v1.6.0.tsv",
+      "from_md5": "f8902195b280b87bb64f85860213ddec",
+      "md5": "f8902195b280b87bb64f85860213ddec"
+    },
+    "supporting/gnomad_protein_background_v1.7.0.tsv.gz": {
+      "from": "supporting/gnomad_protein_background_v1.6.0.tsv.gz",
+      "from_md5": "22a457f6990f903491e7d47f628b15c5",
+      "md5": "22a457f6990f903491e7d47f628b15c5"
+    },
+    "supporting/gnomad_v4_1_changes_K_v1.7.0.tsv.gz": {
+      "from": "supporting/gnomad_v4_1_changes_K_v1.6.0.tsv.gz",
+      "from_md5": "acf63ff665963c33d85b05df6b614193",
+      "md5": "acf63ff665963c33d85b05df6b614193"
+    },
+    "supporting/gnomad_v4_1_changes_R_v1.7.0.tsv.gz": {
+      "from": "supporting/gnomad_v4_1_changes_R_v1.6.0.tsv.gz",
+      "from_md5": "69a13e716642c67107ac642250c88da9",
+      "md5": "69a13e716642c67107ac642250c88da9"
+    },
+    "supporting/gnomad_v4_1_changes_S_v1.7.0.tsv.gz": {
+      "from": "supporting/gnomad_v4_1_changes_S_v1.6.0.tsv.gz",
+      "from_md5": "b54c17083223244ac93d80e665fe4764",
+      "md5": "b54c17083223244ac93d80e665fe4764"
+    },
+    "supporting/gnomad_v4_1_changes_T_v1.7.0.tsv.gz": {
+      "from": "supporting/gnomad_v4_1_changes_T_v1.6.0.tsv.gz",
+      "from_md5": "839777896ef0563e8179488dcd025c21",
+      "md5": "839777896ef0563e8179488dcd025c21"
+    },
+    "supporting/gnomad_v4_1_changes_Y_v1.7.0.tsv.gz": {
+      "from": "supporting/gnomad_v4_1_changes_Y_v1.6.0.tsv.gz",
+      "from_md5": "39d38b28204d723805130cd67abd5f9b",
+      "md5": "39d38b28204d723805130cd67abd5f9b"
+    },
+    "supporting/hpa_locations_v1.7.0.tsv": {
+      "from": "supporting/hpa_locations_v1.6.0.tsv",
+      "from_md5": "8ad0da59e7ee3cdad22eb9e2ba132ee1",
+      "md5": "8ad0da59e7ee3cdad22eb9e2ba132ee1"
+    },
+    "supporting/htr_selex_v1.7.0.tsv": {
+      "from": "supporting/htr_selex_v1.6.0.tsv",
+      "from_md5": "c89d0a813e1309bcb13fead0ca817229",
+      "md5": "c89d0a813e1309bcb13fead0ca817229"
+    },
+    "supporting/lower_confidence_evidence_v1.7.0.tsv": {
+      "from": "supporting/lower_confidence_evidence_v1.6.0.tsv",
+      "from_md5": "a0a3f43e62e06859f7f060e258cea85a",
+      "md5": "a0a3f43e62e06859f7f060e258cea85a"
+    },
+    "supporting/lysine_nucleic_acid_contacts_v1.7.0.tsv": {
+      "from": "supporting/lysine_nucleic_acid_contacts_v1.6.0.tsv",
+      "from_md5": "42396342cd33056579b9275b809fb698",
+      "md5": "42396342cd33056579b9275b809fb698"
+    },
+    "supporting/lysine_nucleic_acid_near_sites_v1.7.0.tsv": {
+      "from": "supporting/lysine_nucleic_acid_near_sites_v1.6.0.tsv",
+      "from_md5": "094877f6301ad9abbc81dec3f576555b",
+      "md5": "094877f6301ad9abbc81dec3f576555b"
+    },
+    "supporting/lysine_nucleic_acid_proximal_sites_v1.7.0.tsv": {
+      "from": "supporting/lysine_nucleic_acid_proximal_sites_v1.6.0.tsv",
+      "from_md5": "94a35cd3a3ba14f8e0926ee39fa02ba7",
+      "md5": "94a35cd3a3ba14f8e0926ee39fa02ba7"
+    },
+    "supporting/lysine_residue_evidence_v1.7.0.tsv": {
+      "from": "supporting/lysine_residue_evidence_v1.6.0.tsv",
+      "from_md5": "3ec83b5ca61f35e7c585195bd2226d37",
+      "md5": "3ec83b5ca61f35e7c585195bd2226d37"
+    },
+    "supporting/lysine_site_interaction_records_v1.7.0.tsv": {
+      "from": "supporting/lysine_site_interaction_records_v1.6.0.tsv",
+      "from_md5": "3b77e37b995e8339f414be4715e8317e",
+      "md5": "3b77e37b995e8339f414be4715e8317e"
+    },
+    "supporting/lysine_site_interactions_v1.7.0.tsv": {
+      "from": "supporting/lysine_site_interactions_v1.6.0.tsv",
+      "from_md5": "a90d4ffd4d2a6dd1baaca9eb67d5b1da",
+      "md5": "a90d4ffd4d2a6dd1baaca9eb67d5b1da"
+    },
+    "supporting/maron2021_detection_v1.7.0.tsv": {
+      "from": "supporting/maron2021_detection_v1.6.0.tsv",
+      "from_md5": "e3dd0ae6b9b40e1f59166f7edf6b44ca",
+      "md5": "e3dd0ae6b9b40e1f59166f7edf6b44ca"
+    },
+    "supporting/maron2021_inhibitors_v1.7.0.tsv": {
+      "from": "supporting/maron2021_inhibitors_v1.6.0.tsv",
+      "from_md5": "53261fec99cb1cbb731a525cdf3f8eed",
+      "md5": "53261fec99cb1cbb731a525cdf3f8eed"
+    },
+    "supporting/methylarginine_nucleic_acid_contacts_v1.7.0.tsv": {
+      "from": "supporting/methylarginine_nucleic_acid_contacts_v1.6.0.tsv",
+      "from_md5": "de303766f58bf0b40acf68f13058e540",
+      "md5": "de303766f58bf0b40acf68f13058e540"
+    },
+    "supporting/methylarginine_nucleic_acid_near_sites_v1.7.0.tsv": {
+      "from": "supporting/methylarginine_nucleic_acid_near_sites_v1.6.0.tsv",
+      "from_md5": "a9e94161866c6427fbd274e4af1c07df",
+      "md5": "a9e94161866c6427fbd274e4af1c07df"
+    },
+    "supporting/methylarginine_nucleic_acid_proximal_sites_v1.7.0.tsv": {
+      "from": "supporting/methylarginine_nucleic_acid_proximal_sites_v1.6.0.tsv",
+      "from_md5": "1f699ba5d969eb071969f49a6dfca92d",
+      "md5": "1f699ba5d969eb071969f49a6dfca92d"
+    },
+    "supporting/methylarginine_residue_evidence_v1.7.0.tsv": {
+      "from": "supporting/methylarginine_residue_evidence_v1.6.0.tsv",
+      "from_md5": "8a7764aa518675e594fdaffb4f8c3cc7",
+      "md5": "8a7764aa518675e594fdaffb4f8c3cc7"
+    },
+    "supporting/methylarginine_site_interaction_records_v1.7.0.tsv": {
+      "from": "supporting/methylarginine_site_interaction_records_v1.6.0.tsv",
+      "from_md5": "53c485e8980c6c8a3359837a507c5da1",
+      "md5": "53c485e8980c6c8a3359837a507c5da1"
+    },
+    "supporting/methylarginine_site_interactions_v1.7.0.tsv": {
+      "from": "supporting/methylarginine_site_interactions_v1.6.0.tsv",
+      "from_md5": "6bcf76c1ea443a8fa28a5a71d2d3b15d",
+      "md5": "6bcf76c1ea443a8fa28a5a71d2d3b15d"
+    },
+    "supporting/methyllysine_nucleic_acid_contacts_v1.7.0.tsv": {
+      "from": "supporting/methyllysine_nucleic_acid_contacts_v1.6.0.tsv",
+      "from_md5": "d0407577e7b5ed6cc8af17524845bbbf",
+      "md5": "d0407577e7b5ed6cc8af17524845bbbf"
+    },
+    "supporting/methyllysine_nucleic_acid_near_sites_v1.7.0.tsv": {
+      "from": "supporting/methyllysine_nucleic_acid_near_sites_v1.6.0.tsv",
+      "from_md5": "ce5a4c23746a6b39276b95dd8ac7c391",
+      "md5": "ce5a4c23746a6b39276b95dd8ac7c391"
+    },
+    "supporting/methyllysine_nucleic_acid_proximal_sites_v1.7.0.tsv": {
+      "from": "supporting/methyllysine_nucleic_acid_proximal_sites_v1.6.0.tsv",
+      "from_md5": "619c6e053ca8257af256548ac240bd35",
+      "md5": "619c6e053ca8257af256548ac240bd35"
+    },
+    "supporting/methyllysine_residue_evidence_v1.7.0.tsv": {
+      "from": "supporting/methyllysine_residue_evidence_v1.6.0.tsv",
+      "from_md5": "0273c5efa032be7f392c69fe1088cb6a",
+      "md5": "0273c5efa032be7f392c69fe1088cb6a"
+    },
+    "supporting/methyllysine_site_interaction_records_v1.7.0.tsv": {
+      "from": "supporting/methyllysine_site_interaction_records_v1.6.0.tsv",
+      "from_md5": "09e30963b9f1918efe522642779377f7",
+      "md5": "09e30963b9f1918efe522642779377f7"
+    },
+    "supporting/methyllysine_site_interactions_v1.7.0.tsv": {
+      "from": "supporting/methyllysine_site_interactions_v1.6.0.tsv",
+      "from_md5": "fc8c592a6e9ff0d2786a83353a71630c",
+      "md5": "fc8c592a6e9ff0d2786a83353a71630c"
+    },
+    "supporting/nucleic_acid_regions_v1.7.0.tsv": {
+      "from": "supporting/nucleic_acid_regions_v1.6.0.tsv",
+      "from_md5": "244126e0faf5b7fe803b66b01950c9d4",
+      "md5": "244126e0faf5b7fe803b66b01950c9d4"
+    },
+    "supporting/other_ptm_sites_v1.7.0.tsv": {
+      "from": "supporting/other_ptm_sites_v1.6.0.tsv",
+      "from_md5": "fb852bc28016e6c1e504ae67ca7e7a68",
+      "md5": "fb852bc28016e6c1e504ae67ca7e7a68"
+    },
+    "supporting/phospho_nucleic_acid_contacts_v1.7.0.tsv": {
+      "from": "supporting/phospho_nucleic_acid_contacts_v1.6.0.tsv",
+      "from_md5": "7ebbeb5f5b814a02a0898bdb61e172e9",
+      "md5": "7ebbeb5f5b814a02a0898bdb61e172e9"
+    },
+    "supporting/phospho_nucleic_acid_near_sites_v1.7.0.tsv": {
+      "from": "supporting/phospho_nucleic_acid_near_sites_v1.6.0.tsv",
+      "from_md5": "72c0401c1516818f7ef267d25df93592",
+      "md5": "72c0401c1516818f7ef267d25df93592"
+    },
+    "supporting/phospho_nucleic_acid_proximal_sites_v1.7.0.tsv": {
+      "from": "supporting/phospho_nucleic_acid_proximal_sites_v1.6.0.tsv",
+      "from_md5": "6d1543e508a69c1824892018bfd98c52",
+      "md5": "6d1543e508a69c1824892018bfd98c52"
+    },
+    "supporting/phospho_residue_evidence_v1.7.0.tsv": {
+      "from": "supporting/phospho_residue_evidence_v1.6.0.tsv",
+      "from_md5": "26e70bbf61571f5d24e5704092b3c5e8",
+      "md5": "26e70bbf61571f5d24e5704092b3c5e8"
+    },
+    "supporting/phospho_site_interaction_records_v1.7.0.tsv": {
+      "from": "supporting/phospho_site_interaction_records_v1.6.0.tsv",
+      "from_md5": "f1e3fec12479bf2bbdef5a3323edbe00",
+      "md5": "f1e3fec12479bf2bbdef5a3323edbe00"
+    },
+    "supporting/phospho_site_interactions_v1.7.0.tsv": {
+      "from": "supporting/phospho_site_interactions_v1.6.0.tsv",
+      "from_md5": "886d80e5655f6904d57380bb555be5a3",
+      "md5": "886d80e5655f6904d57380bb555be5a3"
+    },
+    "supporting/protein_partners_v1.7.0.tsv": {
+      "from": "supporting/protein_partners_v1.6.0.tsv",
+      "from_md5": "8631f3df370c2b0cef0a02b8e0cfe20a",
+      "md5": "8631f3df370c2b0cef0a02b8e0cfe20a"
+    },
+    "supporting/published_sites_v1.7.0.tsv": {
+      "from": "supporting/published_sites_v1.6.0.tsv",
+      "from_md5": "018a6846c4f0ce68e0908c6645414113",
+      "md5": "018a6846c4f0ce68e0908c6645414113"
+    },
+    "supporting/rna_bind_n_seq_v1.7.0.tsv": {
+      "from": "supporting/rna_bind_n_seq_v1.6.0.tsv",
+      "from_md5": "7d2bccc6ce1482943997613d3ef741c8",
+      "md5": "7d2bccc6ce1482943997613d3ef741c8"
+    },
+    "supporting/source_records_v1.7.0.tsv": {
+      "from": "supporting/source_records_v1.6.0.tsv",
+      "from_md5": "27a2e57f6e978fcba017c6e9c4b0240f",
+      "md5": "27a2e57f6e978fcba017c6e9c4b0240f"
+    },
+    "supporting/tcga_mc3_changes_K_v1.7.0.tsv.gz": {
+      "from": "supporting/tcga_mc3_changes_K_v1.6.0.tsv.gz",
+      "from_md5": "98bb86a2123c81ba0ac39140fb4969bc",
+      "md5": "98bb86a2123c81ba0ac39140fb4969bc"
+    },
+    "supporting/tcga_mc3_changes_R_v1.7.0.tsv.gz": {
+      "from": "supporting/tcga_mc3_changes_R_v1.6.0.tsv.gz",
+      "from_md5": "31583c11cb71773a1b9076823b67e7bf",
+      "md5": "31583c11cb71773a1b9076823b67e7bf"
+    },
+    "supporting/tcga_mc3_changes_S_v1.7.0.tsv.gz": {
+      "from": "supporting/tcga_mc3_changes_S_v1.6.0.tsv.gz",
+      "from_md5": "6b4ff26259a5d3be25d34e6c0f3d8fb9",
+      "md5": "6b4ff26259a5d3be25d34e6c0f3d8fb9"
+    },
+    "supporting/tcga_mc3_changes_T_v1.7.0.tsv.gz": {
+      "from": "supporting/tcga_mc3_changes_T_v1.6.0.tsv.gz",
+      "from_md5": "d8068cdf2c8ea6b12f303f143051eeed",
+      "md5": "d8068cdf2c8ea6b12f303f143051eeed"
+    },
+    "supporting/tcga_mc3_changes_Y_v1.7.0.tsv.gz": {
+      "from": "supporting/tcga_mc3_changes_Y_v1.6.0.tsv.gz",
+      "from_md5": "e36ef60ecfc6bc6f5972707e37b1c643",
+      "md5": "e36ef60ecfc6bc6f5972707e37b1c643"
+    },
+    "supporting/tcga_mc3_projects_v1.7.0.tsv": {
+      "from": "supporting/tcga_mc3_projects_v1.6.0.tsv",
+      "from_md5": "891b8caf4f6bf049e619e82a56b4b037",
+      "md5": "891b8caf4f6bf049e619e82a56b4b037"
+    },
+    "supporting/variant_changes_excluded_v1.7.0.tsv.gz": {
+      "from": "supporting/variant_changes_excluded_v1.6.0.tsv.gz",
+      "from_md5": "e9d043b7798d4317a35a7e6d549dda64",
+      "md5": "e9d043b7798d4317a35a7e6d549dda64"
+    },
+    "supporting/writer_perturbations_v1.7.0.tsv": {
+      "from": "supporting/writer_perturbations_v1.6.0.tsv",
+      "from_md5": "368e601f1752b6282ccff412cc0bc804",
+      "md5": "368e601f1752b6282ccff412cc0bc804"
+    }
+  },
+  "carried_over_text_edited": [
+    "STUDIES.md",
+    "analyses/MD5SUMS",
+    "analyses/README.md",
+    "analyses_with_lower_confidence/MD5SUMS",
+    "analyses_with_lower_confidence/README.md",
+    "human_methylarginine_sites_v1.7.0.xlsx"
+  ],
+  "context_marks": {
+    "acetylation": {
+      "by_evidence_class": {
+        "by-similarity": 1882,
+        "experimental": 2710,
+        "unspecified": 5
+      },
+      "by_source": {
+        "rows": {
+          "UniProt + iPTMnet": 2430,
+          "UniProt only": 1925,
+          "iPTMnet only": 242
+        },
+        "sites": {
+          "UniProt + iPTMnet": 2430,
+          "UniProt only": 1925,
+          "iPTMnet only": 242
+        }
+      },
+      "by_state": {
+        "acetyl": 4597
+      },
+      "proteins": 1834,
+      "residues": 4597,
+      "rows": 4597
+    },
+    "lysine_acylation": {
+      "by_evidence_class": {
+        "by-similarity": 3470,
+        "experimental": 4533,
+        "unspecified": 5
+      },
+      "by_source": {
+        "rows": {
+          "UniProt + iPTMnet": 2430,
+          "UniProt only": 5336,
+          "iPTMnet only": 242
+        },
+        "sites": {
+          "UniProt + iPTMnet": 2475,
+          "UniProt only": 2832,
+          "iPTMnet only": 197
+        }
+      },
+      "by_state": {
+        "2-hydroxyisobutyryl": 419,
+        "acetyl": 4597,
+        "benzoyl": 160,
+        "beta-hydroxybutyryl": 278,
+        "butyryl": 62,
+        "crotonyl": 224,
+        "glutaryl": 264,
+        "isonicotinyl": 189,
+        "lactoyl": 272,
+        "malonyl": 45,
+        "methacryl": 215,
+        "propionyl": 19,
+        "succinyl": 1264
+      },
+      "proteins": 1945,
+      "residues": 5504,
+      "rows": 8008
+    },
+    "methylarginine_crosscheck": {
+      "by_evidence_class": {
+        "by-similarity": 796,
+        "experimental": 956,
+        "unspecified": 719
+      },
+      "by_source": {
+        "rows": {
+          "UniProt + iPTMnet": 5,
+          "UniProt only": 1664,
+          "iPTMnet only": 802
+        },
+        "sites": {
+          "UniProt + iPTMnet": 742,
+          "UniProt only": 740,
+          "iPTMnet only": 65
+        }
+      },
+      "by_state": {
+        "me": 807,
+        "me1": 985,
+        "me2": 71,
+        "me2a": 553,
+        "me2s": 55
+      },
+      "proteins": 736,
+      "residues": 1547,
+      "rows": 2471
+    },
+    "methyllysine": {
+      "by_evidence_class": {
+        "by-similarity": 181,
+        "experimental": 5359,
+        "unspecified": 206
+      },
+      "by_source": {
+        "rows": {
+          "Berryhill 2023 only": 4990,
+          "UniProt + Berryhill 2023": 82,
+          "UniProt + iPTMnet": 11,
+          "UniProt only": 440,
+          "iPTMnet only": 223
+        },
+        "sites": {
+          "Berryhill 2023 only": 4766,
+          "UniProt + Berryhill 2023": 15,
+          "UniProt + iPTMnet": 175,
+          "UniProt + iPTMnet + Berryhill 2023": 44,
+          "UniProt only": 163,
+          "iPTMnet only": 15
+        }
+      },
+      "by_state": {
+        "me": 251,
+        "me1": 2302,
+        "me2": 1384,
+        "me3": 1809
+      },
+      "proteins": 2843,
+      "residues": 5178,
+      "rows": 5746
+    },
+    "phosphorylation": {
+      "by_evidence_class": {
+        "by-similarity": 4393,
+        "experimental": 135936,
+        "text-mined": 2018,
+        "unspecified": 68
+      },
+      "by_source": {
+        "rows": {
+          "Ochoa 2020 only": 70281,
+          "UniProt + Ochoa 2020": 3461,
+          "UniProt + iPTMnet": 7279,
+          "UniProt + iPTMnet + Ochoa 2020": 25632,
+          "UniProt only": 4556,
+          "iPTMnet + Ochoa 2020": 13031,
+          "iPTMnet only": 18175
+        },
+        "sites": {
+          "Ochoa 2020 only": 70281,
+          "UniProt + Ochoa 2020": 3461,
+          "UniProt + iPTMnet": 7279,
+          "UniProt + iPTMnet + Ochoa 2020": 25632,
+          "UniProt only": 4556,
+          "iPTMnet + Ochoa 2020": 13031,
+          "iPTMnet only": 18175
+        }
+      },
+      "by_state": {
+        "phospho": 142415
+      },
+      "proteins": 12588,
+      "residues": 142415,
+      "rows": 142415
+    },
+    "sumoylation": {
+      "by_evidence_class": {
+        "by-similarity": 159,
+        "experimental": 40090
+      },
+      "by_source": {
+        "rows": {
+          "Hendriks 2017 only": 34709,
+          "UniProt + Hendriks 2017": 5128,
+          "UniProt + iPTMnet": 6,
+          "UniProt + iPTMnet + Hendriks 2017": 18,
+          "UniProt only": 379,
+          "iPTMnet + Hendriks 2017": 3,
+          "iPTMnet only": 6
+        },
+        "sites": {
+          "Hendriks 2017 only": 34709,
+          "UniProt + Hendriks 2017": 5128,
+          "UniProt + iPTMnet": 6,
+          "UniProt + iPTMnet + Hendriks 2017": 18,
+          "UniProt only": 379,
+          "iPTMnet + Hendriks 2017": 3,
+          "iPTMnet only": 6
+        }
+      },
+      "by_state": {
+        "sumo": 40249
+      },
+      "proteins": 6410,
+      "residues": 40249,
+      "rows": 40249
+    },
+    "ubiquitination": {
+      "by_evidence_class": {
+        "by-similarity": 181,
+        "experimental": 63299
+      },
+      "by_source": {
+        "rows": {
+          "Akimov 2018 only": 62522,
+          "UniProt + Akimov 2018": 103,
+          "UniProt + iPTMnet": 358,
+          "UniProt + iPTMnet + Akimov 2018": 245,
+          "UniProt only": 245,
+          "iPTMnet + Akimov 2018": 1,
+          "iPTMnet only": 6
+        },
+        "sites": {
+          "Akimov 2018 only": 62522,
+          "UniProt + Akimov 2018": 103,
+          "UniProt + iPTMnet": 358,
+          "UniProt + iPTMnet + Akimov 2018": 245,
+          "UniProt only": 245,
+          "iPTMnet + Akimov 2018": 1,
+          "iPTMnet only": 6
+        }
+      },
+      "by_state": {
+        "ub": 63480
+      },
+      "proteins": 9032,
+      "residues": 63480,
+      "rows": 63480
+    }
+  },
+  "context_marks_code_commit": "125f10960e39445db5a32ec4a30f5bb8cfed9f29",
+  "corrections": [],
+  "counts": [
+    {
+      "high_confidence": 2985,
+      "high_confidence_rule": "methylarginine control: two or more studies, a laboratory counted once, PhosphoSitePlus, UniProt, IEDB and ProMetheusDB not counted",
+      "label": "Methylarginine (R)",
+      "set": "methylarginine",
+      "sites": 11632,
+      "with_generic_interaction_evidence": 3069,
+      "with_interaction_evidence": 4530
+    },
+    {
+      "high_confidence": 83,
+      "high_confidence_rule": "D5: two or more units (PubMed IDs or direct datasets) over experimental rows",
+      "label": "Methyllysine (K)",
+      "set": "methyllysine",
+      "sites": 5178,
+      "with_interaction_evidence": 485
+    },
+    {
+      "high_confidence": 1938,
+      "high_confidence_rule": "D5: two or more units (PubMed IDs or direct datasets) over experimental rows, counted per modification (each acyl type, ubiquitin, SUMO)",
+      "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+      "set": "lysine",
+      "sites": 90876,
+      "with_interaction_evidence": 10878
+    },
+    {
+      "high_confidence": 215,
+      "high_confidence_rule": "D5 within this table, counted per modification",
+      "label": "  of which acetylation",
+      "set": "lysine/acetylation",
+      "sites": 4597,
+      "with_interaction_evidence": 1061
+    },
+    {
+      "high_confidence": 218,
+      "high_confidence_rule": "D5 within this table, counted per modification",
+      "label": "  of which lysine acylation (all acyl types)",
+      "set": "lysine/lysine_acylation",
+      "sites": 5504,
+      "with_interaction_evidence": 1294
+    },
+    {
+      "high_confidence": 375,
+      "high_confidence_rule": "D5 within this table, counted per modification",
+      "label": "  of which ubiquitination",
+      "set": "lysine/ubiquitination",
+      "sites": 63480,
+      "with_interaction_evidence": 8150
+    },
+    {
+      "high_confidence": 1370,
+      "high_confidence_rule": "D5 within this table, counted per modification",
+      "label": "  of which SUMOylation",
+      "set": "lysine/sumoylation",
+      "sites": 40249,
+      "with_interaction_evidence": 5201
+    },
+    {
+      "high_confidence": 42804,
+      "high_confidence_rule": "D5: two or more units (PubMed IDs or direct datasets) over experimental rows",
+      "label": "Phosphorylation (S, T, Y)",
+      "set": "phospho",
+      "sites": 142415,
+      "with_interaction_evidence": 10673
+    }
+  ],
+  "germline_variants": {
+    "clinvar": {
+      "inputs": {
+        "clinvar_files_dated": "2026-11-15 (hgvs4variation), 2026-11-16 (variant_summary)",
+        "hgnc": {
+          "file": "hgnc_complete_set.txt",
+          "license": "CC0",
+          "md5": "2a30aa650f51d6fed261f79057463d5a",
+          "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt"
+        },
+        "hgvs4variation": {
+          "file": "hgvs4variation.txt.gz",
+          "md5": "4e468e2ba462005b9002a6d86dd8dea5",
+          "url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/hgvs4variation.txt.gz"
+        },
+        "reference": {
+          "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+          "md5": "c75aad9d197cbba00f51063f65a96ac4"
+        },
+        "uniprot": {
+          "isoforms": {
+            "file": "uniprot_2026_04_human_reviewed_altprod.tsv.gz",
+            "md5": "d3ce32007c476fa6c134416594db9de2"
+          },
+          "refseq": {
+            "file": "uniprot_2026_04_human_reviewed_refseq.tsv.gz",
+            "md5": "59d2b6d79998b16516892e6f72c42c5a",
+            "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,id,xref_refseq&format=tsv&compressed=true"
+          },
+          "release": "2026_04"
+        },
+        "variant_summary": {
+          "file": "variant_summary.txt.gz",
+          "md5": "7f64e1f49cf025d0f02757a621971c40",
+          "url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz"
+        }
+      },
+      "license": "NCBI places no restrictions on the use or distribution of ClinVar data; submitters may claim rights in what they submitted",
+      "rule": "a single-residue substitution or stop on a RefSeq protein UniProt assigns to a reviewed entry's displayed isoform, kept where the 2026_03 canonical sequence has the residue at the position; classifications from the GRCh38 rows of variant_summary; one row per (entry, position, new residue, variation)"
+    },
+    "files": {
+      "supporting/clinvar_changes_K_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_K.tsv.gz",
+        "from_md5": "ddc7e87bf37414a5aadb81e3768bb206",
+        "md5": "0b8fe5e9bfe14e8e65e2b8a353c4fc4d"
+      },
+      "supporting/clinvar_changes_R_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_R.tsv.gz",
+        "from_md5": "21f7985471293f2022a70783d9d42a1d",
+        "md5": "409e4b112fcfbaa191d145f5d2f94e27"
+      },
+      "supporting/clinvar_changes_S_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_S.tsv.gz",
+        "from_md5": "6cae1cab3285b61faf8fb1759f4f3dee",
+        "md5": "daa9bc71bd8c36ac7f5e517cd83818f9"
+      },
+      "supporting/clinvar_changes_T_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_T.tsv.gz",
+        "from_md5": "7dce1d64ac1ec498d1442c8b12b20a48",
+        "md5": "c46852217ee78e378a63205b17d818e5"
+      },
+      "supporting/clinvar_changes_Y_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_changes_Y.tsv.gz",
+        "from_md5": "65c0bd0c54b5c78dbd46abc49ff267a2",
+        "md5": "74362c70c0590e00084ac0b582a00380"
+      },
+      "supporting/clinvar_protein_background_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/clinvar_protein_background.tsv.gz",
+        "from_md5": "81929ddfc93711ff5b968b36d01d4d52",
+        "md5": "81929ddfc93711ff5b968b36d01d4d52"
+      },
+      "supporting/gnomad_protein_background_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_protein_background.tsv.gz",
+        "from_md5": "22a457f6990f903491e7d47f628b15c5",
+        "md5": "22a457f6990f903491e7d47f628b15c5"
+      },
+      "supporting/gnomad_v4_1_changes_K_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_K.tsv.gz",
+        "from_md5": "f65894ea482ab33e61b0c229d2e0a825",
+        "md5": "acf63ff665963c33d85b05df6b614193"
+      },
+      "supporting/gnomad_v4_1_changes_R_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_R.tsv.gz",
+        "from_md5": "bca52405d0220bf268b2bc25dcce4f8d",
+        "md5": "69a13e716642c67107ac642250c88da9"
+      },
+      "supporting/gnomad_v4_1_changes_S_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_S.tsv.gz",
+        "from_md5": "a4e411c0958d5471fc7b281d95e1d24e",
+        "md5": "b54c17083223244ac93d80e665fe4764"
+      },
+      "supporting/gnomad_v4_1_changes_T_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_T.tsv.gz",
+        "from_md5": "cfbcd8a7e8bbc19fe746c006b681d735",
+        "md5": "839777896ef0563e8179488dcd025c21"
+      },
+      "supporting/gnomad_v4_1_changes_Y_v1.7.0.tsv.gz": {
+        "from": "inputs/layers/gnomad_v4_1_changes_Y.tsv.gz",
+        "from_md5": "ae899afacfc592351c7932defc74349c",
+        "md5": "39d38b28204d723805130cd67abd5f9b"
+      }
+    },
+    "gnomad": {
+      "citation": "Chen et al., Nature 625:92 (2024), doi:10.1038/s41586-023-06045-0 (gnomAD v4)",
+      "inputs": {
+        "ensembl_gtf": {
+          "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+          "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313",
+          "url": "https://ftp.ensembl.org/pub/release-105/gtf/homo_sapiens/Homo_sapiens.GRCh38.105.gtf.gz"
+        },
+        "hgnc": {
+          "file": "hgnc_complete_set.txt",
+          "license": "CC0",
+          "md5": "2a30aa650f51d6fed261f79057463d5a",
+          "url": "https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt"
+        },
+        "reference": {
+          "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+          "md5": "c75aad9d197cbba00f51063f65a96ac4"
+        },
+        "uniprot": {
+          "ensembl_md5": "308c33bbed1d7db0f0200434a02a0551",
+          "isoforms_md5": "d3ce32007c476fa6c134416594db9de2",
+          "release": "2026_04"
+        },
+        "vcfs": {
+          "chr1": {
+            "bytes": 18789775480,
+            "entries": 1613112,
+            "fetched": "2026-11-19T22:15:02+00:00",
+            "lines_with_missense_or_stop": 1869024,
+            "md5": "848be4d85c953bc73a8e4f0c97026a72",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr1.vcf.bgz"
+          },
+          "chr10": {
+            "bytes": 7858233309,
+            "entries": 622658,
+            "fetched": "2026-11-19T22:43:59+00:00",
+            "lines_with_missense_or_stop": 716165,
+            "md5": "4befc8dc50ead888e8af24f556c9fdd6",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr10.vcf.bgz"
+          },
+          "chr11": {
+            "bytes": 11641720279,
+            "entries": 1045054,
+            "fetched": "2026-11-19T22:21:20+00:00",
+            "lines_with_missense_or_stop": 1179251,
+            "md5": "3833ce3ab046afe92c9b55df93a61ec8",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr11.vcf.bgz"
+          },
+          "chr12": {
+            "bytes": 10632124827,
+            "entries": 827447,
+            "fetched": "2026-11-19T22:28:45+00:00",
+            "lines_with_missense_or_stop": 954208,
+            "md5": "e530a9ed203cdcc914621ab7430774bb",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr12.vcf.bgz"
+          },
+          "chr13": {
+            "bytes": 3540233028,
+            "entries": 302758,
+            "fetched": "2026-11-19T22:54:02+00:00",
+            "lines_with_missense_or_stop": 330615,
+            "md5": "af1eab40c8be47c8c7c04dc73e0333e4",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz"
+          },
+          "chr14": {
+            "bytes": 6669068987,
+            "entries": 558139,
+            "fetched": "2026-11-19T22:44:08+00:00",
+            "lines_with_missense_or_stop": 632981,
+            "md5": "d0e0fa71d94bf016a061ba4dc0bd869f",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr14.vcf.bgz"
+          },
+          "chr15": {
+            "bytes": 7374290946,
+            "entries": 569405,
+            "fetched": "2026-11-19T22:48:47+00:00",
+            "lines_with_missense_or_stop": 655809,
+            "md5": "01b116e34b3815cfd1d3afa53a29a41b",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr15.vcf.bgz"
+          },
+          "chr16": {
+            "bytes": 9774275728,
+            "entries": 754799,
+            "fetched": "2026-11-19T22:35:25+00:00",
+            "lines_with_missense_or_stop": 940755,
+            "md5": "44137843b2df39c8a654427181bda919",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr16.vcf.bgz"
+          },
+          "chr17": {
+            "bytes": 12017042594,
+            "entries": 950384,
+            "fetched": "2026-11-19T22:05:48+00:00",
+            "lines_with_missense_or_stop": 1122826,
+            "md5": "c61978218ab3eaa07b571eb9959f39d2",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr17.vcf.bgz"
+          },
+          "chr18": {
+            "bytes": 3390375115,
+            "entries": 265123,
+            "fetched": "2026-11-19T22:57:24+00:00",
+            "lines_with_missense_or_stop": 295035,
+            "md5": "1ec708d5cae9657ccee0626763ed9946",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr18.vcf.bgz"
+          },
+          "chr19": {
+            "bytes": 12620525657,
+            "entries": 1203523,
+            "fetched": "2026-11-19T22:07:23+00:00",
+            "lines_with_missense_or_stop": 1506506,
+            "md5": "50a37cfa9a9a3e030388bcf15bdabb79",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr19.vcf.bgz"
+          },
+          "chr2": {
+            "bytes": 14282176877,
+            "entries": 1241220,
+            "fetched": "2026-11-19T22:09:07+00:00",
+            "lines_with_missense_or_stop": 1352975,
+            "md5": "e2f5d891a3374e88d1c3136f94bed0ea",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr2.vcf.bgz"
+          },
+          "chr20": {
+            "bytes": 4760834034,
+            "entries": 433298,
+            "fetched": "2026-11-19T22:54:59+00:00",
+            "lines_with_missense_or_stop": 471260,
+            "md5": "605680cd99e469bdf5f0045bd22359c9",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr20.vcf.bgz"
+          },
+          "chr21": {
+            "bytes": 2250319809,
+            "entries": 208273,
+            "fetched": "2026-11-19T22:56:35+00:00",
+            "lines_with_missense_or_stop": 184553,
+            "md5": "7ca6d51a42425b857eddb46d7bc5832d",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr21.vcf.bgz"
+          },
+          "chr22": {
+            "bytes": 5060347554,
+            "entries": 378718,
+            "fetched": "2026-11-19T22:55:46+00:00",
+            "lines_with_missense_or_stop": 448854,
+            "md5": "dcf191563e69054a71bd4dc77862799a",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr22.vcf.bgz"
+          },
+          "chr3": {
+            "bytes": 11586472818,
+            "entries": 1017387,
+            "fetched": "2026-11-19T22:22:34+00:00",
+            "lines_with_missense_or_stop": 1012860,
+            "md5": "a35b949b32453b4b5abd7b1de42e298a",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr3.vcf.bgz"
+          },
+          "chr4": {
+            "bytes": 7712255367,
+            "entries": 686490,
+            "fetched": "2026-11-19T22:42:44+00:00",
+            "lines_with_missense_or_stop": 723215,
+            "md5": "c7c7008a73acbb8fea68b82951842832",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr4.vcf.bgz"
+          },
+          "chr5": {
+            "bytes": 8494344938,
+            "entries": 751055,
+            "fetched": "2026-11-19T22:32:36+00:00",
+            "lines_with_missense_or_stop": 819954,
+            "md5": "c1016f56be62deb2e947fed4d31302dd",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr5.vcf.bgz"
+          },
+          "chr6": {
+            "bytes": 9132083331,
+            "entries": 843297,
+            "fetched": "2026-11-19T22:21:21+00:00",
+            "lines_with_missense_or_stop": 907345,
+            "md5": "f96bc8711ed085d63b8bd5396664adbc",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr6.vcf.bgz"
+          },
+          "chr7": {
+            "bytes": 9675275184,
+            "entries": 818098,
+            "fetched": "2026-11-19T22:33:46+00:00",
+            "lines_with_missense_or_stop": 946845,
+            "md5": "c41cd52571b001cf7d3e388a668e4dff",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr7.vcf.bgz"
+          },
+          "chr8": {
+            "bytes": 7275385426,
+            "entries": 631411,
+            "fetched": "2026-11-19T22:53:31+00:00",
+            "lines_with_missense_or_stop": 702602,
+            "md5": "a47777fe141c01876cb170f2c2f2e6b6",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr8.vcf.bgz"
+          },
+          "chr9": {
+            "bytes": 8041521990,
+            "entries": 670310,
+            "fetched": "2026-11-19T22:39:21+00:00",
+            "lines_with_missense_or_stop": 800843,
+            "md5": "c5abd4d8aff12f2bf8b4ec844769782f",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr9.vcf.bgz"
+          },
+          "chrX": {
+            "bytes": 5746768174,
+            "entries": 392580,
+            "fetched": "2026-11-19T22:49:24+00:00",
+            "lines_with_missense_or_stop": 482023,
+            "md5": "5b7b17d3d4cff22c20480a908c861a28",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrX.vcf.bgz"
+          },
+          "chrY": {
+            "bytes": 113561604,
+            "entries": 3149,
+            "fetched": "2026-11-19T21:49:59+00:00",
+            "lines_with_missense_or_stop": 6539,
+            "md5": "d500cf5a73c53f02d1b95f1e092f2e49",
+            "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrY.vcf.bgz"
+          }
+        }
+      },
+      "license": "CC0 1.0 (gnomAD primary data, https://github.com/broadinstitute/gnomad-browser/blob/main/browser/about/policies/terms.md); SpliceAI (CC BY-NC 4.0) and CADD (non-commercial) annotations not used",
+      "release": "gnomAD v4.1 exomes (730,947 exomes; files dated 2024-04-17)",
+      "rule": "FILTER PASS; a missense or stop-gained VEP consequence on a transcript UniProt assigns to a reviewed entry's displayed isoform, kept where the 2026_03 canonical sequence has the residue VEP names at the protein position; one row per (entry, position, new residue, variant)"
+    },
+    "per_residue": {
+      "clinvar/K": {
+        "known_sites_changed": 12531,
+        "known_sites_with_pathogenic": 901,
+        "pathogenic_rows": 6025,
+        "pathogenic_rows_at_known_sites": 995,
+        "positions": 81744,
+        "rows": 99522,
+        "rows_at_known_sites": 15986
+      },
+      "clinvar/R": {
+        "known_sites_changed": 4076,
+        "known_sites_with_pathogenic": 328,
+        "pathogenic_rows": 20501,
+        "pathogenic_rows_at_known_sites": 412,
+        "positions": 226113,
+        "rows": 335933,
+        "rows_at_known_sites": 6026
+      },
+      "clinvar/S": {
+        "known_sites_changed": 18079,
+        "known_sites_with_pathogenic": 793,
+        "pathogenic_rows": 8572,
+        "pathogenic_rows_at_known_sites": 947,
+        "positions": 151519,
+        "rows": 186004,
+        "rows_at_known_sites": 23071
+      },
+      "clinvar/T": {
+        "known_sites_changed": 7089,
+        "known_sites_with_pathogenic": 143,
+        "pathogenic_rows": 2621,
+        "pathogenic_rows_at_known_sites": 194,
+        "positions": 117373,
+        "rows": 142865,
+        "rows_at_known_sites": 9048
+      },
+      "clinvar/Y": {
+        "known_sites_changed": 1917,
+        "known_sites_with_pathogenic": 380,
+        "pathogenic_rows": 12099,
+        "pathogenic_rows_at_known_sites": 522,
+        "positions": 50892,
+        "rows": 64910,
+        "rows_at_known_sites": 2645
+      },
+      "gnomad_v4_1/K": {
+        "known_sites_changed": 51960,
+        "positions": 354581,
+        "rows": 517573,
+        "rows_at_known_sites": 75792
+      },
+      "gnomad_v4_1/R": {
+        "known_sites_changed": 9139,
+        "positions": 499128,
+        "rows": 1133321,
+        "rows_at_known_sites": 20550
+      },
+      "gnomad_v4_1/S": {
+        "known_sites_changed": 67421,
+        "positions": 603169,
+        "rows": 965320,
+        "rows_at_known_sites": 108765
+      },
+      "gnomad_v4_1/T": {
+        "known_sites_changed": 22561,
+        "positions": 417050,
+        "rows": 678065,
+        "rows_at_known_sites": 37713
+      },
+      "gnomad_v4_1/Y": {
+        "known_sites_changed": 6405,
+        "positions": 194793,
+        "rows": 307801,
+        "rows_at_known_sites": 10081
+      }
+    },
+    "per_site_set": [
+      {
+        "clinvar_pathogenic_sites": 328,
+        "clinvar_sites_changed": 4076,
+        "depmap_24q4_sites_changed": 849,
+        "gnomad_v4_1_sites_changed": 9139,
+        "label": "Methylarginine (R)",
+        "residues": "R",
+        "set": "methylarginine",
+        "sites": 11632,
+        "tcga_mc3_sites_changed": 3100
+      },
+      {
+        "clinvar_pathogenic_sites": 46,
+        "clinvar_sites_changed": 693,
+        "depmap_24q4_sites_changed": 151,
+        "gnomad_v4_1_sites_changed": 2819,
+        "label": "Methyllysine (K)",
+        "residues": "K",
+        "set": "methyllysine",
+        "sites": 5178,
+        "tcga_mc3_sites_changed": 415
+      },
+      {
+        "clinvar_pathogenic_sites": 866,
+        "clinvar_sites_changed": 12028,
+        "depmap_24q4_sites_changed": 2466,
+        "gnomad_v4_1_sites_changed": 49864,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "residues": "K",
+        "set": "lysine",
+        "sites": 90876,
+        "tcga_mc3_sites_changed": 6984
+      },
+      {
+        "clinvar_pathogenic_sites": 1316,
+        "clinvar_sites_changed": 27085,
+        "depmap_24q4_sites_changed": 5303,
+        "gnomad_v4_1_sites_changed": 96387,
+        "label": "Phosphorylation (S, T, Y)",
+        "residues": "STY",
+        "set": "phospho",
+        "sites": 142415,
+        "tcga_mc3_sites_changed": 15479
+      }
+    ]
+  },
+  "interaction_tables": {
+    "supporting/lysine_nucleic_acid_contacts_v1.7.0.tsv": "42396342cd33056579b9275b809fb698",
+    "supporting/lysine_nucleic_acid_near_sites_v1.7.0.tsv": "094877f6301ad9abbc81dec3f576555b",
+    "supporting/lysine_nucleic_acid_proximal_sites_v1.7.0.tsv": "94a35cd3a3ba14f8e0926ee39fa02ba7",
+    "supporting/lysine_residue_evidence_v1.7.0.tsv": "3ec83b5ca61f35e7c585195bd2226d37",
+    "supporting/lysine_site_interaction_records_v1.7.0.tsv": "3b77e37b995e8339f414be4715e8317e",
+    "supporting/lysine_site_interactions_v1.7.0.tsv": "a90d4ffd4d2a6dd1baaca9eb67d5b1da",
+    "supporting/methylarginine_nucleic_acid_contacts_v1.7.0.tsv": "de303766f58bf0b40acf68f13058e540",
+    "supporting/methylarginine_nucleic_acid_near_sites_v1.7.0.tsv": "a9e94161866c6427fbd274e4af1c07df",
+    "supporting/methylarginine_nucleic_acid_proximal_sites_v1.7.0.tsv": "1f699ba5d969eb071969f49a6dfca92d",
+    "supporting/methylarginine_residue_evidence_v1.7.0.tsv": "8a7764aa518675e594fdaffb4f8c3cc7",
+    "supporting/methylarginine_site_interaction_records_v1.7.0.tsv": "53c485e8980c6c8a3359837a507c5da1",
+    "supporting/methylarginine_site_interactions_v1.7.0.tsv": "6bcf76c1ea443a8fa28a5a71d2d3b15d",
+    "supporting/methyllysine_nucleic_acid_contacts_v1.7.0.tsv": "d0407577e7b5ed6cc8af17524845bbbf",
+    "supporting/methyllysine_nucleic_acid_near_sites_v1.7.0.tsv": "ce5a4c23746a6b39276b95dd8ac7c391",
+    "supporting/methyllysine_nucleic_acid_proximal_sites_v1.7.0.tsv": "619c6e053ca8257af256548ac240bd35",
+    "supporting/methyllysine_residue_evidence_v1.7.0.tsv": "0273c5efa032be7f392c69fe1088cb6a",
+    "supporting/methyllysine_site_interaction_records_v1.7.0.tsv": "09e30963b9f1918efe522642779377f7",
+    "supporting/methyllysine_site_interactions_v1.7.0.tsv": "fc8c592a6e9ff0d2786a83353a71630c",
+    "supporting/phospho_nucleic_acid_contacts_v1.7.0.tsv": "7ebbeb5f5b814a02a0898bdb61e172e9",
+    "supporting/phospho_nucleic_acid_near_sites_v1.7.0.tsv": "72c0401c1516818f7ef267d25df93592",
+    "supporting/phospho_nucleic_acid_proximal_sites_v1.7.0.tsv": "6d1543e508a69c1824892018bfd98c52",
+    "supporting/phospho_residue_evidence_v1.7.0.tsv": "26e70bbf61571f5d24e5704092b3c5e8",
+    "supporting/phospho_site_interaction_records_v1.7.0.tsv": "f1e3fec12479bf2bbdef5a3323edbe00",
+    "supporting/phospho_site_interactions_v1.7.0.tsv": "886d80e5655f6904d57380bb555be5a3"
+  },
+  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access and its supplements carry no license; Hendriks 2017 and Akimov 2018 are not open access and their supplements carry no notice",
+  "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
+  "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
+  "previous_version": "v1.6.0",
+  "propensity": {
+    "controls": [
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "7",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "1.2505",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "2",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "269",
+        "named_change": "K28M",
+        "oe": "1.59936",
+        "p_upper": "0.3558",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "2 changes at the residue; at least 7 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "8",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "1.3899",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "7",
+        "k_named_change": "6",
+        "kind": "oncohistone",
+        "n": "269",
+        "named_change": "K37M",
+        "oe": "5.03634",
+        "p_upper": "0.0005674",
+        "position": 37,
+        "q_upper": "0.01929",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "9",
+        "cohort": "all",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "2.03149",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "4",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "269",
+        "named_change": "G35R/G35V",
+        "oe": "1.969",
+        "p_upper": "0.1479",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "4 changes at the residue; at least 9 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "5",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.460419",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "110",
+        "named_change": "K28M",
+        "oe": "2.17194",
+        "p_upper": "0.3696",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 5 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "5",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.52026",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "5",
+        "k_named_change": "5",
+        "kind": "oncohistone",
+        "n": "110",
+        "named_change": "K37M",
+        "oe": "9.61059",
+        "p_upper": "0.0001918",
+        "position": 37,
+        "q_upper": "0.02609",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "7",
+        "cohort": "no_hypermutated",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.921413",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "110",
+        "named_change": "G35R/G35V",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 7 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "6",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.778023",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "4",
+        "k_named_change": "3",
+        "kind": "oncohistone",
+        "n": "162",
+        "named_change": "K28M",
+        "oe": "5.14123",
+        "p_upper": "0.00807",
+        "position": 28,
+        "q_upper": "0.3659",
+        "reason": "4 changes at the residue; at least 6 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "6",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.828625",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "162",
+        "named_change": "K37M",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 6 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "8",
+        "cohort": "all",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "1.36638",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "162",
+        "named_change": "G35R/G35V",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 8 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "5",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.377836",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "73",
+        "named_change": "K28M",
+        "oe": "2.64665",
+        "p_upper": "0.3153",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 5 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "5",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.402767",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "73",
+        "named_change": "K37M",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 5 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "6",
+        "cohort": "no_hypermutated",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.6457",
+        "family": "every residue of the entry",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "73",
+        "named_change": "G35R/G35V",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 6 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "4",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.171723",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "29",
+        "named_change": "K28M",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 4 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "4",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.170634",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "29",
+        "named_change": "K37M",
+        "oe": "5.8605",
+        "p_upper": "0.1573",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 4 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "4",
+        "cohort": "all",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.28142",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "29",
+        "named_change": "G35R/G35V",
+        "oe": "3.5534",
+        "p_upper": "0.2463",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 4 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "3",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.0854914",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "16",
+        "named_change": "K28M",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 3 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "3",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.0843074",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "16",
+        "named_change": "K37M",
+        "oe": "11.8614",
+        "p_upper": "0.08106",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 3 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "4",
+        "cohort": "no_hypermutated",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.164374",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "16",
+        "named_change": "G35R/G35V",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 4 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "0",
+        "named_change": "K28M",
+        "oe": "",
+        "p_upper": "",
+        "position": 28,
+        "q_upper": "",
+        "reason": "no change at any residue of the entry in this source and cohort",
+        "residue": "K",
+        "residues_tested": "0",
+        "result": "not_tested",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "0",
+        "named_change": "K37M",
+        "oe": "",
+        "p_upper": "",
+        "position": 37,
+        "q_upper": "",
+        "reason": "no change at any residue of the entry in this source and cohort",
+        "residue": "K",
+        "residues_tested": "0",
+        "result": "not_tested",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "all",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "0",
+        "named_change": "G35R/G35V",
+        "oe": "",
+        "p_upper": "",
+        "position": 35,
+        "q_upper": "",
+        "reason": "no change at any residue of the entry in this source and cohort",
+        "residue": "G",
+        "residues_tested": "0",
+        "result": "not_tested",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "0",
+        "named_change": "K28M",
+        "oe": "",
+        "p_upper": "",
+        "position": 28,
+        "q_upper": "",
+        "reason": "no change at any residue of the entry in this source and cohort",
+        "residue": "K",
+        "residues_tested": "0",
+        "result": "not_tested",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "0",
+        "named_change": "K37M",
+        "oe": "",
+        "p_upper": "",
+        "position": 37,
+        "q_upper": "",
+        "reason": "no change at any residue of the entry in this source and cohort",
+        "residue": "K",
+        "residues_tested": "0",
+        "result": "not_tested",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "no_hypermutated",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "",
+        "family": "every residue of the entry",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "0",
+        "kind": "oncohistone",
+        "n": "0",
+        "named_change": "G35R/G35V",
+        "oe": "",
+        "p_upper": "",
+        "position": 35,
+        "q_upper": "",
+        "reason": "no change at any residue of the entry in this source and cohort",
+        "residue": "G",
+        "residues_tested": "0",
+        "result": "not_tested",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "4",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.292345",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "62",
+        "named_change": "K28M",
+        "oe": "3.42062",
+        "p_upper": "0.254",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 4 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "5",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.398159",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "6",
+        "k_named_change": "2",
+        "kind": "oncohistone",
+        "n": "62",
+        "named_change": "K37M",
+        "oe": "15.0694",
+        "p_upper": "3.169e-06",
+        "position": 37,
+        "q_upper": "0.0004309",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "5",
+        "cohort": "all",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.511944",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "4",
+        "k_named_change": "4",
+        "kind": "oncohistone",
+        "n": "62",
+        "named_change": "G35R/G35V",
+        "oe": "7.81336",
+        "p_upper": "0.001771",
+        "position": 35,
+        "q_upper": "0.1204",
+        "reason": "4 changes at the residue; at least 5 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "3",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.116933",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "28",
+        "named_change": "K28M",
+        "oe": "8.55194",
+        "p_upper": "0.1106",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 3 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "4",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.163893",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "3",
+        "k_named_change": "2",
+        "kind": "oncohistone",
+        "n": "28",
+        "named_change": "K37M",
+        "oe": "18.3046",
+        "p_upper": "0.0005888",
+        "position": 37,
+        "q_upper": "0.04004",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "4",
+        "cohort": "no_hypermutated",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.228903",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "4",
+        "k_named_change": "4",
+        "kind": "oncohistone",
+        "n": "28",
+        "named_change": "G35R/G35V",
+        "oe": "17.4746",
+        "p_upper": "7.817e-05",
+        "position": 35,
+        "q_upper": "0.01063",
+        "reason": "q < 0.05",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "3",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.0965065",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "3",
+        "k_named_change": "2",
+        "kind": "oncohistone",
+        "n": "20",
+        "named_change": "K28M",
+        "oe": "31.086",
+        "p_upper": "0.0001204",
+        "position": 28,
+        "q_upper": "0.01638",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "3",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.120106",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "20",
+        "named_change": "K37M",
+        "oe": "8.32598",
+        "p_upper": "0.1135",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 3 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "4",
+        "cohort": "all",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.185748",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "20",
+        "named_change": "G35R/G35V",
+        "oe": "5.38363",
+        "p_upper": "0.1702",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 4 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "3",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.0559618",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "2",
+        "k_named_change": "2",
+        "kind": "oncohistone",
+        "n": "11",
+        "named_change": "K28M",
+        "oe": "35.7387",
+        "p_upper": "0.001381",
+        "position": 28,
+        "q_upper": "0.1878",
+        "reason": "2 changes at the residue; at least 3 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "3",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.0695954",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "11",
+        "named_change": "K37M",
+        "oe": "14.3688",
+        "p_upper": "0.06744",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 3 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "3",
+        "cohort": "no_hypermutated",
+        "control": "H3G34R/V (UniProt G35)",
+        "expected": "0.101963",
+        "family": "every residue of the entry",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "1",
+        "kind": "oncohistone",
+        "n": "11",
+        "named_change": "G35R/G35V",
+        "oe": "9.80749",
+        "p_upper": "0.09737",
+        "position": 35,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 3 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "G",
+        "residues_tested": "136",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "O75874",
+        "changes_needed": "13",
+        "cohort": "all",
+        "control": "IDH1 R132",
+        "expected": "53.4221",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH1",
+        "k": "459",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "466",
+        "named_change": "",
+        "oe": "8.59195",
+        "p_upper": "0",
+        "position": 132,
+        "q_upper": "0",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "575198",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P48735",
+        "changes_needed": "6",
+        "cohort": "all",
+        "control": "IDH2 R172",
+        "expected": "0.392092",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH2",
+        "k": "26",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "35",
+        "named_change": "",
+        "oe": "66.311",
+        "p_upper": "1.227e-43",
+        "position": 172,
+        "q_upper": "1.411e-38",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "575198",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "94",
+        "cohort": "all",
+        "control": "TP53 R175",
+        "expected": "55.668",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "154",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "1140",
+        "named_change": "",
+        "oe": "2.7664",
+        "p_upper": "2.301e-29",
+        "position": 175,
+        "q_upper": "1.47e-24",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "575198",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "63",
+        "cohort": "all",
+        "control": "TP53 R248",
+        "expected": "34.6524",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "207",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "1140",
+        "named_change": "",
+        "oe": "5.97361",
+        "p_upper": "3.596e-94",
+        "position": 248,
+        "q_upper": "1.034e-88",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "575198",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "88",
+        "cohort": "all",
+        "control": "TP53 R273",
+        "expected": "55.736",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "252",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "1140",
+        "named_change": "",
+        "oe": "4.52131",
+        "p_upper": "2.649e-90",
+        "position": 273,
+        "q_upper": "5.079e-85",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "575198",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P60484",
+        "changes_needed": "37",
+        "cohort": "all",
+        "control": "PTEN R130",
+        "expected": "21.1827",
+        "family": "arginines of every protein (R)",
+        "gene": "PTEN",
+        "k": "98",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "191",
+        "named_change": "",
+        "oe": "4.62641",
+        "p_upper": "8.718e-43",
+        "position": 130,
+        "q_upper": "8.357e-38",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "575198",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q969H0",
+        "changes_needed": "24",
+        "cohort": "all",
+        "control": "FBXW7 R465",
+        "expected": "7.70967",
+        "family": "arginines of every protein (R)",
+        "gene": "FBXW7",
+        "k": "59",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "220",
+        "named_change": "",
+        "oe": "7.65273",
+        "p_upper": "1.044e-34",
+        "position": 465,
+        "q_upper": "8.578e-30",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "575198",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "O75533",
+        "changes_needed": "6",
+        "cohort": "all",
+        "control": "SF3B1 K700",
+        "expected": "0.290185",
+        "family": "lysines of every protein (K)",
+        "gene": "SF3B1",
+        "k": "14",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "33",
+        "named_change": "",
+        "oe": "48.2451",
+        "p_upper": "1.157e-20",
+        "position": 700,
+        "q_upper": "1.835e-15",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "546770",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "17",
+        "cohort": "all",
+        "control": "CTNNB1 S37",
+        "expected": "3.79707",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "42",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "130",
+        "named_change": "",
+        "oe": "11.0612",
+        "p_upper": "6.927e-32",
+        "position": 37,
+        "q_upper": "9.704e-27",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "840495",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "17",
+        "cohort": "all",
+        "control": "CTNNB1 S45",
+        "expected": "3.79707",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "40",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "130",
+        "named_change": "",
+        "oe": "10.5344",
+        "p_upper": "1.653e-29",
+        "position": 45,
+        "q_upper": "1.985e-24",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "840495",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q01081",
+        "changes_needed": "7",
+        "cohort": "all",
+        "control": "U2AF1 S34",
+        "expected": "1.94322",
+        "family": "serines of every protein (S)",
+        "gene": "U2AF1",
+        "k": "30",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "31",
+        "named_change": "",
+        "oe": "15.4383",
+        "p_upper": "2.393e-35",
+        "position": 34,
+        "q_upper": "5.029e-30",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "840495",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P22607",
+        "changes_needed": "7",
+        "cohort": "all",
+        "control": "FGFR3 S249",
+        "expected": "0.750391",
+        "family": "serines of every protein (S)",
+        "gene": "FGFR3",
+        "k": "41",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "55",
+        "named_change": "",
+        "oe": "54.6382",
+        "p_upper": "1.228e-64",
+        "position": 249,
+        "q_upper": "5.161e-59",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "840495",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04626",
+        "changes_needed": "7",
+        "cohort": "all",
+        "control": "ERBB2 S310",
+        "expected": "0.814226",
+        "family": "serines of every protein (S)",
+        "gene": "ERBB2",
+        "k": "44",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "58",
+        "named_change": "",
+        "oe": "54.039",
+        "p_upper": "2.536e-69",
+        "position": 310,
+        "q_upper": "2.131e-63",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "840495",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "17",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "2.10362",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "2",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "19",
+        "named_change": "",
+        "oe": "0.950743",
+        "p_upper": "0.6379",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "2 changes at the residue; at least 17 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "546770",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "15",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "2.33812",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "7",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "19",
+        "named_change": "",
+        "oe": "2.99386",
+        "p_upper": "0.005578",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "7 changes at the residue; at least 15 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "546770",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "11",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.385007",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "3",
+        "named_change": "",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 11 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "546770",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "10",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.382564",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "3",
+        "named_change": "",
+        "oe": "2.61394",
+        "p_upper": "0.3359",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 10 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "546770",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "13",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "1.0448",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "10",
+        "named_change": "",
+        "oe": "0.95712",
+        "p_upper": "0.6683",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 13 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "546770",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "12",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "1.42297",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "6",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "10",
+        "named_change": "",
+        "oe": "4.21654",
+        "p_upper": "0.001039",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "6 changes at the residue; at least 12 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "546770",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "O75874",
+        "changes_needed": "8",
+        "cohort": "no_hypermutated",
+        "control": "IDH1 R132",
+        "expected": "46.6491",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH1",
+        "k": "442",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "442",
+        "named_change": "",
+        "oe": "9.47499",
+        "p_upper": "0",
+        "position": 132,
+        "q_upper": "0",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "527240",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P48735",
+        "changes_needed": "5",
+        "cohort": "no_hypermutated",
+        "control": "IDH2 R172",
+        "expected": "0.336177",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH2",
+        "k": "26",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "33",
+        "named_change": "",
+        "oe": "77.3402",
+        "p_upper": "6.458e-46",
+        "position": 172,
+        "q_upper": "8.512e-41",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "527240",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "77",
+        "cohort": "no_hypermutated",
+        "control": "TP53 R175",
+        "expected": "42.7489",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "133",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "932",
+        "named_change": "",
+        "oe": "3.11119",
+        "p_upper": "1.971e-30",
+        "position": 175,
+        "q_upper": "1.484e-25",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "527240",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "61",
+        "cohort": "no_hypermutated",
+        "control": "TP53 R248",
+        "expected": "33.4394",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "185",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "932",
+        "named_change": "",
+        "oe": "5.5324",
+        "p_upper": "1.191e-79",
+        "position": 248,
+        "q_upper": "3.139e-74",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "527240",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "82",
+        "cohort": "no_hypermutated",
+        "control": "TP53 R273",
+        "expected": "51.7067",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "218",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "932",
+        "named_change": "",
+        "oe": "4.21609",
+        "p_upper": "1.882e-73",
+        "position": 273,
+        "q_upper": "3.308e-68",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "527240",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P60484",
+        "changes_needed": "21",
+        "cohort": "no_hypermutated",
+        "control": "PTEN R130",
+        "expected": "8.75569",
+        "family": "arginines of every protein (R)",
+        "gene": "PTEN",
+        "k": "49",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "81",
+        "named_change": "",
+        "oe": "5.59636",
+        "p_upper": "4.576e-27",
+        "position": 130,
+        "q_upper": "3.016e-22",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "527240",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q969H0",
+        "changes_needed": "20",
+        "cohort": "no_hypermutated",
+        "control": "FBXW7 R465",
+        "expected": "5.34761",
+        "family": "arginines of every protein (R)",
+        "gene": "FBXW7",
+        "k": "34",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "123",
+        "named_change": "",
+        "oe": "6.35798",
+        "p_upper": "2.705e-18",
+        "position": 465,
+        "q_upper": "9.509e-14",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "527240",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "O75533",
+        "changes_needed": "6",
+        "cohort": "no_hypermutated",
+        "control": "SF3B1 K700",
+        "expected": "0.264196",
+        "family": "lysines of every protein (K)",
+        "gene": "SF3B1",
+        "k": "14",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "27",
+        "named_change": "",
+        "oe": "52.9909",
+        "p_upper": "1.313e-21",
+        "position": 700,
+        "q_upper": "3.269e-16",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "393824",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "15",
+        "cohort": "no_hypermutated",
+        "control": "CTNNB1 S37",
+        "expected": "2.84429",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "35",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "111",
+        "named_change": "",
+        "oe": "12.3054",
+        "p_upper": "2.675e-28",
+        "position": 37,
+        "q_upper": "3.227e-23",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "723898",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "15",
+        "cohort": "no_hypermutated",
+        "control": "CTNNB1 S45",
+        "expected": "2.84429",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "33",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "111",
+        "named_change": "",
+        "oe": "11.6022",
+        "p_upper": "7.702e-26",
+        "position": 45,
+        "q_upper": "7.965e-21",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "723898",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q01081",
+        "changes_needed": "6",
+        "cohort": "no_hypermutated",
+        "control": "U2AF1 S34",
+        "expected": "1.34317",
+        "family": "serines of every protein (S)",
+        "gene": "U2AF1",
+        "k": "23",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "23",
+        "named_change": "",
+        "oe": "17.1236",
+        "p_upper": "4.239e-29",
+        "position": 34,
+        "q_upper": "6.138e-24",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "723898",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P22607",
+        "changes_needed": "6",
+        "cohort": "no_hypermutated",
+        "control": "FGFR3 S249",
+        "expected": "0.533898",
+        "family": "serines of every protein (S)",
+        "gene": "FGFR3",
+        "k": "29",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "37",
+        "named_change": "",
+        "oe": "54.3175",
+        "p_upper": "1.433e-46",
+        "position": 249,
+        "q_upper": "1.038e-40",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "723898",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P04626",
+        "changes_needed": "6",
+        "cohort": "no_hypermutated",
+        "control": "ERBB2 S310",
+        "expected": "0.384052",
+        "family": "serines of every protein (S)",
+        "gene": "ERBB2",
+        "k": "21",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "28",
+        "named_change": "",
+        "oe": "54.6801",
+        "p_upper": "8.226e-34",
+        "position": 310,
+        "q_upper": "1.985e-28",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "723898",
+        "result": "pass",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "12",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "1.00436",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "11",
+        "named_change": "",
+        "oe": "0.995657",
+        "p_upper": "0.6512",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 12 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "393824",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "11",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "1.1349",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "5",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "11",
+        "named_change": "",
+        "oe": "4.40568",
+        "p_upper": "0.003162",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "5 changes at the residue; at least 11 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "393824",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "9",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.213665",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "0",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "2",
+        "named_change": "",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 9 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "393824",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "8",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.210706",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "2",
+        "named_change": "",
+        "oe": "4.74595",
+        "p_upper": "0.1996",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 8 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "393824",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "10",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.541454",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "6",
+        "named_change": "",
+        "oe": "1.84688",
+        "p_upper": "0.433",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 10 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "393824",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "11",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.758905",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "3",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "6",
+        "named_change": "",
+        "oe": "3.95306",
+        "p_upper": "0.03008",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "3 changes at the residue; at least 11 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "393824",
+        "result": "fail",
+        "source": "tcga_mc3"
+      },
+      {
+        "canonical_UniProtAC": "O75874",
+        "changes_needed": "8",
+        "cohort": "all",
+        "control": "IDH1 R132",
+        "expected": "1.06783",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH1",
+        "k": "11",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "12",
+        "named_change": "",
+        "oe": "10.3013",
+        "p_upper": "3.053e-11",
+        "position": 132,
+        "q_upper": "5.746e-07",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "451714",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P48735",
+        "changes_needed": "5",
+        "cohort": "all",
+        "control": "IDH2 R172",
+        "expected": "0.0661306",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH2",
+        "k": "3",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "3",
+        "named_change": "",
+        "oe": "45.3648",
+        "p_upper": "1.071e-05",
+        "position": 172,
+        "q_upper": "0.04652",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "451714",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "49",
+        "cohort": "all",
+        "control": "TP53 R175",
+        "expected": "20.9221",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "44",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "391",
+        "named_change": "",
+        "oe": "2.10304",
+        "p_upper": "3.51e-06",
+        "position": 175,
+        "q_upper": "0.02114",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "451714",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "31",
+        "cohort": "all",
+        "control": "TP53 R248",
+        "expected": "12.7826",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "105",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "391",
+        "named_change": "",
+        "oe": "8.21426",
+        "p_upper": "2.415e-63",
+        "position": 248,
+        "q_upper": "2.728e-58",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "451714",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "39",
+        "cohort": "all",
+        "control": "TP53 R273",
+        "expected": "17.757",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "96",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "391",
+        "named_change": "",
+        "oe": "5.40631",
+        "p_upper": "3.31e-42",
+        "position": 273,
+        "q_upper": "1.661e-37",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "451714",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P60484",
+        "changes_needed": "16",
+        "cohort": "all",
+        "control": "PTEN R130",
+        "expected": "3.1175",
+        "family": "arginines of every protein (R)",
+        "gene": "PTEN",
+        "k": "16",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "43",
+        "named_change": "",
+        "oe": "5.13233",
+        "p_upper": "2.308e-08",
+        "position": 130,
+        "q_upper": "0.0002606",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "451714",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q969H0",
+        "changes_needed": "13",
+        "cohort": "all",
+        "control": "FBXW7 R465",
+        "expected": "1.94069",
+        "family": "arginines of every protein (R)",
+        "gene": "FBXW7",
+        "k": "14",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "56",
+        "named_change": "",
+        "oe": "7.21393",
+        "p_upper": "5.282e-09",
+        "position": 465,
+        "q_upper": "7.017e-05",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "451714",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "O75533",
+        "changes_needed": "5",
+        "cohort": "all",
+        "control": "SF3B1 K700",
+        "expected": "0.103541",
+        "family": "lysines of every protein (K)",
+        "gene": "SF3B1",
+        "k": "3",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "11",
+        "named_change": "",
+        "oe": "28.9741",
+        "p_upper": "0.00013",
+        "position": 700,
+        "q_upper": "0.3961",
+        "reason": "3 changes at the residue; at least 5 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "386888",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "8",
+        "cohort": "all",
+        "control": "CTNNB1 S37",
+        "expected": "0.548852",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "9",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "23",
+        "named_change": "",
+        "oe": "16.3979",
+        "p_upper": "1.514e-09",
+        "position": 37,
+        "q_upper": "2.027e-05",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "655992",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "8",
+        "cohort": "all",
+        "control": "CTNNB1 S45",
+        "expected": "0.548852",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "7",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "23",
+        "named_change": "",
+        "oe": "12.7539",
+        "p_upper": "7.714e-07",
+        "position": 45,
+        "q_upper": "0.004913",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "655992",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q01081",
+        "changes_needed": "",
+        "cohort": "all",
+        "control": "U2AF1 S34",
+        "expected": "",
+        "family": "serines of every protein (S)",
+        "gene": "U2AF1",
+        "k": "",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "",
+        "named_change": "",
+        "oe": "",
+        "p_upper": "",
+        "position": 34,
+        "q_upper": "",
+        "reason": "not tested: no change on the protein's residues of this type, or no coding sequence",
+        "residue": "S",
+        "residues_tested": "",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P22607",
+        "changes_needed": "5",
+        "cohort": "all",
+        "control": "FGFR3 S249",
+        "expected": "0.105377",
+        "family": "serines of every protein (S)",
+        "gene": "FGFR3",
+        "k": "4",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "7",
+        "named_change": "",
+        "oe": "37.959",
+        "p_upper": "1.733e-06",
+        "position": 249,
+        "q_upper": "0.009475",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "655992",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04626",
+        "changes_needed": "6",
+        "cohort": "all",
+        "control": "ERBB2 S310",
+        "expected": "0.137495",
+        "family": "serines of every protein (S)",
+        "gene": "ERBB2",
+        "k": "5",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "10",
+        "named_change": "",
+        "oe": "36.3649",
+        "p_upper": "1.169e-07",
+        "position": 310,
+        "q_upper": "0.000913",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "655992",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "12",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "1.30569",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "4",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "15",
+        "named_change": "",
+        "oe": "3.06351",
+        "p_upper": "0.0359",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "4 changes at the residue; at least 12 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "386888",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "14",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "1.39061",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "0",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "15",
+        "named_change": "",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 14 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "386888",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "",
+        "named_change": "",
+        "oe": "",
+        "p_upper": "",
+        "position": 28,
+        "q_upper": "",
+        "reason": "not tested: no change on the protein's residues of this type, or no coding sequence",
+        "residue": "K",
+        "residues_tested": "",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "",
+        "named_change": "",
+        "oe": "",
+        "p_upper": "",
+        "position": 37,
+        "q_upper": "",
+        "reason": "not tested: no change on the protein's residues of this type, or no coding sequence",
+        "residue": "K",
+        "residues_tested": "",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "9",
+        "cohort": "all",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.521576",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "3",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "6",
+        "named_change": "",
+        "oe": "5.7518",
+        "p_upper": "0.01074",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "3 changes at the residue; at least 9 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "386888",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "11",
+        "cohort": "all",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.649121",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "6",
+        "named_change": "",
+        "oe": "1.54055",
+        "p_upper": "0.4969",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 11 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "386888",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "O75874",
+        "changes_needed": "7",
+        "cohort": "no_hypermutated",
+        "control": "IDH1 R132",
+        "expected": "0.898938",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH1",
+        "k": "10",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "10",
+        "named_change": "",
+        "oe": "11.1242",
+        "p_upper": "3.446e-11",
+        "position": 132,
+        "q_upper": "5.081e-07",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "324402",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P48735",
+        "changes_needed": "5",
+        "cohort": "no_hypermutated",
+        "control": "IDH2 R172",
+        "expected": "0.0688509",
+        "family": "arginines of every protein (R)",
+        "gene": "IDH2",
+        "k": "3",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "3",
+        "named_change": "",
+        "oe": "43.5724",
+        "p_upper": "1.209e-05",
+        "position": 172,
+        "q_upper": "0.05683",
+        "reason": "3 changes at the residue; at least 5 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "R",
+        "residues_tested": "324402",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "34",
+        "cohort": "no_hypermutated",
+        "control": "TP53 R175",
+        "expected": "12.1427",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "30",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "266",
+        "named_change": "",
+        "oe": "2.47062",
+        "p_upper": "5.901e-06",
+        "position": 175,
+        "q_upper": "0.0348",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "324402",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "27",
+        "cohort": "no_hypermutated",
+        "control": "TP53 R248",
+        "expected": "10.2434",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "77",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "266",
+        "named_change": "",
+        "oe": "7.51702",
+        "p_upper": "1.406e-44",
+        "position": 248,
+        "q_upper": "9.124e-40",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "324402",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04637",
+        "changes_needed": "30",
+        "cohort": "no_hypermutated",
+        "control": "TP53 R273",
+        "expected": "11.4293",
+        "family": "arginines of every protein (R)",
+        "gene": "TP53",
+        "k": "60",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "266",
+        "named_change": "",
+        "oe": "5.24965",
+        "p_upper": "3.714e-26",
+        "position": 273,
+        "q_upper": "1.205e-21",
+        "reason": "q < 0.05",
+        "residue": "R",
+        "residues_tested": "324402",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P60484",
+        "changes_needed": "12",
+        "cohort": "no_hypermutated",
+        "control": "PTEN R130",
+        "expected": "1.14854",
+        "family": "arginines of every protein (R)",
+        "gene": "PTEN",
+        "k": "4",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "16",
+        "named_change": "",
+        "oe": "3.4827",
+        "p_upper": "0.02402",
+        "position": 130,
+        "q_upper": "1",
+        "reason": "4 changes at the residue; at least 12 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "R",
+        "residues_tested": "324402",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q969H0",
+        "changes_needed": "9",
+        "cohort": "no_hypermutated",
+        "control": "FBXW7 R465",
+        "expected": "0.657448",
+        "family": "arginines of every protein (R)",
+        "gene": "FBXW7",
+        "k": "5",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "21",
+        "named_change": "",
+        "oe": "7.60517",
+        "p_upper": "0.0004019",
+        "position": 465,
+        "q_upper": "0.6958",
+        "reason": "5 changes at the residue; at least 9 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "R",
+        "residues_tested": "324402",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "O75533",
+        "changes_needed": "4",
+        "cohort": "no_hypermutated",
+        "control": "SF3B1 K700",
+        "expected": "0.0398995",
+        "family": "lysines of every protein (K)",
+        "gene": "SF3B1",
+        "k": "3",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "4",
+        "named_change": "",
+        "oe": "75.1889",
+        "p_upper": "3.94e-06",
+        "position": 700,
+        "q_upper": "0.02664",
+        "reason": "q < 0.05",
+        "residue": "K",
+        "residues_tested": "243360",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "7",
+        "cohort": "no_hypermutated",
+        "control": "CTNNB1 S37",
+        "expected": "0.253227",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "4",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "11",
+        "named_change": "",
+        "oe": "15.7961",
+        "p_upper": "8.14e-05",
+        "position": 37,
+        "q_upper": "0.2772",
+        "reason": "4 changes at the residue; at least 7 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "S",
+        "residues_tested": "476782",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P35222",
+        "changes_needed": "7",
+        "cohort": "no_hypermutated",
+        "control": "CTNNB1 S45",
+        "expected": "0.253227",
+        "family": "serines of every protein (S)",
+        "gene": "CTNNB1",
+        "k": "4",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "11",
+        "named_change": "",
+        "oe": "15.7961",
+        "p_upper": "8.14e-05",
+        "position": 45,
+        "q_upper": "0.2772",
+        "reason": "4 changes at the residue; at least 7 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "S",
+        "residues_tested": "476782",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q01081",
+        "changes_needed": "",
+        "cohort": "no_hypermutated",
+        "control": "U2AF1 S34",
+        "expected": "",
+        "family": "serines of every protein (S)",
+        "gene": "U2AF1",
+        "k": "",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "",
+        "named_change": "",
+        "oe": "",
+        "p_upper": "",
+        "position": 34,
+        "q_upper": "",
+        "reason": "not tested: no change on the protein's residues of this type, or no coding sequence",
+        "residue": "S",
+        "residues_tested": "",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P22607",
+        "changes_needed": "5",
+        "cohort": "no_hypermutated",
+        "control": "FGFR3 S249",
+        "expected": "0.0738873",
+        "family": "serines of every protein (S)",
+        "gene": "FGFR3",
+        "k": "3",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "5",
+        "named_change": "",
+        "oe": "40.6024",
+        "p_upper": "3.156e-05",
+        "position": 249,
+        "q_upper": "0.1375",
+        "reason": "3 changes at the residue; at least 5 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "S",
+        "residues_tested": "476782",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P04626",
+        "changes_needed": "4",
+        "cohort": "no_hypermutated",
+        "control": "ERBB2 S310",
+        "expected": "0.0664205",
+        "family": "serines of every protein (S)",
+        "gene": "ERBB2",
+        "k": "5",
+        "k_named_change": "",
+        "kind": "recurrent hotspot",
+        "n": "5",
+        "named_change": "",
+        "oe": "75.278",
+        "p_upper": "4.137e-10",
+        "position": 310,
+        "q_upper": "4.811e-06",
+        "reason": "q < 0.05",
+        "residue": "S",
+        "residues_tested": "476782",
+        "result": "pass",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "10",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.657523",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "8",
+        "named_change": "",
+        "oe": "1.52086",
+        "p_upper": "0.4965",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 10 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "243360",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P68431",
+        "changes_needed": "11",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.700908",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C1;H3C10;H3C11;H3C12;H3C2;H3C3;H3C4;H3C6;H3C7;H3C8",
+        "k": "0",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "8",
+        "named_change": "",
+        "oe": "0",
+        "p_upper": "1",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "0 changes at the residue; at least 11 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "243360",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "",
+        "named_change": "",
+        "oe": "",
+        "p_upper": "",
+        "position": 28,
+        "q_upper": "",
+        "reason": "not tested: no change on the protein's residues of this type, or no coding sequence",
+        "residue": "K",
+        "residues_tested": "",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "Q71DI3",
+        "changes_needed": "",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "",
+        "family": "lysines of every protein (K)",
+        "gene": "H3C13;H3C14;H3C15",
+        "k": "",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "",
+        "named_change": "",
+        "oe": "",
+        "p_upper": "",
+        "position": 37,
+        "q_upper": "",
+        "reason": "not tested: no change on the protein's residues of this type, or no coding sequence",
+        "residue": "K",
+        "residues_tested": "",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "7",
+        "cohort": "no_hypermutated",
+        "control": "H3K27M (UniProt K28)",
+        "expected": "0.247673",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "2",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "3",
+        "named_change": "",
+        "oe": "8.07516",
+        "p_upper": "0.01932",
+        "position": 28,
+        "q_upper": "1",
+        "reason": "2 changes at the residue; at least 7 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "243360",
+        "result": "fail",
+        "source": "depmap_24q4"
+      },
+      {
+        "canonical_UniProtAC": "P84243",
+        "changes_needed": "9",
+        "cohort": "no_hypermutated",
+        "control": "H3K36M (UniProt K37)",
+        "expected": "0.308012",
+        "family": "lysines of every protein (K)",
+        "gene": "H3-3A;H3-3B",
+        "k": "1",
+        "k_named_change": "",
+        "kind": "oncohistone",
+        "n": "3",
+        "named_change": "",
+        "oe": "3.24663",
+        "p_upper": "0.2775",
+        "position": 37,
+        "q_upper": "1",
+        "reason": "1 change at the residue; at least 9 would pass at this n (p <= 0.05 / residues tested)",
+        "residue": "K",
+        "residues_tested": "243360",
+        "result": "fail",
+        "source": "depmap_24q4"
+      }
+    ],
+    "entries": 20416,
+    "entries_with_weights": 18717,
+    "files": {
+      "supporting/group_denominators_v1.7.0.tsv": {
+        "md5": "616f018232a9bd42f31c817b1ee96085",
+        "rows": 66
+      },
+      "supporting/mutation_rates_v1.7.0.tsv": {
+        "md5": "6229a9e221bd075d12c213ae1b5fe9af",
+        "rows": 488
+      },
+      "supporting/propensity_controls_v1.7.0.tsv": {
+        "md5": "efc62a64c21d6e55d74a5bbd8cb2b855",
+        "rows": 112
+      },
+      "supporting/propensity_validation_v1.7.0.tsv": {
+        "md5": "d23ba41d8765944f47203c5cecd66b62",
+        "rows": 4
+      },
+      "supporting/sample_burden_v1.7.0.tsv": {
+        "from": "inputs/layers/propensity_sample_burden.tsv",
+        "md5": "53b848b583f3f936d2684635b256257d",
+        "rows": 12223
+      },
+      "supporting/site_frequency_by_group_v1.7.0.tsv.gz": {
+        "bytes": 3506011,
+        "md5": "21a96268066cb3201aae0d3b65b044f8",
+        "rows": 670792
+      },
+      "supporting/site_propensity_clinvar_v1.7.0.tsv.gz": {
+        "bytes": 14533358,
+        "md5": "ee4e83add6b9c3c0bb80d454d9c980bf",
+        "rows": 832696
+      },
+      "supporting/site_propensity_depmap_24q4_v1.7.0.tsv.gz": {
+        "bytes": 8916080,
+        "md5": "30890b37de4d4c40e2b74017cb86ae23",
+        "rows": 375117
+      },
+      "supporting/site_propensity_gnomad_v4_1_v1.7.0.tsv.gz": {
+        "bytes": 41405565,
+        "md5": "50803fa53cb343d3c177bff23ddfce05",
+        "rows": 2159982
+      },
+      "supporting/site_propensity_tcga_mc3_v1.7.0.tsv.gz": {
+        "bytes": 18099713,
+        "md5": "d9a3dad9dab086ccbe864840bda4c26c",
+        "rows": 656621
+      },
+      "supporting/site_set_propensity_v1.7.0.tsv": {
+        "md5": "2da4aabc358b729659f551aa34179127",
+        "rows": 36
+      }
+    },
+    "germline_rates": "gnomAD mutation_rate_methylation_bins (gs://gcp-public-data--gnomad/papers/2019-flagship-lof/v1.0/model/mutation_rate_methylation_bins.txt.bgz; the gnomAD v2.1.1 flagship paper, Karczewski et al., Nature 581:434, 2020; CC0)",
+    "hypermutated": {
+      "citation": "Campbell et al., Cell 171:1042 (2017), doi:10.1016/j.cell.2017.09.048",
+      "coding_mb": 32.3013,
+      "depmap_24q4": 449,
+      "tcga_mc3": 1298,
+      "threshold_per_mb": 10
+    },
+    "iterations": 10000,
+    "per_source_residue": {
+      "clinvar/K": {
+        "all": {
+          "candidate_residues": 654179,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_upper_below_0_05": 1,
+          "tested": 547931,
+          "with_change": 81744
+        },
+        "rows": 163913
+      },
+      "clinvar/R": {
+        "all": {
+          "candidate_residues": 642991,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_upper_below_0_05": 8,
+          "tested": 575136,
+          "with_change": 226113
+        },
+        "rows": 233669
+      },
+      "clinvar/S": {
+        "all": {
+          "candidate_residues": 953038,
+          "known_sites_q_upper_below_0_05": 1,
+          "q_upper_below_0_05": 6,
+          "tested": 831775,
+          "with_change": 151519
+        },
+        "rows": 234566
+      },
+      "clinvar/T": {
+        "all": {
+          "candidate_residues": 613855,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_upper_below_0_05": 0,
+          "tested": 524884,
+          "with_change": 117373
+        },
+        "rows": 141454
+      },
+      "clinvar/Y": {
+        "all": {
+          "candidate_residues": 303598,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_upper_below_0_05": 0,
+          "tested": 235449,
+          "with_change": 50892
+        },
+        "rows": 59094
+      },
+      "depmap_24q4/K": {
+        "all": {
+          "candidate_residues": 654179,
+          "known_sites_q_upper_below_0_05": 11,
+          "q_upper_below_0_05": 55,
+          "tested": 386888,
+          "with_change": 18961
+        },
+        "no_hypermutated": {
+          "candidate_residues": 654179,
+          "known_sites_q_upper_below_0_05": 4,
+          "q_upper_below_0_05": 40,
+          "tested": 243360,
+          "with_change": 6679
+        },
+        "rows": 111095
+      },
+      "depmap_24q4/R": {
+        "all": {
+          "candidate_residues": 642991,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_upper_below_0_05": 108,
+          "tested": 451714,
+          "with_change": 44657
+        },
+        "no_hypermutated": {
+          "candidate_residues": 642991,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_upper_below_0_05": 66,
+          "tested": 324402,
+          "with_change": 13911
+        },
+        "rows": 55440
+      },
+      "depmap_24q4/S": {
+        "all": {
+          "candidate_residues": 953038,
+          "known_sites_q_upper_below_0_05": 19,
+          "q_upper_below_0_05": 181,
+          "tested": 655992,
+          "with_change": 39102
+        },
+        "no_hypermutated": {
+          "candidate_residues": 953038,
+          "known_sites_q_upper_below_0_05": 8,
+          "q_upper_below_0_05": 95,
+          "tested": 476782,
+          "with_change": 13323
+        },
+        "rows": 136448
+      },
+      "depmap_24q4/T": {
+        "all": {
+          "candidate_residues": 613855,
+          "known_sites_q_upper_below_0_05": 8,
+          "q_upper_below_0_05": 143,
+          "tested": 360913,
+          "with_change": 20489
+        },
+        "no_hypermutated": {
+          "candidate_residues": 613855,
+          "known_sites_q_upper_below_0_05": 3,
+          "q_upper_below_0_05": 91,
+          "tested": 232691,
+          "with_change": 7500
+        },
+        "rows": 50571
+      },
+      "depmap_24q4/Y": {
+        "all": {
+          "candidate_residues": 303598,
+          "known_sites_q_upper_below_0_05": 1,
+          "q_upper_below_0_05": 30,
+          "tested": 150347,
+          "with_change": 11879
+        },
+        "no_hypermutated": {
+          "candidate_residues": 303598,
+          "known_sites_q_upper_below_0_05": 1,
+          "q_upper_below_0_05": 10,
+          "tested": 75141,
+          "with_change": 3856
+        },
+        "rows": 21563
+      },
+      "gnomad_v4_1/K": {
+        "all": {
+          "candidate_residues": 654179,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_lower_below_0_05": 0,
+          "q_upper_below_0_05": 0,
+          "tested": 614937,
+          "with_change": 354581
+        },
+        "rows": 397321
+      },
+      "gnomad_v4_1/R": {
+        "all": {
+          "candidate_residues": 642991,
+          "known_sites_q_upper_below_0_05": 5,
+          "q_lower_below_0_05": 1,
+          "q_upper_below_0_05": 76,
+          "tested": 601257,
+          "with_change": 499128
+        },
+        "rows": 501621
+      },
+      "gnomad_v4_1/S": {
+        "all": {
+          "candidate_residues": 953038,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_lower_below_0_05": 0,
+          "q_upper_below_0_05": 1,
+          "tested": 888113,
+          "with_change": 603169
+        },
+        "rows": 636874
+      },
+      "gnomad_v4_1/T": {
+        "all": {
+          "candidate_residues": 613855,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_lower_below_0_05": 0,
+          "q_upper_below_0_05": 0,
+          "tested": 567902,
+          "with_change": 417050
+        },
+        "rows": 425659
+      },
+      "gnomad_v4_1/Y": {
+        "all": {
+          "candidate_residues": 303598,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_lower_below_0_05": 0,
+          "q_upper_below_0_05": 1,
+          "tested": 284658,
+          "with_change": 194793
+        },
+        "rows": 198507
+      },
+      "tcga_mc3/K": {
+        "all": {
+          "candidate_residues": 654179,
+          "known_sites_q_upper_below_0_05": 3,
+          "q_upper_below_0_05": 15,
+          "tested": 546770,
+          "with_change": 55672
+        },
+        "no_hypermutated": {
+          "candidate_residues": 654179,
+          "known_sites_q_upper_below_0_05": 2,
+          "q_upper_below_0_05": 10,
+          "tested": 393824,
+          "with_change": 16148
+        },
+        "rows": 143077
+      },
+      "tcga_mc3/R": {
+        "all": {
+          "candidate_residues": 642991,
+          "known_sites_q_upper_below_0_05": 2,
+          "q_upper_below_0_05": 222,
+          "tested": 575198,
+          "with_change": 180641
+        },
+        "no_hypermutated": {
+          "candidate_residues": 642991,
+          "known_sites_q_upper_below_0_05": 1,
+          "q_upper_below_0_05": 46,
+          "tested": 527240,
+          "with_change": 59248
+        },
+        "rows": 189173
+      },
+      "tcga_mc3/S": {
+        "all": {
+          "candidate_residues": 953038,
+          "known_sites_q_upper_below_0_05": 14,
+          "q_upper_below_0_05": 103,
+          "tested": 840495,
+          "with_change": 120889
+        },
+        "no_hypermutated": {
+          "candidate_residues": 953038,
+          "known_sites_q_upper_below_0_05": 6,
+          "q_upper_below_0_05": 28,
+          "tested": 723898,
+          "with_change": 36170
+        },
+        "rows": 209844
+      },
+      "tcga_mc3/T": {
+        "all": {
+          "candidate_residues": 613855,
+          "known_sites_q_upper_below_0_05": 5,
+          "q_upper_below_0_05": 14,
+          "tested": 497494,
+          "with_change": 52588
+        },
+        "no_hypermutated": {
+          "candidate_residues": 613855,
+          "known_sites_q_upper_below_0_05": 4,
+          "q_upper_below_0_05": 7,
+          "tested": 371549,
+          "with_change": 18399
+        },
+        "rows": 81274
+      },
+      "tcga_mc3/Y": {
+        "all": {
+          "candidate_residues": 303598,
+          "known_sites_q_upper_below_0_05": 1,
+          "q_upper_below_0_05": 5,
+          "tested": 213446,
+          "with_change": 23958
+        },
+        "no_hypermutated": {
+          "candidate_residues": 303598,
+          "known_sites_q_upper_below_0_05": 0,
+          "q_upper_below_0_05": 4,
+          "tested": 136015,
+          "with_change": 9006
+        },
+        "rows": 33253
+      }
+    },
+    "rules": {
+      "burden": "coding calls per Mb of coding sequence (32301341 bp, each GRCh38 position once); hypermutated above 10 per Mb (Campbell et al., Cell 171:1042 (2017), doi:10.1016/j.cell.2017.09.048); DepMap OmicsSomaticMutations.csv keeps synonymous calls only where they touch a splice region",
+      "coding_sequence": "Ensembl 105 transcripts UniProt assigns to the displayed isoform (scripts/44b canonical_transcripts) whose GTF CDS records on the GRCh38 primary assembly translate with the standard code to the 2026_03 canonical sequence",
+      "germline_rates": "gnomAD mutation_rate_methylation_bins (Karczewski et al., Nature 581:434 (2020), doi:10.1038/s41586-020-2308-7), CC0, bytes unchanged",
+      "h3": "TCGA and DepMap changes at every residue of the entries named Histone H3*, by the rules of scripts/66",
+      "methylation": "gnomAD v2.1.1 flagship methylation table (GRCh37) at the GRCh38 position lifted with Ensembl GRCh38_to_GRCh37; gnomad_lof constraint_utils/constraint_basics.py, prepare_ht (https://github.com/macarthur-lab/gnomad_lof): methylation_level 2 where a CpG transition's methylation MEAN > 0.6, 1 where > 0.2, else 0",
+      "somatic_spectra": "residue-changing SNVs in the coding positions over the residue-changing substitutions there, 96 pyrimidine-centered classes; TCGA kept calls (scripts/66 rules) placed on GRCh38 through the lifted coding positions; DepMap SNVs"
+    },
+    "seed": 20261120,
+    "site_sets": [
+      {
+        "cohort": "all",
+        "expected": "5091.52",
+        "expected_unweighted": "5023.79",
+        "iterations": 10000,
+        "label": "Methylarginine (R)",
+        "observed": 4462,
+        "oe": "0.876359",
+        "oe_status": "test",
+        "oe_unweighted": "0.888175",
+        "p_lower": "9.999e-05",
+        "p_upper": "1",
+        "proteins": 4148,
+        "residue": "R",
+        "residues_in_proteins": 194815,
+        "seed": 20261120,
+        "site_set": "methylarginine",
+        "sites": 10944,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "1417.96",
+        "expected_unweighted": "1382.05",
+        "iterations": 10000,
+        "label": "Methylarginine (R)",
+        "observed": 1192,
+        "oe": "0.840646",
+        "oe_status": "test",
+        "oe_unweighted": "0.862487",
+        "p_lower": "9.999e-05",
+        "p_upper": "1",
+        "proteins": 3615,
+        "residue": "R",
+        "residues_in_proteins": 182629,
+        "seed": 20261121,
+        "site_set": "methylarginine",
+        "sites": 9923,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "all",
+        "expected": "1165.18",
+        "expected_unweighted": "1166.23",
+        "iterations": 10000,
+        "label": "Methylarginine (R)",
+        "observed": 1034,
+        "oe": "0.887417",
+        "oe_status": "test",
+        "oe_unweighted": "0.886618",
+        "p_lower": "9.999e-05",
+        "p_upper": "1",
+        "proteins": 3171,
+        "residue": "R",
+        "residues_in_proteins": 154082,
+        "seed": 20261122,
+        "site_set": "methylarginine",
+        "sites": 8571,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "372.739",
+        "expected_unweighted": "366.791",
+        "iterations": 10000,
+        "label": "Methylarginine (R)",
+        "observed": 317,
+        "oe": "0.850462",
+        "oe_status": "test",
+        "oe_unweighted": "0.864253",
+        "p_lower": "0.0006999",
+        "p_upper": "0.9994",
+        "proteins": 2067,
+        "residue": "R",
+        "residues_in_proteins": 117793,
+        "seed": 20261123,
+        "site_set": "methylarginine",
+        "sites": 5917,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "all",
+        "expected": "5667.09",
+        "expected_unweighted": "5845.43",
+        "iterations": 10000,
+        "label": "Methylarginine (R)",
+        "observed": 5979,
+        "oe": "1.05504",
+        "oe_status": "descriptive",
+        "oe_unweighted": "1.02285",
+        "p_lower": "1",
+        "p_upper": "9.999e-05",
+        "proteins": 4102,
+        "residue": "R",
+        "residues_in_proteins": 193864,
+        "seed": 20261124,
+        "site_set": "methylarginine",
+        "sites": 10770,
+        "source": "clinvar"
+      },
+      {
+        "cohort": "all",
+        "expected": "18953.6",
+        "expected_unweighted": "19652.5",
+        "iterations": 10000,
+        "label": "Methylarginine (R)",
+        "observed": 20460,
+        "oe": "1.07948",
+        "oe_status": "test",
+        "oe_unweighted": "1.04109",
+        "p_lower": "1",
+        "p_upper": "9.999e-05",
+        "proteins": 4293,
+        "residue": "R",
+        "residues_in_proteins": 198956,
+        "seed": 20261125,
+        "site_set": "methylarginine",
+        "sites": 11210,
+        "source": "gnomad_v4_1"
+      },
+      {
+        "cohort": "all",
+        "expected": "507.256",
+        "expected_unweighted": "518.706",
+        "iterations": 10000,
+        "label": "Methyllysine (K)",
+        "observed": 452,
+        "oe": "0.891069",
+        "oe_status": "test",
+        "oe_unweighted": "0.871399",
+        "p_lower": "0.0046",
+        "p_upper": "0.9965",
+        "proteins": 2426,
+        "residue": "K",
+        "residues_in_proteins": 172371,
+        "seed": 20261126,
+        "site_set": "methyllysine",
+        "sites": 4475,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "158.393",
+        "expected_unweighted": "162.011",
+        "iterations": 10000,
+        "label": "Methyllysine (K)",
+        "observed": 128,
+        "oe": "0.808115",
+        "oe_status": "test",
+        "oe_unweighted": "0.790068",
+        "p_lower": "0.0033",
+        "p_upper": "0.9974",
+        "proteins": 1716,
+        "residue": "K",
+        "residues_in_proteins": 142535,
+        "seed": 20261127,
+        "site_set": "methyllysine",
+        "sites": 3406,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "all",
+        "expected": "185.103",
+        "expected_unweighted": "186.982",
+        "iterations": 10000,
+        "label": "Methyllysine (K)",
+        "observed": 171,
+        "oe": "0.92381",
+        "oe_status": "test",
+        "oe_unweighted": "0.914526",
+        "p_lower": "0.1371",
+        "p_upper": "0.8773",
+        "proteins": 1727,
+        "residue": "K",
+        "residues_in_proteins": 127339,
+        "seed": 20261128,
+        "site_set": "methyllysine",
+        "sites": 3213,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "70.7614",
+        "expected_unweighted": "72.0627",
+        "iterations": 10000,
+        "label": "Methyllysine (K)",
+        "observed": 74,
+        "oe": "1.04577",
+        "oe_status": "test",
+        "oe_unweighted": "1.02688",
+        "p_lower": "0.6968",
+        "p_upper": "0.3529",
+        "proteins": 1027,
+        "residue": "K",
+        "residues_in_proteins": 89648,
+        "seed": 20261129,
+        "site_set": "methyllysine",
+        "sites": 2089,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "all",
+        "expected": "884.604",
+        "expected_unweighted": "887.915",
+        "iterations": 10000,
+        "label": "Methyllysine (K)",
+        "observed": 808,
+        "oe": "0.913403",
+        "oe_status": "descriptive",
+        "oe_unweighted": "0.909997",
+        "p_lower": "0.004",
+        "p_upper": "0.9964",
+        "proteins": 2415,
+        "residue": "K",
+        "residues_in_proteins": 170231,
+        "seed": 20261130,
+        "site_set": "methyllysine",
+        "sites": 4464,
+        "source": "clinvar"
+      },
+      {
+        "cohort": "all",
+        "expected": "4321.48",
+        "expected_unweighted": "4326.5",
+        "iterations": 10000,
+        "label": "Methyllysine (K)",
+        "observed": 4179,
+        "oe": "0.967031",
+        "oe_status": "test",
+        "oe_unweighted": "0.965907",
+        "p_lower": "0.0119",
+        "p_upper": "0.9885",
+        "proteins": 2716,
+        "residue": "K",
+        "residues_in_proteins": 181327,
+        "seed": 20261131,
+        "site_set": "methyllysine",
+        "sites": 4956,
+        "source": "gnomad_v4_1"
+      },
+      {
+        "cohort": "all",
+        "expected": "7557.22",
+        "expected_unweighted": "7748.59",
+        "iterations": 10000,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "observed": 7494,
+        "oe": "0.991635",
+        "oe_status": "test",
+        "oe_unweighted": "0.967144",
+        "p_lower": "0.1823",
+        "p_upper": "0.8218",
+        "proteins": 8333,
+        "residue": "K",
+        "residues_in_proteins": 388094,
+        "seed": 20261132,
+        "site_set": "lysine",
+        "sites": 79669,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "2103.37",
+        "expected_unweighted": "2141.02",
+        "iterations": 10000,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "observed": 2117,
+        "oe": "1.00648",
+        "oe_status": "test",
+        "oe_unweighted": "0.988779",
+        "p_lower": "0.6594",
+        "p_upper": "0.3506",
+        "proteins": 5071,
+        "residue": "K",
+        "residues_in_proteins": 286028,
+        "seed": 20261133,
+        "site_set": "lysine",
+        "sites": 55196,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "all",
+        "expected": "2769.09",
+        "expected_unweighted": "2796.04",
+        "iterations": 10000,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "observed": 2718,
+        "oe": "0.981548",
+        "oe_status": "test",
+        "oe_unweighted": "0.972087",
+        "p_lower": "0.1119",
+        "p_upper": "0.8931",
+        "proteins": 5429,
+        "residue": "K",
+        "residues_in_proteins": 277060,
+        "seed": 20261134,
+        "site_set": "lysine",
+        "sites": 56386,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "990.807",
+        "expected_unweighted": "999.675",
+        "iterations": 10000,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "observed": 968,
+        "oe": "0.976982",
+        "oe_status": "test",
+        "oe_unweighted": "0.968315",
+        "p_lower": "0.1771",
+        "p_upper": "0.8331",
+        "proteins": 2921,
+        "residue": "K",
+        "residues_in_proteins": 175506,
+        "seed": 20261135,
+        "site_set": "lysine",
+        "sites": 33578,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "all",
+        "expected": "15530.6",
+        "expected_unweighted": "15569",
+        "iterations": 10000,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "observed": 15284,
+        "oe": "0.984121",
+        "oe_status": "descriptive",
+        "oe_unweighted": "0.981697",
+        "p_lower": "0.006999",
+        "p_upper": "0.9935",
+        "proteins": 8572,
+        "residue": "K",
+        "residues_in_proteins": 390623,
+        "seed": 20261136,
+        "site_set": "lysine",
+        "sites": 80663,
+        "source": "clinvar"
+      },
+      {
+        "cohort": "all",
+        "expected": "72561.4",
+        "expected_unweighted": "72804.2",
+        "iterations": 10000,
+        "label": "Lysine acylation, ubiquitination and SUMOylation (K)",
+        "observed": 72657,
+        "oe": "1.00132",
+        "oe_status": "test",
+        "oe_unweighted": "0.997978",
+        "p_lower": "0.6812",
+        "p_upper": "0.3204",
+        "proteins": 10170,
+        "residue": "K",
+        "residues_in_proteins": 423459,
+        "seed": 20261137,
+        "site_set": "lysine",
+        "sites": 88582,
+        "source": "gnomad_v4_1"
+      },
+      {
+        "cohort": "all",
+        "expected": "14180.3",
+        "expected_unweighted": "14067.6",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 14033,
+        "oe": "0.98961",
+        "oe_status": "test",
+        "oe_unweighted": "0.997537",
+        "p_lower": "0.07519",
+        "p_upper": "0.926",
+        "proteins": 10256,
+        "residue": "S",
+        "residues_in_proteins": 631104,
+        "seed": 20261138,
+        "site_set": "phospho",
+        "sites": 94548,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "3986.99",
+        "expected_unweighted": "3962.08",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 3948,
+        "oe": "0.99022",
+        "oe_status": "test",
+        "oe_unweighted": "0.996447",
+        "p_lower": "0.234",
+        "p_upper": "0.7718",
+        "proteins": 7920,
+        "residue": "S",
+        "residues_in_proteins": 558481,
+        "seed": 20261139,
+        "site_set": "phospho",
+        "sites": 82362,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "all",
+        "expected": "4326.8",
+        "expected_unweighted": "4319.22",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 4180,
+        "oe": "0.966073",
+        "oe_status": "test",
+        "oe_unweighted": "0.967767",
+        "p_lower": "0.0039",
+        "p_upper": "0.9963",
+        "proteins": 7601,
+        "residue": "S",
+        "residues_in_proteins": 493781,
+        "seed": 20261140,
+        "site_set": "phospho",
+        "sites": 72277,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "1483.44",
+        "expected_unweighted": "1481.9",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 1397,
+        "oe": "0.941733",
+        "oe_status": "test",
+        "oe_unweighted": "0.94271",
+        "p_lower": "0.0033",
+        "p_upper": "0.9971",
+        "proteins": 4764,
+        "residue": "S",
+        "residues_in_proteins": 368902,
+        "seed": 20261141,
+        "site_set": "phospho",
+        "sites": 52712,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "all",
+        "expected": "22485.3",
+        "expected_unweighted": "22468.8",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 22921,
+        "oe": "1.01938",
+        "oe_status": "descriptive",
+        "oe_unweighted": "1.02013",
+        "p_lower": "0.9999",
+        "p_upper": "0.0003",
+        "proteins": 10203,
+        "residue": "S",
+        "residues_in_proteins": 625186,
+        "seed": 20261142,
+        "site_set": "phospho",
+        "sites": 94081,
+        "source": "clinvar"
+      },
+      {
+        "cohort": "all",
+        "expected": "104819",
+        "expected_unweighted": "104823",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 108538,
+        "oe": "1.03548",
+        "oe_status": "test",
+        "oe_unweighted": "1.03544",
+        "p_lower": "1",
+        "p_upper": "9.999e-05",
+        "proteins": 11156,
+        "residue": "S",
+        "residues_in_proteins": 653733,
+        "seed": 20261143,
+        "site_set": "phospho",
+        "sites": 98141,
+        "source": "gnomad_v4_1"
+      },
+      {
+        "cohort": "all",
+        "expected": "2804.82",
+        "expected_unweighted": "2810.68",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 2771,
+        "oe": "0.987941",
+        "oe_status": "test",
+        "oe_unweighted": "0.985882",
+        "p_lower": "0.2397",
+        "p_upper": "0.7648",
+        "proteins": 6374,
+        "residue": "T",
+        "residues_in_proteins": 289307,
+        "seed": 20261144,
+        "site_set": "phospho",
+        "sites": 26606,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "888.797",
+        "expected_unweighted": "892.874",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 904,
+        "oe": "1.01711",
+        "oe_status": "test",
+        "oe_unweighted": "1.01246",
+        "p_lower": "0.7237",
+        "p_upper": "0.2904",
+        "proteins": 4168,
+        "residue": "T",
+        "residues_in_proteins": 223769,
+        "seed": 20261145,
+        "site_set": "phospho",
+        "sites": 19317,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "all",
+        "expected": "1174.32",
+        "expected_unweighted": "1175.66",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 1257,
+        "oe": "1.0704",
+        "oe_status": "test",
+        "oe_unweighted": "1.06918",
+        "p_lower": "0.9953",
+        "p_upper": "0.0048",
+        "proteins": 4461,
+        "residue": "T",
+        "residues_in_proteins": 212939,
+        "seed": 20261146,
+        "site_set": "phospho",
+        "sites": 18878,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "423.358",
+        "expected_unweighted": "423.989",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 484,
+        "oe": "1.14324",
+        "oe_status": "test",
+        "oe_unweighted": "1.14154",
+        "p_lower": "0.9994",
+        "p_upper": "0.0006999",
+        "proteins": 2513,
+        "residue": "T",
+        "residues_in_proteins": 141814,
+        "seed": 20261147,
+        "site_set": "phospho",
+        "sites": 11860,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "all",
+        "expected": "8190.65",
+        "expected_unweighted": "8280.37",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 8972,
+        "oe": "1.0954",
+        "oe_status": "descriptive",
+        "oe_unweighted": "1.08353",
+        "p_lower": "1",
+        "p_upper": "9.999e-05",
+        "proteins": 7060,
+        "residue": "T",
+        "residues_in_proteins": 301041,
+        "seed": 20261148,
+        "site_set": "phospho",
+        "sites": 28461,
+        "source": "clinvar"
+      },
+      {
+        "cohort": "all",
+        "expected": "35232.4",
+        "expected_unweighted": "35396.7",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 37670,
+        "oe": "1.06919",
+        "oe_status": "test",
+        "oe_unweighted": "1.06422",
+        "p_lower": "1",
+        "p_upper": "9.999e-05",
+        "proteins": 7800,
+        "residue": "T",
+        "residues_in_proteins": 316249,
+        "seed": 20261149,
+        "site_set": "phospho",
+        "sites": 30260,
+        "source": "gnomad_v4_1"
+      },
+      {
+        "cohort": "all",
+        "expected": "890.92",
+        "expected_unweighted": "893.181",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 904,
+        "oe": "1.01468",
+        "oe_status": "test",
+        "oe_unweighted": "1.01211",
+        "p_lower": "0.6993",
+        "p_upper": "0.3145",
+        "proteins": 2913,
+        "residue": "Y",
+        "residues_in_proteins": 74441,
+        "seed": 20261150,
+        "site_set": "phospho",
+        "sites": 7182,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "376.408",
+        "expected_unweighted": "370.973",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 363,
+        "oe": "0.96438",
+        "oe_status": "test",
+        "oe_unweighted": "0.978508",
+        "p_lower": "0.2171",
+        "p_upper": "0.8021",
+        "proteins": 1746,
+        "residue": "Y",
+        "residues_in_proteins": 50834,
+        "seed": 20261151,
+        "site_set": "phospho",
+        "sites": 4668,
+        "source": "tcga_mc3"
+      },
+      {
+        "cohort": "all",
+        "expected": "485.727",
+        "expected_unweighted": "489.848",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 490,
+        "oe": "1.0088",
+        "oe_status": "test",
+        "oe_unweighted": "1.00031",
+        "p_lower": "0.6078",
+        "p_upper": "0.4141",
+        "proteins": 2010,
+        "residue": "Y",
+        "residues_in_proteins": 52567,
+        "seed": 20261152,
+        "site_set": "phospho",
+        "sites": 5035,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "no_hypermutated",
+        "expected": "150.339",
+        "expected_unweighted": "149.84",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 152,
+        "oe": "1.01105",
+        "oe_status": "test",
+        "oe_unweighted": "1.01441",
+        "p_lower": "0.5799",
+        "p_upper": "0.454",
+        "proteins": 881,
+        "residue": "Y",
+        "residues_in_proteins": 27077,
+        "seed": 20261153,
+        "site_set": "phospho",
+        "sites": 2301,
+        "source": "depmap_24q4"
+      },
+      {
+        "cohort": "all",
+        "expected": "2547.82",
+        "expected_unweighted": "2534.74",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 2628,
+        "oe": "1.03147",
+        "oe_status": "descriptive",
+        "oe_unweighted": "1.03679",
+        "p_lower": "0.9673",
+        "p_upper": "0.0347",
+        "proteins": 3356,
+        "residue": "Y",
+        "residues_in_proteins": 80188,
+        "seed": 20261154,
+        "site_set": "phospho",
+        "sites": 8045,
+        "source": "clinvar"
+      },
+      {
+        "cohort": "all",
+        "expected": "9785.1",
+        "expected_unweighted": "9716.14",
+        "iterations": 10000,
+        "label": "Phosphorylation (S, T, Y)",
+        "observed": 10070,
+        "oe": "1.02912",
+        "oe_status": "test",
+        "oe_unweighted": "1.03642",
+        "p_lower": "0.9997",
+        "p_upper": "0.0004",
+        "proteins": 4326,
+        "residue": "Y",
+        "residues_in_proteins": 91174,
+        "seed": 20261155,
+        "site_set": "phospho",
+        "sites": 9773,
+        "source": "gnomad_v4_1"
+      }
+    ],
+    "staging_inputs": {
+      "cases": {
+        "file": "gdc_tcga_cases_2026-11-19.tsv",
+        "md5": "082220b82e7c3cf039650330310ab735"
+      },
+      "chain": {
+        "file": "GRCh38_to_GRCh37.chain.gz",
+        "md5": "9573fe0b0a4715f0dd4fa62d5bd7810d"
+      },
+      "crispr_gene_effect": {
+        "file": "depmap_24q4_CRISPRGeneEffect_header.csv",
+        "md5": "96b62faadbcf32aced3124e65e4c62f4"
+      },
+      "depmap_models": {
+        "file": "Model.csv",
+        "md5": "675210d17675f3517b0ce39a3c274f16"
+      },
+      "depmap_mutations": {
+        "file": "OmicsSomaticMutations.csv",
+        "md5": "7bdba347a1602fe96d5654a74d6e52f1"
+      },
+      "ensembl_gtf": {
+        "file": "Homo_sapiens.GRCh38.105.gtf.gz",
+        "md5": "1f8687d6d809e03bb7e9b0cbbe6d2313"
+      },
+      "fasta": {
+        "file": "uniprot_human_reviewed_2026_03.fasta",
+        "md5": "c75aad9d197cbba00f51063f65a96ac4"
+      },
+      "genome": {
+        "file": "Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz",
+        "md5": "f58a039f83d8944ceb79cdd16cbda583"
+      },
+      "hgnc": {
+        "file": "hgnc_complete_set.txt",
+        "md5": "2a30aa650f51d6fed261f79057463d5a"
+      },
+      "maf": {
+        "file": "mc3.v0.2.8.PUBLIC.maf.gz",
+        "md5": "639ad8f8386e98dacc22e439188aa8fa"
+      },
+      "methylation": {
+        "file": "gnomad_v2_1_1_methylation.txt.bgz",
+        "md5": "a935986b782da3ce584430de1c0c2e26"
+      },
+      "rates": {
+        "file": "mutation_rate_methylation_bins.txt.bgz",
+        "md5": "a089b6921f1061985af476aa3459a79e"
+      },
+      "uniprot_ensembl": {
+        "file": "uniprot_2026_04_human_reviewed_ensembl.tsv.gz",
+        "md5": "308c33bbed1d7db0f0200434a02a0551"
+      },
+      "uniprot_isoforms": {
+        "file": "uniprot_2026_04_human_reviewed_altprod.tsv.gz",
+        "md5": "d3ce32007c476fa6c134416594db9de2"
+      }
+    },
+    "validation": [
+      {
+        "agreement": "0.9999",
+        "agreement_p05": "0.9995",
+        "binomial_p05": 747,
+        "binomial_q05": 5,
+        "both_p05": 734,
+        "both_q05": 0,
+        "cohort": "all",
+        "iterations": 10000,
+        "max_abs_p_difference": "0.01732",
+        "max_abs_p_difference_p_above_0_001": "0.01732",
+        "median_abs_p_difference": "0",
+        "permutation_p05": 744,
+        "permutation_q05": 0,
+        "residues": 42373,
+        "seed": 20262120,
+        "source": "tcga_mc3",
+        "units": 1000,
+        "units_available": 56912
+      },
+      {
+        "agreement": "0.9997",
+        "agreement_p05": "0.9992",
+        "binomial_p05": 1006,
+        "binomial_q05": 14,
+        "both_p05": 986,
+        "both_q05": 0,
+        "cohort": "all",
+        "iterations": 10000,
+        "max_abs_p_difference": "0.01347",
+        "max_abs_p_difference_p_above_0_001": "0.01347",
+        "median_abs_p_difference": "0",
+        "permutation_p05": 1010,
+        "permutation_q05": 0,
+        "residues": 52590,
+        "seed": 20262121,
+        "source": "depmap_24q4",
+        "units": 1000,
+        "units_available": 30940
+      },
+      {
+        "agreement": "1",
+        "agreement_p05": "0.9992",
+        "binomial_p05": 557,
+        "binomial_q05": 0,
+        "both_p05": 538,
+        "both_q05": 0,
+        "cohort": "all",
+        "iterations": 10000,
+        "max_abs_p_difference": "0.01721",
+        "max_abs_p_difference_p_above_0_001": "0.01721",
+        "median_abs_p_difference": "0",
+        "permutation_p05": 550,
+        "permutation_q05": 0,
+        "residues": 37321,
+        "seed": 20262122,
+        "source": "clinvar",
+        "units": 1000,
+        "units_available": 62722
+      },
+      {
+        "agreement": "1",
+        "agreement_p05": "0.9987",
+        "binomial_p05": 1401,
+        "binomial_q05": 0,
+        "both_p05": 1378,
+        "both_q05": 0,
+        "cohort": "all",
+        "iterations": 10000,
+        "max_abs_p_difference": "0.02253",
+        "max_abs_p_difference_p_above_0_001": "0.02253",
+        "median_abs_p_difference": "0.001302",
+        "permutation_p05": 1399,
+        "permutation_q05": 0,
+        "residues": 34760,
+        "seed": 20262123,
+        "source": "gnomad_v4_1",
+        "units": 1000,
+        "units_available": 90151
+      }
+    ]
+  },
+  "release_code_commit": "ed0df10536271f082107c4f7ad0b4423fa63d06f",
+  "release_date": "2026-11-20",
+  "repository": "https://github.com/Shechterlab/PTM_Pipeline",
+  "site_changes": "supporting/site_changes_v1.6.0_to_v1.7.0.tsv",
+  "sources": {
+    "Akimov 2018": {
+      "license": "article not open access (copyright 2018 The Author(s)); supplements carry no notice"
+    },
+    "Berryhill 2023": {
+      "license": "article CC BY 4.0; supplements carry no separate notice"
+    },
+    "Hendriks 2017": {
+      "license": "article not open access (copyright 2017 Springer Nature America); supplements carry no notice"
+    },
+    "Ochoa 2020": {
+      "license": "article not open access (exclusive license to Springer Nature America); supplements carry no license"
+    },
+    "UniProt": {
+      "license": "CC BY 4.0"
+    },
+    "iPTMnet": {
+      "license": "CC BY-NC-SA 4.0"
+    }
+  },
+  "sources_excluded": {
+    "CPLM": "CPLM 4.0 states no license (\"All Rights Reserved\") and compiles sites from other databases as well as from papers; it is not a source of the context marks (decided 17 November 2026)"
+  },
+  "title": "Human methylarginine sites, context marks, site-level interaction evidence, cancer and germline variants and their propensity",
+  "variant_changes_excluded": {
+    "by_reason": {
+      "position_beyond_sequence": 1211,
+      "residue_differs": 40845
+    },
+    "by_source": {
+      "clinvar": 2072,
+      "depmap_24q4": 611,
+      "gnomad_v4_1": 7078,
+      "tcga_mc3": 32295
+    },
+    "file": "supporting/variant_changes_excluded_v1.7.0.tsv.gz",
+    "md5": "e9d043b7798d4317a35a7e6d549dda64",
+    "proteins": 1240,
+    "rows": 42056
+  },
+  "version": "v1.7.0"
+}
