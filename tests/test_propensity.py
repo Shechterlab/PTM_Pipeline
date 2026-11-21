@@ -183,3 +183,32 @@ def test_set_test_is_reproducible_and_calibrated():
     b = P.set_test(units, np.random.default_rng(1), iterations=2000)
     assert a == b and a['observed'] == 5 and np.isclose(a['expected'], 4.5)
     assert 0.3 < a['p_upper'] < 0.7 and 0.3 < a['p_lower'] < 0.8
+
+
+def test_set_scope():
+    s = P.set_scope(np.array([1, 1, 0, 1, 1], bool), np.array([1, 0, 1, 1, 1], bool), np.array([2, 5, 9, 0, 1]))
+    assert s == {'sites_total': 4, 'sites_weighted': 3, 'k_total': 8}
+
+
+V170 = ROOT / 'releases' / 'v1.7.0' / 'supporting'
+
+
+@pytest.mark.skipif(not (V170 / 'site_set_propensity_v1.7.0.tsv').exists(), reason='releases/v1.7.0 not built')
+def test_set_scope_on_v1_7_0_matches_its_observed():
+    """On the published v1.7.0 tables (every known site is a row of the per-site tables), the changes at the weighted sites
+    add up to each site-set row's observed, and the scope brackets its sites."""
+    sets = pd.read_csv(V170 / 'site_set_propensity_v1.7.0.tsv', sep='\t', dtype=str, keep_default_na=False)
+    tables = {}
+    for _, r in sets.iterrows():
+        t = tables.setdefault(r['source'], pd.read_csv(V170 / f'site_propensity_{r["source"]}_v1.7.0.tsv.gz', sep='\t', dtype=str,
+                                                      keep_default_na=False))
+        sfx = '' if r['cohort'] == 'all' else '_no_hypermutated'
+        sub = t[t['residue'] == r['residue']]
+        in_set = sub['site_sets'].str.split(';').map(lambda v: r['site_set'] in v).to_numpy()
+        has_w = (sub['relative_mutability' + sfx] != '').to_numpy()
+        k = sub['k' + sfx].astype(int).to_numpy()
+        s = P.set_scope(in_set, has_w, k)
+        assert int(k[in_set & has_w].sum()) == int(r['observed']), (r['site_set'], r['source'], r['cohort'])
+        assert int(r['sites']) <= s['sites_weighted'] <= s['sites_total'] and int(r['observed']) <= s['k_total']
+    m = sets[(sets['site_set'] == 'methylarginine') & (sets['source'] == 'tcga_mc3') & (sets['cohort'] == 'all')].iloc[0]
+    assert m['observed'] == '4462'

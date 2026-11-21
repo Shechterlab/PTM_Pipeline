@@ -215,6 +215,14 @@ def set_test(units: list[tuple[int, float, int]], rng: np.random.Generator, iter
             'p_upper': (1 + int((sims >= obs).sum())) / (iterations + 1), 'p_lower': (1 + int((sims <= obs).sum())) / (iterations + 1)}
 
 
+def set_scope(in_set: np.ndarray, has_w: np.ndarray, k: np.ndarray) -> dict:
+    """The scope of a site-set test over one residue type's candidate residues: the set's sites, those on proteins with
+    weights (the ones observed and expected cover), and the changes at all the set's sites."""
+    in_set, has_w = np.asarray(in_set, dtype=bool), np.asarray(has_w, dtype=bool)
+    return {'sites_total': int(in_set.sum()), 'sites_weighted': int((in_set & has_w).sum()),
+            'k_total': int(np.asarray(k, dtype=np.int64)[in_set].sum())}
+
+
 def permutation_check(units: list[tuple[np.ndarray, np.ndarray]], rng: np.random.Generator, iterations: int = ITERATIONS) -> dict:
     """units: per protein and residue type, (k per residue, w per residue). Each protein's changes redrawn over its residues
     in proportion to w (multinomial), `iterations` times; the per-residue permutation p against the binomial p."""
