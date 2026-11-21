@@ -20,8 +20,8 @@ identifiers:
     value: 10.5281/zenodo.22696798
     description: "Zenodo archive, all versions (resolves to the most recent)"
   - type: doi
-    value: 10.5281/zenodo.24406688
-    description: "Zenodo archive of v1.6.0"
+    value: 10.5281/zenodo.24429699
+    description: "Zenodo archive of v1.7.0"
 repository-code: "https://github.com/Shechterlab/PTM_Pipeline"
 url: "https://shechterlab.github.io/PTM_Pipeline/"
 keywords:
