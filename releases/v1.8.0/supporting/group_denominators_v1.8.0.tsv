@@ -1,0 +1,67 @@
+source	group	samples_profiled	samples_profiled_no_hypermutated
+tcga_mc3	TCGA-ACC	92	86
+tcga_mc3	TCGA-BLCA	411	289
+tcga_mc3	TCGA-BRCA	1026	997
+tcga_mc3	TCGA-CESC	291	251
+tcga_mc3	TCGA-CHOL	36	35
+tcga_mc3	TCGA-COAD	408	345
+tcga_mc3	TCGA-DLBC	37	35
+tcga_mc3	TCGA-ESCA	185	174
+tcga_mc3	TCGA-GBM	403	398
+tcga_mc3	TCGA-HNSC	509	454
+tcga_mc3	TCGA-KICH	66	65
+tcga_mc3	TCGA-KIRC	370	368
+tcga_mc3	TCGA-KIRP	282	282
+tcga_mc3	TCGA-LAML	140	134
+tcga_mc3	TCGA-LGG	526	524
+tcga_mc3	TCGA-LIHC	365	355
+tcga_mc3	TCGA-LUAD	569	383
+tcga_mc3	TCGA-LUSC	485	307
+tcga_mc3	TCGA-MESO	82	81
+tcga_mc3	TCGA-OV	412	407
+tcga_mc3	TCGA-PAAD	178	177
+tcga_mc3	TCGA-PCPG	184	184
+tcga_mc3	TCGA-PRAD	498	494
+tcga_mc3	TCGA-READ	151	147
+tcga_mc3	TCGA-SARC	239	231
+tcga_mc3	TCGA-SKCM	468	185
+tcga_mc3	TCGA-STAD	439	336
+tcga_mc3	TCGA-TGCT	151	151
+tcga_mc3	TCGA-THCA	500	500
+tcga_mc3	TCGA-THYM	123	122
+tcga_mc3	TCGA-UCEC	531	365
+tcga_mc3	TCGA-UCS	57	55
+tcga_mc3	TCGA-UVM	80	79
+depmap_24q4		1	1
+depmap_24q4	Adrenal Gland	2	2
+depmap_24q4	Ampulla of Vater	4	4
+depmap_24q4	B lymphoblast	1	1
+depmap_24q4	Biliary Tract	46	45
+depmap_24q4	Bladder/Urinary Tract	39	28
+depmap_24q4	Bone	84	84
+depmap_24q4	Bowel	91	49
+depmap_24q4	Breast	75	58
+depmap_24q4	CNS/Brain	113	105
+depmap_24q4	Cervix	23	18
+depmap_24q4	Esophagus/Stomach	90	63
+depmap_24q4	Eye	24	23
+depmap_24q4	Fibroblast	28	28
+depmap_24q4	Head and Neck	94	85
+depmap_24q4	Kidney	63	59
+depmap_24q4	Liver	28	22
+depmap_24q4	Lung	237	114
+depmap_24q4	Lymphoid	252	199
+depmap_24q4	Myeloid	84	77
+depmap_24q4	Normal	13	13
+depmap_24q4	Other	2	2
+depmap_24q4	Ovary/Fallopian Tube	72	61
+depmap_24q4	Pancreas	59	57
+depmap_24q4	Peripheral Nervous System	59	52
+depmap_24q4	Pleura	36	36
+depmap_24q4	Prostate	13	9
+depmap_24q4	Skin	140	66
+depmap_24q4	Soft Tissue	71	67
+depmap_24q4	Testis	12	12
+depmap_24q4	Thyroid	25	21
+depmap_24q4	Uterus	43	15
+depmap_24q4	Vulva/Vagina	5	4

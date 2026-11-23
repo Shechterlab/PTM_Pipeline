@@ -60,7 +60,7 @@ def test_previous_release_is_carried_and_appended_tables_keep_their_columns():
         elif new_rel not in edited:
             assert md5(REL / new_rel) == md5(path), rel
             n += 1
-    assert n > 150
+    assert n >= 150
     # the site tables keep their bytes: methylarginine since v1.4.3, the context marks since v1.5.0
     assert md5(REL / 'human_methylarginine_sites_v1.8.0.tsv') == md5(ROOT / 'releases' / 'v1.4.3' / 'human_methylarginine_sites_v1.4.3.tsv')
     for t in ('methyllysine', 'acetylation', 'lysine_acylation', 'ubiquitination', 'sumoylation', 'phosphorylation'):

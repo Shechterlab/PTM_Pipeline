@@ -1,0 +1,489 @@
+source	cohort	context	ref	alt	methylation_level	observed	opportunity	rate
+tcga_mc3	all	ACA	C	A		11126	964981	1.152976e-02
+tcga_mc3	all	ACA	C	G		5107	964981	5.292332e-03
+tcga_mc3	all	ACA	C	T		13904	667553	2.082831e-02
+tcga_mc3	all	ACC	C	A		12036	883582	1.362183e-02
+tcga_mc3	all	ACC	C	G		4440	883582	5.025001e-03
+tcga_mc3	all	ACC	C	T		19032	637331	2.986203e-02
+tcga_mc3	all	ACG	C	A		6115	342680	1.784464e-02
+tcga_mc3	all	ACG	C	G		2964	366674	8.083475e-03
+tcga_mc3	all	ACG	C	T		68316	251819	2.712901e-01
+tcga_mc3	all	ACT	C	A		13985	853972	1.637642e-02
+tcga_mc3	all	ACT	C	G		5459	853972	6.392481e-03
+tcga_mc3	all	ACT	C	T		10059	468139	2.148721e-02
+tcga_mc3	all	CCA	C	A		16322	969792	1.683041e-02
+tcga_mc3	all	CCA	C	G		3963	969793	4.086439e-03
+tcga_mc3	all	CCA	C	T		28776	915962	3.141615e-02
+tcga_mc3	all	CCC	C	A		18277	878540	2.080383e-02
+tcga_mc3	all	CCC	C	G		4143	878540	4.715778e-03
+tcga_mc3	all	CCC	C	T		39884	842918	4.731658e-02
+tcga_mc3	all	CCG	C	A		8738	371617	2.351346e-02
+tcga_mc3	all	CCG	C	G		3117	443496	7.028248e-03
+tcga_mc3	all	CCG	C	T		73513	443444	1.657774e-01
+tcga_mc3	all	CCT	C	A		41128	1197217	3.435300e-02
+tcga_mc3	all	CCT	C	G		6254	1197218	5.223777e-03
+tcga_mc3	all	CCT	C	T		23945	628452	3.810156e-02
+tcga_mc3	all	GCA	C	A		11571	945003	1.224441e-02
+tcga_mc3	all	GCA	C	G		3513	945053	3.717252e-03
+tcga_mc3	all	GCA	C	T		22877	796123	2.873551e-02
+tcga_mc3	all	GCC	C	A		14767	1174951	1.256818e-02
+tcga_mc3	all	GCC	C	G		5361	1174996	4.562569e-03
+tcga_mc3	all	GCC	C	T		47368	1034128	4.580477e-02
+tcga_mc3	all	GCG	C	A		6872	388140	1.770495e-02
+tcga_mc3	all	GCG	C	G		2482	446385	5.560223e-03
+tcga_mc3	all	GCG	C	T		109075	399208	2.732285e-01
+tcga_mc3	all	GCT	C	A		22168	1220047	1.816979e-02
+tcga_mc3	all	GCT	C	G		5076	1220116	4.160260e-03
+tcga_mc3	all	GCT	C	T		24448	679632	3.597241e-02
+tcga_mc3	all	TCA	C	A		20073	839173	2.391998e-02
+tcga_mc3	all	TCA	C	G		28262	913867	3.092573e-02
+tcga_mc3	all	TCA	C	T		62573	735518	8.507338e-02
+tcga_mc3	all	TCC	C	A		23215	1099913	2.110621e-02
+tcga_mc3	all	TCC	C	G		15059	1162945	1.294902e-02
+tcga_mc3	all	TCC	C	T		90236	989357	9.120671e-02
+tcga_mc3	all	TCG	C	A		6876	296689	2.317578e-02
+tcga_mc3	all	TCG	C	G		5641	361799	1.559153e-02
+tcga_mc3	all	TCG	C	T		128588	309069	4.160495e-01
+tcga_mc3	all	TCT	C	A		93284	1156189	8.068231e-02
+tcga_mc3	all	TCT	C	G		39922	1202335	3.320372e-02
+tcga_mc3	all	TCT	C	T		42789	700816	6.105597e-02
+tcga_mc3	all	ATA	T	A		3636	513676	7.078392e-03
+tcga_mc3	all	ATA	T	C		10317	382920	2.694296e-02
+tcga_mc3	all	ATA	T	G		1617	513676	3.147899e-03
+tcga_mc3	all	ATC	T	A		5396	861396	6.264250e-03
+tcga_mc3	all	ATC	T	C		8839	717668	1.231628e-02
+tcga_mc3	all	ATC	T	G		3335	861396	3.871622e-03
+tcga_mc3	all	ATG	T	A		5228	1006422	5.194640e-03
+tcga_mc3	all	ATG	T	C		12868	694486	1.852881e-02
+tcga_mc3	all	ATG	T	G		2985	1006422	2.965953e-03
+tcga_mc3	all	ATT	T	A		5985	804746	7.437129e-03
+tcga_mc3	all	ATT	T	C		8530	548263	1.555823e-02
+tcga_mc3	all	ATT	T	G		7728	804746	9.603030e-03
+tcga_mc3	all	CTA	T	A		1887	287390	6.565990e-03
+tcga_mc3	all	CTA	T	C		4324	289043	1.495971e-02
+tcga_mc3	all	CTA	T	G		926	258286	3.585173e-03
+tcga_mc3	all	CTC	T	A		5858	1054238	5.556620e-03
+tcga_mc3	all	CTC	T	C		9396	1008915	9.312975e-03
+tcga_mc3	all	CTC	T	G		3628	974514	3.722881e-03
+tcga_mc3	all	CTG	T	A		8048	1228548	6.550823e-03
+tcga_mc3	all	CTG	T	C		14257	1228403	1.160613e-02
+tcga_mc3	all	CTG	T	G		4409	1139809	3.868192e-03
+tcga_mc3	all	CTT	T	A		6985	1126908	6.198376e-03
+tcga_mc3	all	CTT	T	C		8876	772182	1.149470e-02
+tcga_mc3	all	CTT	T	G		14641	1067464	1.371569e-02
+tcga_mc3	all	GTA	T	A		2734	451278	6.058350e-03
+tcga_mc3	all	GTA	T	C		13039	401780	3.245308e-02
+tcga_mc3	all	GTA	T	G		1209	451300	2.678928e-03
+tcga_mc3	all	GTC	T	A		4210	761804	5.526356e-03
+tcga_mc3	all	GTC	T	C		14380	689316	2.086126e-02
+tcga_mc3	all	GTC	T	G		2562	761821	3.362995e-03
+tcga_mc3	all	GTG	T	A		4663	907132	5.140376e-03
+tcga_mc3	all	GTG	T	C		12260	784737	1.562307e-02
+tcga_mc3	all	GTG	T	G		3212	907189	3.540607e-03
+tcga_mc3	all	GTT	T	A		3728	725838	5.136132e-03
+tcga_mc3	all	GTT	T	C		12553	505589	2.482847e-02
+tcga_mc3	all	GTT	T	G		5179	725877	7.134818e-03
+tcga_mc3	all	TTA	T	A		2108	353737	5.959230e-03
+tcga_mc3	all	TTA	T	C		5055	316957	1.594854e-02
+tcga_mc3	all	TTA	T	G		2277	385029	5.913840e-03
+tcga_mc3	all	TTC	T	A		4060	1067001	3.805057e-03
+tcga_mc3	all	TTC	T	C		9355	987645	9.472027e-03
+tcga_mc3	all	TTC	T	G		5132	1109576	4.625190e-03
+tcga_mc3	all	TTG	T	A		3019	751216	4.018817e-03
+tcga_mc3	all	TTG	T	C		7515	667561	1.125740e-02
+tcga_mc3	all	TTG	T	G		3003	818670	3.668145e-03
+tcga_mc3	all	TTT	T	A		5226	1067237	4.896757e-03
+tcga_mc3	all	TTT	T	C		6570	755552	8.695629e-03
+tcga_mc3	all	TTT	T	G		21421	1097904	1.951081e-02
+tcga_mc3	no_hypermutated	ACA	C	A		5578	964981	5.780425e-03
+tcga_mc3	no_hypermutated	ACA	C	G		2830	964981	2.932700e-03
+tcga_mc3	no_hypermutated	ACA	C	T		4832	667553	7.238377e-03
+tcga_mc3	no_hypermutated	ACC	C	A		5728	883582	6.482703e-03
+tcga_mc3	no_hypermutated	ACC	C	G		2583	883582	2.923328e-03
+tcga_mc3	no_hypermutated	ACC	C	T		4700	637331	7.374504e-03
+tcga_mc3	no_hypermutated	ACG	C	A		2618	342680	7.639781e-03
+tcga_mc3	no_hypermutated	ACG	C	G		1715	366674	4.677179e-03
+tcga_mc3	no_hypermutated	ACG	C	T		23412	251819	9.297154e-02
+tcga_mc3	no_hypermutated	ACT	C	A		3863	853972	4.523568e-03
+tcga_mc3	no_hypermutated	ACT	C	G		3279	853972	3.839704e-03
+tcga_mc3	no_hypermutated	ACT	C	T		2962	468139	6.327181e-03
+tcga_mc3	no_hypermutated	CCA	C	A		5790	969792	5.970352e-03
+tcga_mc3	no_hypermutated	CCA	C	G		2238	969793	2.307709e-03
+tcga_mc3	no_hypermutated	CCA	C	T		7647	915962	8.348600e-03
+tcga_mc3	no_hypermutated	CCC	C	A		5252	878540	5.978100e-03
+tcga_mc3	no_hypermutated	CCC	C	G		2395	878540	2.726114e-03
+tcga_mc3	no_hypermutated	CCC	C	T		7865	842918	9.330682e-03
+tcga_mc3	no_hypermutated	CCG	C	A		2813	371617	7.569621e-03
+tcga_mc3	no_hypermutated	CCG	C	G		1655	443496	3.731713e-03
+tcga_mc3	no_hypermutated	CCG	C	T		22403	443444	5.052047e-02
+tcga_mc3	no_hypermutated	CCT	C	A		5672	1197217	4.737654e-03
+tcga_mc3	no_hypermutated	CCT	C	G		3811	1197218	3.183213e-03
+tcga_mc3	no_hypermutated	CCT	C	T		5403	628452	8.597315e-03
+tcga_mc3	no_hypermutated	GCA	C	A		5890	945003	6.232784e-03
+tcga_mc3	no_hypermutated	GCA	C	G		1872	945053	1.980841e-03
+tcga_mc3	no_hypermutated	GCA	C	T		6128	796123	7.697303e-03
+tcga_mc3	no_hypermutated	GCC	C	A		5821	1174951	4.954249e-03
+tcga_mc3	no_hypermutated	GCC	C	G		2722	1174996	2.316604e-03
+tcga_mc3	no_hypermutated	GCC	C	T		8777	1034128	8.487344e-03
+tcga_mc3	no_hypermutated	GCG	C	A		3026	388140	7.796156e-03
+tcga_mc3	no_hypermutated	GCG	C	G		1204	446385	2.697223e-03
+tcga_mc3	no_hypermutated	GCG	C	T		25430	399208	6.370113e-02
+tcga_mc3	no_hypermutated	GCT	C	A		5052	1220047	4.140824e-03
+tcga_mc3	no_hypermutated	GCT	C	G		2999	1220116	2.457963e-03
+tcga_mc3	no_hypermutated	GCT	C	T		4545	679632	6.687443e-03
+tcga_mc3	no_hypermutated	TCA	C	A		6182	839173	7.366777e-03
+tcga_mc3	no_hypermutated	TCA	C	G		12947	913867	1.416727e-02
+tcga_mc3	no_hypermutated	TCA	C	T		19491	735518	2.649969e-02
+tcga_mc3	no_hypermutated	TCC	C	A		8524	1099913	7.749704e-03
+tcga_mc3	no_hypermutated	TCC	C	G		7415	1162945	6.376054e-03
+tcga_mc3	no_hypermutated	TCC	C	T		15463	989357	1.562934e-02
+tcga_mc3	no_hypermutated	TCG	C	A		2923	296689	9.852067e-03
+tcga_mc3	no_hypermutated	TCG	C	G		2679	361799	7.404664e-03
+tcga_mc3	no_hypermutated	TCG	C	T		21455	309069	6.941816e-02
+tcga_mc3	no_hypermutated	TCT	C	A		7815	1156189	6.759276e-03
+tcga_mc3	no_hypermutated	TCT	C	G		19021	1202335	1.582005e-02
+tcga_mc3	no_hypermutated	TCT	C	T		10894	700816	1.554474e-02
+tcga_mc3	no_hypermutated	ATA	T	A		1809	513676	3.521675e-03
+tcga_mc3	no_hypermutated	ATA	T	C		4717	382920	1.231850e-02
+tcga_mc3	no_hypermutated	ATA	T	G		805	513676	1.567136e-03
+tcga_mc3	no_hypermutated	ATC	T	A		2553	861396	2.963794e-03
+tcga_mc3	no_hypermutated	ATC	T	C		3033	717668	4.226188e-03
+tcga_mc3	no_hypermutated	ATC	T	G		1134	861396	1.316468e-03
+tcga_mc3	no_hypermutated	ATG	T	A		2865	1006422	2.846718e-03
+tcga_mc3	no_hypermutated	ATG	T	C		4557	694486	6.561687e-03
+tcga_mc3	no_hypermutated	ATG	T	G		1355	1006422	1.346354e-03
+tcga_mc3	no_hypermutated	ATT	T	A		2090	804746	2.597093e-03
+tcga_mc3	no_hypermutated	ATT	T	C		4572	548263	8.339064e-03
+tcga_mc3	no_hypermutated	ATT	T	G		1634	804746	2.030454e-03
+tcga_mc3	no_hypermutated	CTA	T	A		952	287390	3.312572e-03
+tcga_mc3	no_hypermutated	CTA	T	C		1455	289043	5.033853e-03
+tcga_mc3	no_hypermutated	CTA	T	G		366	258286	1.417034e-03
+tcga_mc3	no_hypermutated	CTC	T	A		2707	1054238	2.567731e-03
+tcga_mc3	no_hypermutated	CTC	T	C		3616	1008915	3.584048e-03
+tcga_mc3	no_hypermutated	CTC	T	G		1376	974514	1.411986e-03
+tcga_mc3	no_hypermutated	CTG	T	A		3686	1228548	3.000290e-03
+tcga_mc3	no_hypermutated	CTG	T	C		4020	1228403	3.272542e-03
+tcga_mc3	no_hypermutated	CTG	T	G		1624	1139809	1.424800e-03
+tcga_mc3	no_hypermutated	CTT	T	A		3233	1126908	2.868912e-03
+tcga_mc3	no_hypermutated	CTT	T	C		3818	772182	4.944430e-03
+tcga_mc3	no_hypermutated	CTT	T	G		4871	1067464	4.563152e-03
+tcga_mc3	no_hypermutated	GTA	T	A		1271	451278	2.816446e-03
+tcga_mc3	no_hypermutated	GTA	T	C		2817	401780	7.011300e-03
+tcga_mc3	no_hypermutated	GTA	T	G		590	451300	1.307334e-03
+tcga_mc3	no_hypermutated	GTC	T	A		1724	761804	2.263049e-03
+tcga_mc3	no_hypermutated	GTC	T	C		3125	689316	4.533480e-03
+tcga_mc3	no_hypermutated	GTC	T	G		851	761821	1.117060e-03
+tcga_mc3	no_hypermutated	GTG	T	A		2242	907132	2.471526e-03
+tcga_mc3	no_hypermutated	GTG	T	C		2727	784737	3.475050e-03
+tcga_mc3	no_hypermutated	GTG	T	G		1367	907189	1.506852e-03
+tcga_mc3	no_hypermutated	GTT	T	A		1578	725838	2.174039e-03
+tcga_mc3	no_hypermutated	GTT	T	C		2967	505589	5.868403e-03
+tcga_mc3	no_hypermutated	GTT	T	G		1703	725877	2.346128e-03
+tcga_mc3	no_hypermutated	TTA	T	A		1032	353737	2.917422e-03
+tcga_mc3	no_hypermutated	TTA	T	C		1439	316957	4.540048e-03
+tcga_mc3	no_hypermutated	TTA	T	G		716	385029	1.859600e-03
+tcga_mc3	no_hypermutated	TTC	T	A		1929	1067001	1.807871e-03
+tcga_mc3	no_hypermutated	TTC	T	C		2781	987645	2.815789e-03
+tcga_mc3	no_hypermutated	TTC	T	G		1530	1109576	1.378905e-03
+tcga_mc3	no_hypermutated	TTG	T	A		1408	751216	1.874294e-03
+tcga_mc3	no_hypermutated	TTG	T	C		1973	667561	2.955535e-03
+tcga_mc3	no_hypermutated	TTG	T	G		1431	818670	1.747957e-03
+tcga_mc3	no_hypermutated	TTT	T	A		1949	1067237	1.826211e-03
+tcga_mc3	no_hypermutated	TTT	T	C		1988	755552	2.631189e-03
+tcga_mc3	no_hypermutated	TTT	T	G		2539	1097904	2.312588e-03
+depmap_24q4	all	ACA	C	A		6246	964981	6.472666e-03
+depmap_24q4	all	ACA	C	G		2758	964981	2.858087e-03
+depmap_24q4	all	ACA	C	T		8520	667553	1.276303e-02
+depmap_24q4	all	ACC	C	A		5969	883582	6.755457e-03
+depmap_24q4	all	ACC	C	G		2656	883582	3.005946e-03
+depmap_24q4	all	ACC	C	T		8660	637331	1.358792e-02
+depmap_24q4	all	ACG	C	A		3115	342680	9.090113e-03
+depmap_24q4	all	ACG	C	G		1659	366674	4.524455e-03
+depmap_24q4	all	ACG	C	T		9613	251819	3.817424e-02
+depmap_24q4	all	ACT	C	A		5234	853972	6.129007e-03
+depmap_24q4	all	ACT	C	G		3036	853972	3.555152e-03
+depmap_24q4	all	ACT	C	T		5727	468139	1.223355e-02
+depmap_24q4	all	CCA	C	A		8423	969792	8.685368e-03
+depmap_24q4	all	CCA	C	G		2035	969793	2.098386e-03
+depmap_24q4	all	CCA	C	T		11150	915962	1.217299e-02
+depmap_24q4	all	CCC	C	A		10013	878540	1.139732e-02
+depmap_24q4	all	CCC	C	G		2365	878540	2.691966e-03
+depmap_24q4	all	CCC	C	T		15520	842918	1.841223e-02
+depmap_24q4	all	CCG	C	A		5548	371617	1.492935e-02
+depmap_24q4	all	CCG	C	G		2249	443496	5.071072e-03
+depmap_24q4	all	CCG	C	T		14559	443444	3.283165e-02
+depmap_24q4	all	CCT	C	A		17089	1197217	1.427394e-02
+depmap_24q4	all	CCT	C	G		3440	1197218	2.873328e-03
+depmap_24q4	all	CCT	C	T		9179	628452	1.460573e-02
+depmap_24q4	all	GCA	C	A		7079	945003	7.490982e-03
+depmap_24q4	all	GCA	C	G		2184	945053	2.310982e-03
+depmap_24q4	all	GCA	C	T		12854	796123	1.614575e-02
+depmap_24q4	all	GCC	C	A		8362	1174951	7.116893e-03
+depmap_24q4	all	GCC	C	G		4335	1174996	3.689374e-03
+depmap_24q4	all	GCC	C	T		21065	1034128	2.036982e-02
+depmap_24q4	all	GCG	C	A		4368	388140	1.125367e-02
+depmap_24q4	all	GCG	C	G		2093	446385	4.688778e-03
+depmap_24q4	all	GCG	C	T		23279	399208	5.831296e-02
+depmap_24q4	all	GCT	C	A		9291	1220047	7.615280e-03
+depmap_24q4	all	GCT	C	G		3749	1220116	3.072659e-03
+depmap_24q4	all	GCT	C	T		11959	679632	1.759629e-02
+depmap_24q4	all	TCA	C	A		6964	839173	8.298646e-03
+depmap_24q4	all	TCA	C	G		6574	913867	7.193607e-03
+depmap_24q4	all	TCA	C	T		16343	735518	2.221971e-02
+depmap_24q4	all	TCC	C	A		8986	1099913	8.169737e-03
+depmap_24q4	all	TCC	C	G		5073	1162945	4.362201e-03
+depmap_24q4	all	TCC	C	T		26978	989357	2.726822e-02
+depmap_24q4	all	TCG	C	A		3237	296689	1.091041e-02
+depmap_24q4	all	TCG	C	G		2181	361799	6.028209e-03
+depmap_24q4	all	TCG	C	T		16323	309069	5.281345e-02
+depmap_24q4	all	TCT	C	A		19213	1156189	1.661753e-02
+depmap_24q4	all	TCT	C	G		10403	1202335	8.652331e-03
+depmap_24q4	all	TCT	C	T		12349	700816	1.762089e-02
+depmap_24q4	all	ATA	T	A		1927	513676	3.751392e-03
+depmap_24q4	all	ATA	T	C		5278	382920	1.378356e-02
+depmap_24q4	all	ATA	T	G		925	513676	1.800746e-03
+depmap_24q4	all	ATC	T	A		2955	861396	3.430478e-03
+depmap_24q4	all	ATC	T	C		5365	717668	7.475602e-03
+depmap_24q4	all	ATC	T	G		1403	861396	1.628751e-03
+depmap_24q4	all	ATG	T	A		2616	1006422	2.599307e-03
+depmap_24q4	all	ATG	T	C		7791	694486	1.121837e-02
+depmap_24q4	all	ATG	T	G		2517	1006422	2.500939e-03
+depmap_24q4	all	ATT	T	A		2693	804746	3.346397e-03
+depmap_24q4	all	ATT	T	C		4197	548263	7.655085e-03
+depmap_24q4	all	ATT	T	G		2586	804746	3.213436e-03
+depmap_24q4	all	CTA	T	A		942	287390	3.277776e-03
+depmap_24q4	all	CTA	T	C		3038	289043	1.051055e-02
+depmap_24q4	all	CTA	T	G		498	258286	1.928095e-03
+depmap_24q4	all	CTC	T	A		2950	1054238	2.798230e-03
+depmap_24q4	all	CTC	T	C		6276	1008915	6.220544e-03
+depmap_24q4	all	CTC	T	G		1954	974514	2.005102e-03
+depmap_24q4	all	CTG	T	A		3691	1228548	3.004360e-03
+depmap_24q4	all	CTG	T	C		9765	1228403	7.949346e-03
+depmap_24q4	all	CTG	T	G		3053	1139809	2.678519e-03
+depmap_24q4	all	CTT	T	A		3110	1126908	2.759764e-03
+depmap_24q4	all	CTT	T	C		5056	772182	6.547679e-03
+depmap_24q4	all	CTT	T	G		5363	1067464	5.024057e-03
+depmap_24q4	all	GTA	T	A		1601	451278	3.547702e-03
+depmap_24q4	all	GTA	T	C		7831	401780	1.949077e-02
+depmap_24q4	all	GTA	T	G		1222	451300	2.707733e-03
+depmap_24q4	all	GTC	T	A		2182	761804	2.864254e-03
+depmap_24q4	all	GTC	T	C		7564	689316	1.097320e-02
+depmap_24q4	all	GTC	T	G		2176	761821	2.856314e-03
+depmap_24q4	all	GTG	T	A		2430	907132	2.678772e-03
+depmap_24q4	all	GTG	T	C		7539	784737	9.607040e-03
+depmap_24q4	all	GTG	T	G		4421	907189	4.873295e-03
+depmap_24q4	all	GTT	T	A		1896	725838	2.612153e-03
+depmap_24q4	all	GTT	T	C		6120	505589	1.210469e-02
+depmap_24q4	all	GTT	T	G		3274	725877	4.510406e-03
+depmap_24q4	all	TTA	T	A		1028	353737	2.906114e-03
+depmap_24q4	all	TTA	T	C		2739	316957	8.641551e-03
+depmap_24q4	all	TTA	T	G		883	385029	2.293334e-03
+depmap_24q4	all	TTC	T	A		2079	1067001	1.948452e-03
+depmap_24q4	all	TTC	T	C		4876	987645	4.936997e-03
+depmap_24q4	all	TTC	T	G		2081	1109576	1.875491e-03
+depmap_24q4	all	TTG	T	A		1384	751216	1.842346e-03
+depmap_24q4	all	TTG	T	C		3841	667561	5.753781e-03
+depmap_24q4	all	TTG	T	G		2006	818670	2.450316e-03
+depmap_24q4	all	TTT	T	A		2206	1067237	2.067020e-03
+depmap_24q4	all	TTT	T	C		3404	755552	4.505315e-03
+depmap_24q4	all	TTT	T	G		5858	1097904	5.335621e-03
+depmap_24q4	no_hypermutated	ACA	C	A		2879	964981	2.983478e-03
+depmap_24q4	no_hypermutated	ACA	C	G		1493	964981	1.547181e-03
+depmap_24q4	no_hypermutated	ACA	C	T		2857	667553	4.279810e-03
+depmap_24q4	no_hypermutated	ACC	C	A		2637	883582	2.984443e-03
+depmap_24q4	no_hypermutated	ACC	C	G		1508	883582	1.706689e-03
+depmap_24q4	no_hypermutated	ACC	C	T		2744	637331	4.305455e-03
+depmap_24q4	no_hypermutated	ACG	C	A		1223	342680	3.568927e-03
+depmap_24q4	no_hypermutated	ACG	C	G		846	366674	2.307227e-03
+depmap_24q4	no_hypermutated	ACG	C	T		2604	251819	1.034076e-02
+depmap_24q4	no_hypermutated	ACT	C	A		1843	853972	2.158150e-03
+depmap_24q4	no_hypermutated	ACT	C	G		1625	853972	1.902873e-03
+depmap_24q4	no_hypermutated	ACT	C	T		1839	468139	3.928320e-03
+depmap_24q4	no_hypermutated	CCA	C	A		3048	969792	3.142942e-03
+depmap_24q4	no_hypermutated	CCA	C	G		1109	969793	1.143543e-03
+depmap_24q4	no_hypermutated	CCA	C	T		3830	915962	4.181396e-03
+depmap_24q4	no_hypermutated	CCC	C	A		2895	878540	3.295240e-03
+depmap_24q4	no_hypermutated	CCC	C	G		1354	878540	1.541193e-03
+depmap_24q4	no_hypermutated	CCC	C	T		4643	842918	5.508246e-03
+depmap_24q4	no_hypermutated	CCG	C	A		1938	371617	5.215047e-03
+depmap_24q4	no_hypermutated	CCG	C	G		1128	443496	2.543428e-03
+depmap_24q4	no_hypermutated	CCG	C	T		4590	443444	1.035080e-02
+depmap_24q4	no_hypermutated	CCT	C	A		3087	1197217	2.578480e-03
+depmap_24q4	no_hypermutated	CCT	C	G		2012	1197218	1.680563e-03
+depmap_24q4	no_hypermutated	CCT	C	T		2988	628452	4.754540e-03
+depmap_24q4	no_hypermutated	GCA	C	A		3449	945003	3.649724e-03
+depmap_24q4	no_hypermutated	GCA	C	G		1054	945053	1.115281e-03
+depmap_24q4	no_hypermutated	GCA	C	T		2865	796123	3.598690e-03
+depmap_24q4	no_hypermutated	GCC	C	A		3485	1174951	2.966081e-03
+depmap_24q4	no_hypermutated	GCC	C	G		1862	1174996	1.584686e-03
+depmap_24q4	no_hypermutated	GCC	C	T		4463	1034128	4.315713e-03
+depmap_24q4	no_hypermutated	GCG	C	A		1893	388140	4.877106e-03
+depmap_24q4	no_hypermutated	GCG	C	G		957	446385	2.143889e-03
+depmap_24q4	no_hypermutated	GCG	C	T		4533	399208	1.135498e-02
+depmap_24q4	no_hypermutated	GCT	C	A		3244	1220047	2.658914e-03
+depmap_24q4	no_hypermutated	GCT	C	G		1809	1220116	1.482646e-03
+depmap_24q4	no_hypermutated	GCT	C	T		2439	679632	3.588707e-03
+depmap_24q4	no_hypermutated	TCA	C	A		2547	839173	3.035131e-03
+depmap_24q4	no_hypermutated	TCA	C	G		3135	913867	3.430477e-03
+depmap_24q4	no_hypermutated	TCA	C	T		5490	735518	7.464127e-03
+depmap_24q4	no_hypermutated	TCC	C	A		3377	1099913	3.070243e-03
+depmap_24q4	no_hypermutated	TCC	C	G		2577	1162945	2.215926e-03
+depmap_24q4	no_hypermutated	TCC	C	T		6594	989357	6.664935e-03
+depmap_24q4	no_hypermutated	TCG	C	A		1324	296689	4.462585e-03
+depmap_24q4	no_hypermutated	TCG	C	G		1072	361799	2.962971e-03
+depmap_24q4	no_hypermutated	TCG	C	T		4357	309069	1.409718e-02
+depmap_24q4	no_hypermutated	TCT	C	A		3931	1156189	3.399963e-03
+depmap_24q4	no_hypermutated	TCT	C	G		5091	1202335	4.234261e-03
+depmap_24q4	no_hypermutated	TCT	C	T		3713	700816	5.298110e-03
+depmap_24q4	no_hypermutated	ATA	T	A		765	513676	1.489266e-03
+depmap_24q4	no_hypermutated	ATA	T	C		2005	382920	5.236081e-03
+depmap_24q4	no_hypermutated	ATA	T	G		495	513676	9.636425e-04
+depmap_24q4	no_hypermutated	ATC	T	A		1220	861396	1.416306e-03
+depmap_24q4	no_hypermutated	ATC	T	C		1784	717668	2.485829e-03
+depmap_24q4	no_hypermutated	ATC	T	G		571	861396	6.628775e-04
+depmap_24q4	no_hypermutated	ATG	T	A		1200	1006422	1.192343e-03
+depmap_24q4	no_hypermutated	ATG	T	C		2798	694486	4.028879e-03
+depmap_24q4	no_hypermutated	ATG	T	G		1430	1006422	1.420875e-03
+depmap_24q4	no_hypermutated	ATT	T	A		893	804746	1.109667e-03
+depmap_24q4	no_hypermutated	ATT	T	C		1909	548263	3.481906e-03
+depmap_24q4	no_hypermutated	ATT	T	G		913	804746	1.134519e-03
+depmap_24q4	no_hypermutated	CTA	T	A		358	287390	1.245694e-03
+depmap_24q4	no_hypermutated	CTA	T	C		787	289043	2.722778e-03
+depmap_24q4	no_hypermutated	CTA	T	G		241	258286	9.330742e-04
+depmap_24q4	no_hypermutated	CTC	T	A		1160	1054238	1.100321e-03
+depmap_24q4	no_hypermutated	CTC	T	C		2092	1008915	2.073515e-03
+depmap_24q4	no_hypermutated	CTC	T	G		782	974514	8.024513e-04
+depmap_24q4	no_hypermutated	CTG	T	A		1395	1228548	1.135487e-03
+depmap_24q4	no_hypermutated	CTG	T	C		2679	1228403	2.180880e-03
+depmap_24q4	no_hypermutated	CTG	T	G		1367	1139809	1.199324e-03
+depmap_24q4	no_hypermutated	CTT	T	A		1345	1126908	1.193531e-03
+depmap_24q4	no_hypermutated	CTT	T	C		1817	772182	2.353072e-03
+depmap_24q4	no_hypermutated	CTT	T	G		1997	1067464	1.870789e-03
+depmap_24q4	no_hypermutated	GTA	T	A		574	451278	1.271943e-03
+depmap_24q4	no_hypermutated	GTA	T	C		1425	401780	3.546717e-03
+depmap_24q4	no_hypermutated	GTA	T	G		717	451300	1.588744e-03
+depmap_24q4	no_hypermutated	GTC	T	A		819	761804	1.075080e-03
+depmap_24q4	no_hypermutated	GTC	T	C		1769	689316	2.566312e-03
+depmap_24q4	no_hypermutated	GTC	T	G		1070	761821	1.404529e-03
+depmap_24q4	no_hypermutated	GTG	T	A		962	907132	1.060485e-03
+depmap_24q4	no_hypermutated	GTG	T	C		1737	784737	2.213480e-03
+depmap_24q4	no_hypermutated	GTG	T	G		2481	907189	2.734822e-03
+depmap_24q4	no_hypermutated	GTT	T	A		743	725838	1.023644e-03
+depmap_24q4	no_hypermutated	GTT	T	C		1525	505589	3.016284e-03
+depmap_24q4	no_hypermutated	GTT	T	G		1383	725877	1.905281e-03
+depmap_24q4	no_hypermutated	TTA	T	A		387	353737	1.094033e-03
+depmap_24q4	no_hypermutated	TTA	T	C		827	316957	2.609187e-03
+depmap_24q4	no_hypermutated	TTA	T	G		370	385029	9.609666e-04
+depmap_24q4	no_hypermutated	TTC	T	A		887	1067001	8.313019e-04
+depmap_24q4	no_hypermutated	TTC	T	C		1564	987645	1.583565e-03
+depmap_24q4	no_hypermutated	TTC	T	G		944	1109576	8.507754e-04
+depmap_24q4	no_hypermutated	TTG	T	A		621	751216	8.266597e-04
+depmap_24q4	no_hypermutated	TTG	T	C		1244	667561	1.863500e-03
+depmap_24q4	no_hypermutated	TTG	T	G		1127	818670	1.376623e-03
+depmap_24q4	no_hypermutated	TTT	T	A		923	1067237	8.648501e-04
+depmap_24q4	no_hypermutated	TTT	T	C		1229	755552	1.626625e-03
+depmap_24q4	no_hypermutated	TTT	T	G		1373	1097904	1.250565e-03
+gnomad_germline		ACA	C	A	0			2.9409e-09
+gnomad_germline		ACA	C	G	0			2.3710e-09
+gnomad_germline		ACA	C	T	0			9.3201e-09
+gnomad_germline		ACC	C	A	0			5.7034e-09
+gnomad_germline		ACC	C	G	0			2.4639e-09
+gnomad_germline		ACC	C	T	0			9.9720e-09
+gnomad_germline		ACG	C	A	0			6.6879e-09
+gnomad_germline		ACG	C	G	0			4.9426e-09
+gnomad_germline		ACG	C	T	0			2.6612e-08
+gnomad_germline		ACG	C	T	1			1.0750e-07
+gnomad_germline		ACG	C	T	2			1.4169e-07
+gnomad_germline		ACT	C	A	0			2.0967e-09
+gnomad_germline		ACT	C	G	0			3.0337e-09
+gnomad_germline		ACT	C	T	0			7.9566e-09
+gnomad_germline		CCA	C	A	0			2.1462e-09
+gnomad_germline		CCA	C	G	0			1.7760e-09
+gnomad_germline		CCA	C	T	0			6.7244e-09
+gnomad_germline		CCC	C	A	0			3.0275e-09
+gnomad_germline		CCC	C	G	0			3.2054e-09
+gnomad_germline		CCC	C	T	0			8.5724e-09
+gnomad_germline		CCG	C	A	0			5.1901e-09
+gnomad_germline		CCG	C	G	0			5.3627e-09
+gnomad_germline		CCG	C	T	0			2.0993e-08
+gnomad_germline		CCG	C	T	1			8.2387e-08
+gnomad_germline		CCG	C	T	2			1.2483e-07
+gnomad_germline		CCT	C	A	0			1.7092e-09
+gnomad_germline		CCT	C	G	0			2.6842e-09
+gnomad_germline		CCT	C	T	0			8.1422e-09
+gnomad_germline		GCA	C	A	0			3.3394e-09
+gnomad_germline		GCA	C	G	0			1.6675e-09
+gnomad_germline		GCA	C	T	0			6.8845e-09
+gnomad_germline		GCC	C	A	0			3.7538e-09
+gnomad_germline		GCC	C	G	0			2.2808e-09
+gnomad_germline		GCC	C	T	0			8.6359e-09
+gnomad_germline		GCG	C	A	0			8.8520e-09
+gnomad_germline		GCG	C	G	0			3.9695e-09
+gnomad_germline		GCG	C	T	0			1.4846e-08
+gnomad_germline		GCG	C	T	1			7.0178e-08
+gnomad_germline		GCG	C	T	2			1.2296e-07
+gnomad_germline		GCT	C	A	0			2.0008e-09
+gnomad_germline		GCT	C	G	0			2.3044e-09
+gnomad_germline		GCT	C	T	0			7.7891e-09
+gnomad_germline		TCA	C	A	0			2.3099e-09
+gnomad_germline		TCA	C	G	0			2.1414e-09
+gnomad_germline		TCA	C	T	0			5.7989e-09
+gnomad_germline		TCC	C	A	0			2.5995e-09
+gnomad_germline		TCC	C	G	0			2.5440e-09
+gnomad_germline		TCC	C	T	0			7.6664e-09
+gnomad_germline		TCG	C	A	0			5.1503e-09
+gnomad_germline		TCG	C	G	0			5.5213e-09
+gnomad_germline		TCG	C	T	0			1.9329e-08
+gnomad_germline		TCG	C	T	1			7.2389e-08
+gnomad_germline		TCG	C	T	2			1.0005e-07
+gnomad_germline		TCT	C	A	0			2.6557e-09
+gnomad_germline		TCT	C	G	0			3.5919e-09
+gnomad_germline		TCT	C	T	0			5.5597e-09
+gnomad_germline		ATA	T	A	0			1.8687e-09
+gnomad_germline		ATA	T	C	0			1.1196e-08
+gnomad_germline		ATA	T	G	0			1.1890e-09
+gnomad_germline		ATC	T	A	0			2.9242e-09
+gnomad_germline		ATC	T	C	0			5.3443e-09
+gnomad_germline		ATC	T	G	0			1.0943e-09
+gnomad_germline		ATG	T	A	0			2.3466e-09
+gnomad_germline		ATG	T	C	0			1.1275e-08
+gnomad_germline		ATG	T	G	0			2.0022e-09
+gnomad_germline		ATT	T	A	0			1.5138e-09
+gnomad_germline		ATT	T	C	0			7.7544e-09
+gnomad_germline		ATT	T	G	0			1.2703e-09
+gnomad_germline		CTA	T	A	0			1.0818e-09
+gnomad_germline		CTA	T	C	0			5.1781e-09
+gnomad_germline		CTA	T	G	0			1.0799e-09
+gnomad_germline		CTC	T	A	0			1.1340e-09
+gnomad_germline		CTC	T	C	0			3.1245e-09
+gnomad_germline		CTC	T	G	0			1.2532e-09
+gnomad_germline		CTG	T	A	0			1.1632e-09
+gnomad_germline		CTG	T	C	0			5.2348e-09
+gnomad_germline		CTG	T	G	0			1.6210e-09
+gnomad_germline		CTT	T	A	0			9.4450e-10
+gnomad_germline		CTT	T	C	0			3.9291e-09
+gnomad_germline		CTT	T	G	0			1.4983e-09
+gnomad_germline		GTA	T	A	0			1.1486e-09
+gnomad_germline		GTA	T	C	0			6.1812e-09
+gnomad_germline		GTA	T	G	0			1.0244e-09
+gnomad_germline		GTC	T	A	0			1.8684e-09
+gnomad_germline		GTC	T	C	0			4.2353e-09
+gnomad_germline		GTC	T	G	0			1.0495e-09
+gnomad_germline		GTG	T	A	0			1.4118e-09
+gnomad_germline		GTG	T	C	0			5.0796e-09
+gnomad_germline		GTG	T	G	0			1.8485e-09
+gnomad_germline		GTT	T	A	0			1.3560e-09
+gnomad_germline		GTT	T	C	0			5.2457e-09
+gnomad_germline		GTT	T	G	0			1.3911e-09
+gnomad_germline		TTA	T	A	0			1.8172e-09
+gnomad_germline		TTA	T	C	0			4.1342e-09
+gnomad_germline		TTA	T	G	0			1.3516e-09
+gnomad_germline		TTC	T	A	0			9.4166e-10
+gnomad_germline		TTC	T	C	0			3.0181e-09
+gnomad_germline		TTC	T	G	0			1.2103e-09
+gnomad_germline		TTG	T	A	0			9.1862e-10
+gnomad_germline		TTG	T	C	0			3.8238e-09
+gnomad_germline		TTG	T	G	0			1.9615e-09
+gnomad_germline		TTT	T	A	0			1.0670e-09
+gnomad_germline		TTT	T	C	0			3.0288e-09
+gnomad_germline		TTT	T	G	0			1.8303e-09
