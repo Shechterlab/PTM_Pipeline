@@ -157,7 +157,7 @@ figures; they read staged files from `PTM_data/` and write `PTM_results/` (paths
 
 Cite the paper and the studies that reported the sites you use (each release's studies table lists them). For the
 data, add their archive on Zenodo, [doi:10.5281/zenodo.22696798](https://doi.org/10.5281/zenodo.22696798), which
-opens the most recent version and lists every version with its own DOI (v1.6.0 is
-[doi:10.5281/zenodo.24406688](https://doi.org/10.5281/zenodo.24406688)). Code is MIT;
+opens the most recent version and lists every version with its own DOI (v1.7.0 is
+[doi:10.5281/zenodo.24429699](https://doi.org/10.5281/zenodo.24429699)). Code is MIT;
 data and content are CC BY-NC-SA 4.0; third-party data keep their own terms, and PhosphoSitePlus®, DisGeNET, CD-CODE,
 the pepR-MS compendium and the Trendel et al. 2025 DNA crosslinks are non-commercial. See [LICENSE.md](LICENSE.md).
