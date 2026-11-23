@@ -212,3 +212,41 @@ def test_set_scope_on_v1_7_0_matches_its_observed():
         assert int(r['sites']) <= s['sites_weighted'] <= s['sites_total'] and int(r['observed']) <= s['k_total']
     m = sets[(sets['site_set'] == 'methylarginine') & (sets['source'] == 'tcga_mc3') & (sets['cohort'] == 'all')].iloc[0]
     assert m['observed'] == '4462'
+
+
+def test_classify_clinvar_corrects_clinvar_names_and_leaves_classify_alone():
+    import disease_families as D
+    # classify() is unchanged: the DisGeNET analyses of earlier releases stay reproducible
+    assert D.classify('Lynch syndrome')[0] == 'Developmental / congenital syndromes'
+    assert D.classify('Primary ciliary dyskinesia')[0] == 'Skin, hair and nails'
+    cases = {'Lynch syndrome': 'Cancer / neoplasia', 'Li-Fraumeni syndrome 1': 'Cancer / neoplasia', 'Retinoblastoma': 'Cancer / neoplasia',
+             'Malignant hyperthermia, susceptibility to, 1': 'Myopathy / muscle / cardiomyopathy', 'Retinal dystrophy': 'Eye and ear',
+             'Early-infantile DEE': 'Epilepsy and seizures', 'Primary ciliary dyskinesia': 'Respiratory', 'Nephronophthisis': 'Kidney, urinary and reproductive',
+             'Congenital bilateral aplasia of vas deferens from CFTR mutation': 'Kidney, urinary and reproductive', 'Long QT syndrome 1': 'Cardiovascular',
+             'Propionic acidemia': 'Metabolic and mitochondrial', 'Hereditary factor VIII deficiency disease': 'Blood and haematological',
+             'Severe combined immunodeficiency disease': 'Immune / inflammatory', 'Neuronal ceroid lipofuscinosis': 'Neurodegeneration and neuromuscular (other)',
+             'Familial cancer of breast': 'Cancer / neoplasia', 'Dilated cardiomyopathy 1G': 'Myopathy / muscle / cardiomyopathy'}
+    for name, fam in cases.items():
+        assert D.classify_clinvar(name)[0] == fam, name
+    assert D.CLINVAR_FAMILIES == ['Epilepsy and seizures']
+
+
+AM = LAYERS / 'alphamissense_summary.json'
+
+
+@pytest.mark.skipif(not AM.exists(), reason='AlphaMissense not staged')
+def test_alphamissense_staging():
+    s = json.loads(AM.read_text(encoding='utf-8'))
+    assert s['input']['md5'] == 'b9ccb339e0de6cb0a8d1973ad2026576'           # the Zenodo record's MD5 of AlphaMissense_aa_substitutions.tsv.gz
+    assert s['counts']['entries_matched'] == 19382 and s['counts']['candidate_residues'] == 2965479
+    seqs = parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    t = read('alphamissense_residues.tsv.gz')
+    st = read('alphamissense_status.tsv')
+    assert set(st['canonical_UniProtAC']) == set(seqs) and set(t['canonical_UniProtAC']) <= set(st.loc[st['status'] == 'matched', 'canonical_UniProtAC'])
+    sample = t.sample(n=5000, random_state=3)
+    assert all(seqs[a][int(p) - 1] == r for a, p, r in zip(sample['canonical_UniProtAC'], sample['position'], sample['residue']))
+    mn, mx = t['am_mean_pathogenicity'].astype(float), t['am_max_pathogenicity'].astype(float)
+    assert ((0 <= mn) & (mn <= mx) & (mx <= 1)).all() and t['am_pathogenic'].astype(int).between(0, 19).all()
+    manifest = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}
+    for name in ('alphamissense_residues.tsv.gz', 'alphamissense_status.tsv', 'alphamissense_summary.json'):
+        assert manifest[f'layers/{name}']['md5'] == md5(LAYERS / name), name
