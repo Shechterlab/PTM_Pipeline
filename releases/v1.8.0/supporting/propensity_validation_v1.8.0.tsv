@@ -1,0 +1,5 @@
+source	cohort	units_available	units	residues	binomial_q05	permutation_q05	both_q05	agreement	binomial_p05	permutation_p05	both_p05	agreement_p05	median_abs_p_difference	max_abs_p_difference	max_abs_p_difference_p_above_0_001	iterations	seed
+tcga_mc3	all	56912	1000	42373	5	0	0	0.9999	747	744	734	0.9995	0	0.01732	0.01732	10000	20262120
+depmap_24q4	all	30940	1000	52590	14	0	0	0.9997	1006	1010	986	0.9992	0	0.01347	0.01347	10000	20262121
+clinvar	all	62722	1000	37321	0	0	0	1	557	550	538	0.9992	0	0.01721	0.01721	10000	20262122
+gnomad_v4_1	all	90151	1000	34760	0	0	0	1	1401	1399	1378	0.9987	0.001302	0.02253	0.02253	10000	20262123

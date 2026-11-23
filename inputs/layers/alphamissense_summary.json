@@ -1,0 +1,34 @@
+{
+ "generated": "2026-11-23",
+ "input": {
+  "file": "AlphaMissense_aa_substitutions.tsv.gz",
+  "url": "https://zenodo.org/records/10813168/files/AlphaMissense_aa_substitutions.tsv.gz",
+  "md5": "b9ccb339e0de6cb0a8d1973ad2026576"
+ },
+ "reference": {
+  "fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "md5": "c75aad9d197cbba00f51063f65a96ac4"
+ },
+ "citation": "Cheng et al., Science 381:eadg7492 (2023), doi:10.1126/science.adg7492; predictions doi:10.5281/zenodo.10813168",
+ "license": "CC BY 4.0 (Zenodo record 10813168; DeepMind moved the predictions from CC BY-NC-SA 4.0 to CC BY 4.0 on 13 March 2024; the file header still names CC BY-NC-SA 4.0)",
+ "rule": "an entry counts when AlphaMissense's sequence (reference residue and position of its substitutions) equals the 2026_03 canonical sequence over its whole length; per candidate residue the mean and highest pathogenicity over its 19 substitutions and the number AlphaMissense classes pathogenic",
+ "caveat": "AlphaMissense is less reliable in intrinsically disordered regions",
+ "counts": {
+  "alphamissense_scored_positions_on_reference_entries": 11312899,
+  "alphamissense_substitutions_on_reference_entries": 214945063,
+  "candidate_residues": 2965479,
+  "candidate_residues_K": 614100,
+  "candidate_residues_R": 603823,
+  "candidate_residues_S": 890786,
+  "candidate_residues_T": 570572,
+  "candidate_residues_Y": 286198,
+  "entries_matched": 19382,
+  "entries_not_in_alphamissense": 183,
+  "entries_sequence_differs": 851,
+  "residues_with_19_substitutions": 2965479
+ },
+ "md5": {
+  "alphamissense_residues.tsv.gz": "1f5788ff4110b77c9fe12820b3d7154d",
+  "alphamissense_status.tsv": "f0e99f604d1dea830d078dc5b553fe3e"
+ }
+}

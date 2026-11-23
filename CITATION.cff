@@ -2,9 +2,9 @@ cff-version: 1.2.0
 message: >-
   If you use these data or this code, please cite the paper below, and the original studies that reported the
   sites you use (each release's studies table lists them).
-title: "PTM_Pipeline: human methylarginine sites, context marks and the Methylarginine Site Explorer"
-version: v1.7.0
-date-released: "2026-11-20"
+title: "PTM_Pipeline: human post-translational modification sites (arginine methylation, lysine methylation, acetylation and other acylations, ubiquitination, SUMOylation, phosphorylation), with interaction context, cancer and germline variants, and mutation propensity"
+version: v1.8.0
+date-released: "2026-11-23"
 authors:
   - family-names: DeAngelo
     given-names: J. D.
@@ -20,8 +20,8 @@ identifiers:
     value: 10.5281/zenodo.22696798
     description: "Zenodo archive, all versions (resolves to the most recent)"
   - type: doi
-    value: 10.5281/zenodo.24406688
-    description: "Zenodo archive of v1.6.0"
+    value: 10.5281/zenodo.24429699
+    description: "Zenodo archive of v1.7.0"
 repository-code: "https://github.com/Shechterlab/PTM_Pipeline"
 url: "https://shechterlab.github.io/PTM_Pipeline/"
 keywords:
