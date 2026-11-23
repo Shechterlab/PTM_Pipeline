@@ -323,7 +323,8 @@ def main() -> None:
                                                                      if flag[idx].any())),
                                      'observed': r['observed'], 'expected': P.fmt(r['expected']), 'oe': P.fmt(r['oe']), 'expected_unweighted': P.fmt(eu),
                                      'oe_unweighted': P.fmt(r['observed'] / eu if eu and eu > 0 else np.nan), 'p_upper': P.fmt(r['p_upper'], 4),
-                                     'p_lower': P.fmt(r['p_lower'], 4), 'iterations': P.ITERATIONS, 'seed': P.SEED + i, 'oe_status': OE_STATUS[src]})
+                                     'p_lower': P.fmt(r['p_lower'], 4), 'iterations': P.ITERATIONS, 'seed': P.SEED + i, 'oe_status': OE_STATUS[src],
+                                     **P.set_scope(in_set, frame['relative_mutability' + sfx].notna().to_numpy(), frame['k' + sfx].to_numpy())})
                     i += 1
     set_table = pd.DataFrame(set_rows)
     name = f'supporting/site_set_propensity_{version}.tsv'
@@ -544,7 +545,12 @@ def dictionary_rows(version: str) -> list[str]:
               ('p_upper', 'number', '', '', 'share of draws, each protein\'s n changes redrawn over its residues by mutability, with at least the '
                'observed at the sites ((1 + count) / (iterations + 1))'),
               ('p_lower', 'number', '', '', 'the same, at most the observed'), ('iterations', 'integer', '', '', 'draws'),
-              ('seed', 'integer', '', '', 'NumPy default_rng seed'), ('oe_status', 'string', 'test; descriptive', '', 'as in the per-site tables')):
+              ('seed', 'integer', '', '', 'NumPy default_rng seed'), ('oe_status', 'string', 'test; descriptive', '', 'as in the per-site tables'),
+              ('sites_total', 'integer', '', '', 'the set\'s sites of this residue type, on every protein'),
+              ('sites_weighted', 'integer', '', '', 'of those, the sites on proteins with weights (a coding sequence that translates to the canonical '
+               'sequence): the sites observed and expected cover (sites counts those of them on proteins with a change)'),
+              ('k_total', 'integer', '', '', 'the sum of k over all sites_total, proteins without weights included (observed is the sum over '
+               'sites_weighted)')):
         rows.append('\t'.join([f, *c]))
     f = f'supporting/propensity_controls_{version}.tsv'
     for c in (('control', 'string', '', '', 'the control (histone numbering for the oncohistones, with the UniProt position)'),
@@ -686,7 +692,9 @@ def write_docs(args, prev, out, version, previous, arginine_sets, carried, edite
         'rates as gnomAD\'s does, but is descriptive: `oe_status` says `descriptive` on its rows, and the data dictionary says so.',
         '- **Site sets.** For each set, residue and source, over the proteins with a site of the set: the changes at the set\'s sites '
         'against the sum over the proteins of n times the sites\' share of the protein\'s mutability. p from 10,000 draws, each protein\'s '
-        'changes redrawn over its residues by mutability (a fixed seed per row). The same code serves any set of residues.', '',
+        'changes redrawn over its residues by mutability (a fixed seed per row). The same code serves any set of residues. '
+        '`sites_total`, `sites_weighted` and `k_total` give the scope: the test covers sites_weighted of sites_total sites and '
+        'observed of k_total changes (the rest lie on proteins without weights).', '',
         *per_source_table(), '',
         '### Site sets', '', 'A p of 9.999e-05 is the smallest 10,000 draws give ((1 + 0) / 10,001).', '', *set_md(), '',
         '### Controls', '',

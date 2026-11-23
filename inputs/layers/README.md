@@ -15,6 +15,7 @@ the release (`../../ADDING_A_SOURCE.md` says how to add one).
 | ClinVar variants at every candidate R, K, S, T and Y (v1.6.0), and each protein's background | `scripts/67_stage_clinvar.py` (from ClinVar's hgvs4variation and variant_summary tables and UniProt's RefSeq cross-references) | `clinvar_changes_{R,K,S,T,Y}.tsv.gz`, `clinvar_protein_background.tsv.gz`, `clinvar_summary.json` |
 | gnomAD v4.1 exome variants at every candidate R, K, S, T and Y (v1.6.0), and each protein's background | `scripts/69_stage_gnomad.py` (streamed from Google's public copy, `gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/`) | `gnomad_v4_1_changes_{R,K,S,T,Y}.tsv.gz`, `gnomad_protein_background.tsv.gz`, `gnomad_summary.json` |
 | Mutation propensity inputs (v1.7.0): coding sequences with their genomic neighbors and CpG methylation, the TCGA and DepMap spectra, gnomAD's germline rates, each sample's coding mutation burden, and the TCGA and DepMap changes at every residue of H3 | `scripts/70_stage_propensity.py` (from the Ensembl 105 GRCh38 genome and GTF, Ensembl's GRCh38-to-GRCh37 chain, gnomAD's methylation and mutation-rate tables of the v2.1.1 flagship paper, and the inputs of scripts/66); the release computes the propensity (`scripts/propensity.py`, `scripts/71_release_propensity.py`) | `propensity_cds.tsv.gz`, `propensity_cds_status.tsv`, `gnomad_v2_1_1_mutation_rates.txt.bgz`, `propensity_somatic_spectra.tsv`, `propensity_sample_burden.tsv`, `tcga_mc3_changes_h3_all_residues.tsv.gz`, `depmap_24q4_changes_h3_all_residues.tsv.gz`, `propensity_inputs_summary.json` |
+| AlphaMissense predicted pathogenicity per candidate residue (v1.8.0) | `scripts/72_stage_alphamissense.py` (from AlphaMissense_aa_substitutions.tsv.gz, Zenodo 10.5281/zenodo.10813168) | `alphamissense_residues.tsv.gz`, `alphamissense_status.tsv`, `alphamissense_summary.json` |
 | Writer perturbations: PRMT7 knockout (Szewczyk et al. 2020), PRMT1 knockdown (Hartel et al. 2019), PRMT5 inhibitor (Lu et al. 2024), PRMT7, CARM1 and PRMT5 knockdowns and the PRMT7 inhibitor SGC3027 (Li et al. 2021) | `scripts/45_stage_prmt7_szewczyk2020.py`, `scripts/46_stage_hartel2019_prmt1_kd.py`, `scripts/51_stage_lu2024_prmt5.py`, `scripts/50_stage_li2021_perturbations.py` | `prmt7_ko_*`, `hartel2019_prmt1_kd_*`, `lu2024_prmt5_*`, `li2021_*` |
 | PaxDb 6.1 protein abundance | `scripts/47_stage_paxdb.py` | `paxdb_human_integrated_abundance.tsv`, `paxdb_summary.json` |
 | Reactome 97 pathways | `scripts/48_stage_reactome.py` | `reactome_human_protein_pathways.tsv`, `reactome_human_pathways.tsv`, `reactome_summary.json` |
@@ -153,6 +154,14 @@ the best reliability and counts a location as main when any of the genes has it 
   in UniProt numbering, which counts the initiator methionine).
 - The genome (881 MB) and gnomAD's methylation table (247 MB) are not kept; `raw_files.tsv` gives their URLs, MD5 and
   SHA-256.
+
+- **`alphamissense_residues.tsv.gz`** (2,965,479 rows): for each candidate residue (R, K, S, T, Y) of the 19,382 reviewed entries
+  whose AlphaMissense sequence equals the 2026_03 canonical sequence over its whole length, the mean and highest predicted
+  pathogenicity over its 19 substitutions and how many of them AlphaMissense classes pathogenic (Cheng et al., Science
+  381:eadg7492, 2023). The Zenodo record states CC BY 4.0 (DeepMind changed it from CC BY-NC-SA 4.0 on 13 March 2024); the
+  file's own header still names CC BY-NC-SA 4.0. The scores are less reliable in intrinsically disordered regions. The source
+  (1.2 GB) is not kept; `raw_files.tsv` gives its URL, MD5 and SHA-256.
+- **`alphamissense_status.tsv`**: every reviewed entry, matched (19,382), sequence_differs (851) or not_in_alphamissense (183).
 
 ## CPLM tables
 

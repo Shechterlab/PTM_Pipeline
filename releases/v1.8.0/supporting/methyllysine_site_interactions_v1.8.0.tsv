@@ -1,0 +1,1359 @@
+site_id	evidence_type	localisation	partner_kind	partner_accession	partner_gene	source	structures	score	distance_a	detail	counts_as_evidence
+A0AVT1:K796	pdb_protein	at_residue	protein	Q9H832	UBE2Z	PDBe-KB	28mp; 28mq; 9ylb			3 PDB entries	true
+A0AVT1:K991	pdb_protein	at_residue	protein	Q9H832	UBE2Z	PDBe-KB	28mp; 28mq; 9ykv; 9ykw; 9ylb; 9ylf			6 PDB entries	true
+A0AVT1:K991	pdb_protein	at_residue	protein	Q9NR09	BIRC6	PDBe-KB	9qgw; 9qh5; 9qhi; 9qia; 9qim; 9qio; 9qip; 9qiv; 9xgb; 9xgc			10 PDB entries	true
+E9PRG8:K93	rbrid_residue	at_residue	rna			RBR-ID				84-96 TAMEVEAPSKPAR (log2 +4SU/-4SU -1.14, p 4.7e-06)	true
+O00203:K90	pdb_protein	at_residue	protein	P84077	ARF1	PDBe-KB	9c5a			1 PDB entries	true
+O00268:K595	pdb_self	at_residue	self			PDBe-KB	2p6v			1 PDB entries	true
+O00268:K605	pdb_self	at_residue	self			PDBe-KB	2p6v			1 PDB entries	true
+O00268:K611	pdb_self	at_residue	self			PDBe-KB	2p6v			1 PDB entries	true
+O00268:K658	rbrid_residue	at_residue	rna			RBR-ID				644-659 ELNSSPQPYLVPFLKR (log2 +4SU/-4SU -0.58, p 0.0017)	true
+O00370:K541	pdb_rna	at_residue	rna			PDBe-KB	8c8j; 8sxu; 8uw3; 9hdo; 9hdp; 9hdq; 9hdr; 9k6g; 9k6h; 9k6i			10 PDB entries	true
+O00425:K190	capri_adj_peptide	in_fragment	rna			CAPRI				151-190 VAYIPDEMAAQQNPLQQPRGRRGLGQRGSSRQGSPGSVSK	true
+O00444:K699	pdb_protein	at_residue	protein	Q8TEP8	CEP192	PDBe-KB	4n7z; 6w3j			2 PDB entries	true
+O00541:K108	pdb_rna	at_residue	rna			PDBe-KB	8fkt; 8fku; 8fkv; 8fkw; 8fkx; 8fky; 8fkz; 8fl2; 8fl3; 8fl6; 8fl7; 8fla; 8flb; 8fld; 8fle; 8ine; 8inf; 8ipx; 8ipy; 8ir3			20 PDB entries	true
+O00541:K111	pdb_rna	at_residue	rna			PDBe-KB	8fkt; 8fku; 8fkv; 8fkw; 8fl2; 8fl3; 8fl6; 8fl7; 8flb; 8fld; 8fle; 8ir3			12 PDB entries	true
+O00541:K115	pdb_protein	at_residue	protein	Q9NZM5	NOP53	PDBe-KB	8fkz; 8fl2; 8fl6; 8fla; 8fld; 8fle; 8ine; 8inf; 8ipx; 8ipy; 8ir3			11 PDB entries	true
+O00570:K75	dna_binding_region	in_region	dna			UniProt					false
+O00570:K90	dna_binding_region	in_region	dna			UniProt					false
+O00571:K35	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. [G]RYIPPHLR at 36 (612.0506 Da)	false
+O00571:K35	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+O00764:K297	pdb_self	at_residue	self			PDBe-KB	2f7k; 2yxt; 2yxu; 3fhx; 3fhy; 3keu; 4eoh; 8wr2			8 PDB entries	true
+O14497:K984	rbrid_residue	at_residue	rna			RBR-ID				981-990 MNNKADGTPK (log2 +4SU/-4SU -0.75, p 0.0033)	true
+O14646:K962	pdb_dna	at_residue	dna			PDBe-KB	9nh8			1 PDB entries	true
+O14678:K225	pdb_self	at_residue	self			PDBe-KB	24vc; 24vd; 24ve; 6jbj			4 PDB entries	true
+O14777:K393	pdb_protein	at_residue	protein	Q9BZD4	NUF2	PDBe-KB	8g0p			1 PDB entries	true
+O14802:K1224	pdb_protein	at_residue	protein	Q9Y2Y1	POLR3K	PDBe-KB	9fso; 9fsp; 9fsq			3 PDB entries	true
+O14950:K7	pdb_protein	at_residue	protein	P35580	MYH10	PDBe-KB	9z3z; 9z40			2 PDB entries	true
+O14979:K161	capri_adj_peptide	in_fragment	rna			CAPRI				150-161 MFIGGLSWDTSK	true
+O14979:K311	rna_crosslink	candidate_residue	rna			pRBS-ID				VAQP[K]EVYR at 311 (226.0594 Da)	true
+O14980:K129	pdb_protein	at_residue	protein	P62826	RAN	PDBe-KB	5dis; 6tvo; 7b51; 9b62			4 PDB entries	true
+O15143:K326	pdb_protein	at_residue	protein	P59998	ARPC4	PDBe-KB	6uhc			1 PDB entries	true
+O15226:K398	rna_crosslink	at_residue	rna			pepR-MS				TS[K]HAAADEALK at 398 (611.0666 Da)	true
+O15226:K398	rna_crosslink	at_residue	rna			pepR-MS_focused					true
+O15347:K55	dna_binding_region	in_region	dna			UniProt					false
+O15347:K57	dna_binding_region	in_region	dna			UniProt					false
+O43524:K230	dna_binding_region	in_region	dna			UniProt					false
+O43524:K230	pdb_dna	at_residue	dna			PDBe-KB	2uzk			1 PDB entries	true
+O60216:K330	pdb_protein	at_residue	protein	Q8N3U4	STAG2	PDBe-KB	4pju; 4pjw; 4pk7; 6qnx; 7zjs; 8k4d; 9ep3; 9hms; 9hmv; 9hx9			10 PDB entries	true
+O60216:K330	pdb_protein	at_residue	protein	Q8WVM7	STAG1	PDBe-KB	7w1m			1 PDB entries	true
+O60244:K111	pdb_protein	at_residue	protein	A0JLT2	MED19	PDBe-KB	7emf; 7lbm			2 PDB entries	true
+O60524:K503	pdb_rna	at_residue	rna			PDBe-KB	9gy4			1 PDB entries	true
+O60684:K241	pdb_protein	at_residue	protein	P31345		PDBe-KB	4uad			1 PDB entries	true
+O60814:K47	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+O60814:K47	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	7va4			1 PDB entries	true
+O60814:K47	pdb_protein	at_residue	protein	Q8TEK3	DOT1L	PDBe-KB	7bwd			1 PDB entries	true
+O60814:K47	pdb_rna	at_residue	rna			PDBe-KB	7v99			1 PDB entries	true
+O60814:K47	pdb_dna	at_residue	dna			PDBe-KB	6le9; 7v9c; 7v9k; 7va4; 8grm; 9gw2; 9rzc			7 PDB entries	true
+O60814:K58	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. [A]MGIMNSFVNDIFER at 59 (306.0253 Da)	false
+O60814:K58	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	2cv5; 6ke9; 6l9h; 6le9; 6t79; 7dbp; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7v90; 7v96; 7v99; 7v9c; 7v9k; 7va4; 7xcr; 7xct; 8grm; 8jhg; 8q36; 8q3e; 8q3m; 8q3x; 8w9e; 8w9f; 8yv8; 8zjr; 8zjt; 9gw2; 9rzc; 9rze; 9s0u; 9s3g; 9zeo			53 PDB entries	true
+O60814:K58	pdb_protein	at_residue	protein	P16104	H2AX	PDBe-KB	7yqk			1 PDB entries	true
+O60814:K58	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	7v96; 7v9j; 7v9k; 7v9s; 7va4; 8yv8; 9d3r			7 PDB entries	true
+O60814:K58	pdb_protein	at_residue	protein	Q16777	H2AC20	PDBe-KB	6y5e			1 PDB entries	true
+O60814:K58	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	6y5d; 7jzv; 9d3r			3 PDB entries	true
+O60814:K58	pdb_protein	at_residue	protein	Q7L7L0	H2AC25	PDBe-KB	9ecp			1 PDB entries	true
+O60814:K58	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	9gw2; 9rzc; 9rze; 9s0u; 9s3g			5 PDB entries	true
+O60814:K58	pdb_rna	at_residue	rna			PDBe-KB	7v99			1 PDB entries	true
+O60814:K58	pdb_dna	at_residue	dna			PDBe-KB	7pet; 7pez; 7v9k; 7v9s			4 PDB entries	true
+O60814:K86	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 74-87 IAGEASRLAhYNKR (lower case: the residues the crosslink may sit on)	false
+O60814:K86	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	9kqo			1 PDB entries	true
+O60814:K86	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	9s3g			1 PDB entries	true
+O60814:K86	pdb_dna	at_residue	dna			PDBe-KB	6le9; 6t7a; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 8grq; 9ipu			26 PDB entries	true
+O60814:K86	pdb_self	at_residue	self			PDBe-KB	2cv5; 7va4			2 PDB entries	true
+O60814:K109	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+O60814:K109	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 94-117 EIQTAVRLLLPGELAKhAVSEGTK, 94-117 EIQTAVRLLLPGELAkhAVSEGTK, 94-117 EIQTAVRLLLPGELakhAVSEGTK, 94-117 EIQTAVRLLLpgelakhAVSEGTK, 101-121 LLLPGELAKhAVSEGTKAVTK, 101-121 LLLPGELAkhAVSEGTKAVTK, 101-121 LLLPGELakhAVSEGTKAVTK, 101-121 LLLPGELakhavSEGTKAVTK, 101-121 LLLPGElakhAVSEGTKAVTK, 101-121 LLLpgelakhavSEGTKAVTK (lower case: the residues the crosslink may sit on)	true
+O60814:K109	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 94-117 EIQTAVRLLLPGELAKhAVSEGTK, 94-117 EIQTAVRLLLPGELAkhAVSEGTK, 94-117 EIQTAVRLLLPGELakhAVSEGTK, 94-117 EIQTAVRLLLpgelakhAVSEGTK, 101-121 LLLPGELAKhAVSEGTKAVTK, 101-121 LLLPGELAkhAVSEGTKAVTK, 101-121 LLLPGELakhAVSEGTKAVTK, 101-121 LLLPGELakhavSEGTKAVTK, 101-121 LLLPGElakhAVSEGTKAVTK, 101-121 LLLpgelakhavSEGTKAVTK (lower case: the residues the crosslink may sit on)	false
+O60814:K109	pdb_protein	at_residue	protein	P35226	BMI1	PDBe-KB	8grm			1 PDB entries	true
+O60814:K109	pdb_protein	at_residue	protein	Q8TEK3	DOT1L	PDBe-KB	7xcr; 7xct			2 PDB entries	true
+O60814:K109	pdb_protein	at_residue	protein	Q92560	BAP1	PDBe-KB	9u5u			1 PDB entries	true
+O60814:K109	pdb_protein	at_residue	protein	Q99728	BARD1	PDBe-KB	7jzv			1 PDB entries	true
+O60814:K117	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 94-117 EIQTAVRLLLPGELAKhAVSEGTK, 94-117 EIQTAVRLLLPGELAkhAVSEGTK, 94-117 EIQTAVRLLLPGELakhAVSEGTK, 94-117 EIQTAVRLLLpgelakhAVSEGTK, 101-121 LLLPGELAKhAVSEGTKAVTK, 101-121 LLLPGELAkhAVSEGTKAVTK, 101-121 LLLPGELakhAVSEGTKAVTK, 101-121 LLLPGELakhavSEGTKAVTK, 101-121 LLLPGElakhAVSEGTKAVTK, 101-121 LLLpgelakhavSEGTKAVTK, 110-126 HAVSEGTKAVTKYTSAK, 110-126 hAVSEGTKAVTKYTSAK, 110-126 haVSEGTKAVTKYTSAK (lower case: the residues the crosslink may sit on)	false
+O60814:K117	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	7pfa; 7pfc; 7pft			3 PDB entries	true
+O60814:K117	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	7yqk			1 PDB entries	true
+O60814:K117	pdb_protein	at_residue	protein	P14349		PDBe-KB	8q36; 8q3e			2 PDB entries	true
+O60814:K117	pdb_protein	at_residue	protein	P49459	UBE2A	PDBe-KB	9kqo			1 PDB entries	true
+O60814:K117	pdb_protein	at_residue	protein	Q8IYW5	RNF168	PDBe-KB	8x7i; 8x7j; 8x7k; 9ipu			4 PDB entries	true
+O60814:K117	pdb_protein	at_residue	protein	Q8TEK3	DOT1L	PDBe-KB	7bwd; 7xcr; 7xct			3 PDB entries	true
+O60814:K117	pdb_protein	at_residue	protein	Q92560	BAP1	PDBe-KB	9u5u			1 PDB entries	true
+O60814:K117	pdb_protein	at_residue	protein	Q9QR71		PDBe-KB	8q3m; 8q3x			2 PDB entries	true
+O60814:K117	pdb_self	at_residue	self			PDBe-KB	7pev; 7pf0			2 PDB entries	true
+O60832:K385	rna_crosslink	candidate_residue	rna			pepR-MS_focused					true
+O60832:K385	pdb_rna	at_residue	rna			PDBe-KB	7bgb; 7trc; 7v9a; 8oue; 8ouf; 9qb2; 9qb3			7 PDB entries	true
+O60832:K389	pdb_rna	at_residue	rna			PDBe-KB	7bgb; 7trc; 7v9a; 8oue; 8ouf; 9qb2; 9qb3			7 PDB entries	true
+O60869:K25	pdb_rna	at_residue	rna			PDBe-KB	6zvh			1 PDB entries	true
+O60885:K99	pdb_self	at_residue	self			PDBe-KB	9kem			1 PDB entries	true
+O60885:K111	pdb_protein	at_residue	protein	Q9NZJ0	DTL	PDBe-KB	9c5v			1 PDB entries	true
+O60885:K111	pdb_self	at_residue	self			PDBe-KB	9kem			1 PDB entries	true
+O60911:K123	pdb_self	at_residue	self			PDBe-KB	7q8h; 7qff; 7qfh; 7qgw; 7qo2			5 PDB entries	true
+O75367:K18	pdb_protein	at_residue	protein	P02281		PDBe-KB	2f8n			1 PDB entries	true
+O75367:K18	pdb_protein	at_residue	protein	Q9D2U9		PDBe-KB	1u35			1 PDB entries	true
+O75367:K18	pdb_dna	at_residue	dna			PDBe-KB	1u35; 2f8n			2 PDB entries	true
+O75382:K216	pdb_self	at_residue	self			PDBe-KB	8amr			1 PDB entries	true
+O75460:K706	pdb_self	at_residue	self			PDBe-KB	6w39; 6w3b; 6w3c; 6w3e; 9n88			5 PDB entries	true
+O75530:K284	pdb_protein	at_residue	protein	Q09028	RBBP4	PDBe-KB	6c23			1 PDB entries	true
+O75534:K81	capri_adj_peptide	in_fragment	rna			CAPRI				65-81 VGDDVEFEVSSDRRTGK	true
+O75534:K194	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. EA[F]GFIER at 197 (244.0695 Da), EA[F]GFIERGDVVK at 197 (244.0695 Da)	false
+O75787:K298	pdb_protein	at_residue	protein	Q15904	ATP6AP1	PDBe-KB	6wlw; 6wm2; 6wm3; 7u4t; 9cf8; 9cfc			6 PDB entries	true
+O75955:K211	pdb_protein	at_residue	protein	J3QLD9		PDBe-KB	9bq2			1 PDB entries	true
+O75955:K211	pdb_protein	at_residue	protein	Q14254	FLOT2	PDBe-KB	9l3g			1 PDB entries	true
+O75955:K392	pdb_protein	at_residue	protein	J3QLD9		PDBe-KB	9bq2			1 PDB entries	true
+O75955:K392	pdb_protein	at_residue	protein	Q14254	FLOT2	PDBe-KB	9l3g			1 PDB entries	true
+O75955:K392	pdb_self	at_residue	self			PDBe-KB	9bq2; 9l3g			2 PDB entries	true
+O76021:K395	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+O95251:K537	pdb_protein	at_residue	protein	O95696	BRD1	PDBe-KB	5gk9; 6maj; 6mak; 7d0o; 7d0p; 7d0q; 7d0r; 7d0s			8 PDB entries	true
+O95347:K976	pdb_protein	at_residue	protein	Q9NTJ3	SMC4	PDBe-KB	9tsz			1 PDB entries	true
+O95347:K978	pdb_protein	at_residue	protein	Q9NTJ3	SMC4	PDBe-KB	9f5w; 9tsz; 9tuu			3 PDB entries	true
+O95793:K238	pdb_rna	at_residue	rna			PDBe-KB	6htu; 6sdw			2 PDB entries	true
+O95822:K146	pdb_self	at_residue	self			PDBe-KB	11fa; 2ygw; 4f0x			3 PDB entries	true
+O95983:K92	rbrid_residue	at_residue	rna			RBR-ID				91-102 GKPDLNTALPVR (log2 +4SU/-4SU -0.51, p 0.0044)	true
+O96019:K226	pdb_protein	at_residue	protein	P60709	ACTB	PDBe-KB	21vv; 8qr1; 8x15; 8x19; 8x1c; 8xvg; 8xvt; 9c57; 9c62; 9c6n; 9cac; 9cae; 9rl4; 9uxa; 9uxb; 9uxc; 9wbz; 9wc1; 9y3d; 9y3e; 9y3f; 9y3g; 9y3h			23 PDB entries	true
+O96028:K466	dna_binding_region	in_region	dna			UniProt					false
+O96028:K998	pdb_dna	at_residue	dna			PDBe-KB	7cro			1 PDB entries	true
+P00338:K76	pdb_self	at_residue	self			PDBe-KB	4ojn			1 PDB entries	true
+P00338:K90	pdb_self	at_residue	self			PDBe-KB	4ajp; 4jnk; 4l4r; 4m49; 4ojn; 4okn; 4qo7; 4qo8; 4qsm; 4qt0; 4r68; 4r69; 4rls; 4zvv; 5ixs; 5ixy; 5w8h; 5w8i; 5w8j; 5w8k; 5w8l; 5zjd; 5zje; 5zjf; 6bad; 6bag; 6bax; 6baz; 6bb0; 6bb1; 6bb3; 6mv8; 6mva; 6q0d; 6q13; 6zzr; 7m2n; 8fw6; 9bk2; 9bk3; 9iov			41 PDB entries	true
+P00390:K146	pdb_self	at_residue	self			PDBe-KB	1bwc; 1dnc; 1gra; 1grb; 1gre; 1grf; 1grg; 1grh; 1grt; 1gsn; 1k4q; 1xan; 2aaq; 2gh5; 2grt; 3djg; 3dk4; 3dk8; 3dk9; 3grs; 3grt; 3sqp; 4gr1; 4grt; 5grt			25 PDB entries	true
+P00451:K2111	pdb_protein	at_residue	protein	P01857	IGHG1	PDBe-KB	7kwo			1 PDB entries	true
+P00451:K2111	pdb_protein	at_residue	protein	P04275	VWF	PDBe-KB	7kwo			1 PDB entries	true
+P00749:K118	pdb_protein	at_residue	protein	Q03405	PLAUR	PDBe-KB	2fd6; 2i9b; 3bt2			3 PDB entries	true
+P01024:K100	pdb_self	at_residue	self			PDBe-KB	2wii; 5foa; 7akk; 7noz; 8enu; 8ovb			6 PDB entries	true
+P01024:K104	pdb_self	at_residue	self			PDBe-KB	2wii; 3g6j; 5fo7; 5fo8; 5o32; 5o35; 7bag; 8ovb			8 PDB entries	true
+P01137:K42	pdb_self	at_residue	self			PDBe-KB	5ffo; 5vqp; 6gff; 7y1r; 8c7h; 8rew; 8udz			7 PDB entries	true
+P01730:K46	pdb_self	at_residue	self			PDBe-KB	1cdh; 3cd4			2 PDB entries	true
+P02545:K341	pdb_protein	at_residue	protein	P13848		PDBe-KB	6yjd			1 PDB entries	true
+P02545:K341	pdb_self	at_residue	self			PDBe-KB	1x8y; 2xv5; 6yjd			3 PDB entries	true
+P02647:K130	pdb_self	at_residue	self			PDBe-KB	3k2s			1 PDB entries	true
+P02778:K72	pdb_protein	at_residue	protein	P49682	CXCR3	PDBe-KB	9p0l			1 PDB entries	true
+P02778:K72	pdb_self	at_residue	self			PDBe-KB	1o7y			1 PDB entries	true
+P02787:K571	pdb_protein	at_residue	protein	Q9JPI9		PDBe-KB	9clm			1 PDB entries	true
+P03915:K364	pdb_protein	at_residue	protein	O43676	NDUFB3	PDBe-KB	5xtc; 5xtd			2 PDB entries	true
+P03915:K364	pdb_protein	at_residue	protein	O95178	NDUFB2	PDBe-KB	5xtc; 5xtd; 9i4i; 9ti4			4 PDB entries	true
+P04075:K230	rbrid_residue	at_residue	rna			RBR-ID				216-243 ALSDHHIYLEGTLLKPNMVTPGHACTQK (log2 +4SU/-4SU -1.63, p 7.7e-05)	true
+P04264:K276	pdb_protein	at_residue	protein	P13645	KRT10	PDBe-KB	6e2j			1 PDB entries	true
+P04406:K162	rbrid_residue	at_residue	rna			RBR-ID				146-162 IISNASCTTNCLAPLAK (log2 +4SU/-4SU -1.79, p 1.9e-06)	true
+P04406:K186	pdb_self	at_residue	self			PDBe-KB	1u8f; 1znq; 27fm; 4wnc; 4wni; 6ade; 6iq6; 6m61; 6ynd; 6yne; 6ynf; 6ynh; 8g13; 8g14; 8g15; 8g16; 8g17; 8p5f; 9l3e			19 PDB entries	true
+P04406:K227	pdb_self	at_residue	self			PDBe-KB	1u8f; 1znq; 27fm; 4wnc; 4wni; 6iq6; 6m61; 6ynd; 6yne; 6ynf; 6ynh; 8g12; 8g13; 8g14; 8g15; 8g16; 8g17; 8p5f; 9l3e			19 PDB entries	true
+P04637:K370	pdb_protein	at_residue	protein	Q12888	TP53BP1	PDBe-KB	2mwo			1 PDB entries	true
+P04637:K370	pdb_protein	at_residue	protein	Q8WTS6	SETD7	PDBe-KB	1xqh			1 PDB entries	true
+P04637:K370	pdb_protein	at_residue	protein	Q9NRG4	SMYD2	PDBe-KB	3tg5			1 PDB entries	true
+P04637:K372	pdb_protein	at_residue	protein	Q12888	TP53BP1	PDBe-KB	2mwo			1 PDB entries	true
+P04637:K372	pdb_protein	at_residue	protein	Q8WTS6	SETD7	PDBe-KB	1xqh			1 PDB entries	true
+P04637:K372	pdb_protein	at_residue	protein	Q9NRG4	SMYD2	PDBe-KB	3tg5			1 PDB entries	true
+P04637:K373	pdb_protein	at_residue	protein	Q8WTS6	SETD7	PDBe-KB	1xqh			1 PDB entries	true
+P04637:K373	pdb_protein	at_residue	protein	Q9NRG4	SMYD2	PDBe-KB	3tg5			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	A0A6L0XH39		PDBe-KB	5ol0			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	O30124		PDBe-KB	1ma3			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	P04631		PDBe-KB	1dt7			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	P20248	CCNA2	PDBe-KB	1h26			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	P31947	SFN	PDBe-KB	5mhc; 5moc; 6r5l; 6rjz; 6rki; 6rkk; 6rkm; 6rl3; 6rl4; 6rm7; 6rwh; 6rwi; 6rws; 6rwu; 6s39; 6s3c; 6s9q; 6sin; 6sio; 6sip; 6slv			21 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	Q12888	TP53BP1	PDBe-KB	2mwp; 4x34			2 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	Q92793	CREBBP	PDBe-KB	1jsp			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	Q96EB6	SIRT1	PDBe-KB	4zzj			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	Q9NTG7	SIRT3	PDBe-KB	4fz3			1 PDB entries	true
+P04637:K382	pdb_protein	at_residue	protein	Q9WYW0		PDBe-KB	1yc5; 2h2d; 2h2f; 2h4f; 2h4h; 2h4j; 2h59; 3pdh; 4buz; 4bv2			10 PDB entries	true
+P05496:K104	pdb_self	at_residue	self			PDBe-KB	8h9f; 8h9j; 8h9m; 8h9q; 8h9s; 8h9t; 8h9u; 8h9v; 8khf; 8ki3			10 PDB entries	true
+P06400:K810	pdb_protein	at_residue	protein	Q12888	TP53BP1	PDBe-KB	4cri			1 PDB entries	true
+P06400:K860	pdb_protein	at_residue	protein	P52293		PDBe-KB	1pjm			1 PDB entries	true
+P06400:K860	pdb_protein	at_residue	protein	Q14186	TFDP1	PDBe-KB	2aze			1 PDB entries	true
+P06730:K212	pdb_self	at_residue	self			PDBe-KB	8qm8			1 PDB entries	true
+P06748:K73	rbrid_residue	at_residue	rna			RBR-ID				55-80 DELHIVEAEAMNYEGSPIKVTLATLK (log2 +4SU/-4SU -0.71, p 0.0029)	true
+P06748:K223	rna_crosslink	within_3	rna			XRNAX				a crosslinked residue within 3 residues. [S]KGQESFKK at 222 (324.0359 Da), SK[G]QESFKK at 224 (324.0359/629.0772 Da), SKG[Q]ESFKK at 225 (669.0833 Da), SKGQ[E]SFKK at 226 (324.0359 Da)	false
+P06748:K223	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. SK[G]QESFK at 224 (611.0666 Da), SK[G]QESFKK at 224 (611.0666/651.0727 Da)	false
+P06748:K223	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P06748:K257	rna_crosslink	at_residue	rna			pepR-MS				MQASIE[K]GGSLPK at 257 (611.0666/612.0506 Da)	true
+P06748:K257	rbrid_residue	at_residue	rna			RBR-ID				249-257 AKMQASIEK (log2 +4SU/-4SU -0.81, p 0.0035), 251-263 MQASIEKGGSLPK (log2 +4SU/-4SU -0.81, p 0.00015)	true
+P06899:K47	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	6la2			1 PDB entries	true
+P06899:K47	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	5vey			1 PDB entries	true
+P06899:K47	pdb_protein	at_residue	protein	P13010	XRCC5	PDBe-KB	9qcs			1 PDB entries	true
+P06899:K47	pdb_protein	at_residue	protein	P30876	POLR2B	PDBe-KB	8xrj			1 PDB entries	true
+P06899:K47	pdb_protein	at_residue	protein	Q6ZRS2	SRCAP	PDBe-KB	9ubd			1 PDB entries	true
+P06899:K47	pdb_dna	at_residue	dna			PDBe-KB	3wtp; 5cpj; 6hkt; 6l49; 7xvm; 7yrd; 8jh2; 9qcr; 9r2m; 9rmc; 9rn1			11 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	H2QSF5		PDBe-KB	8qkt			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	2rvq; 36iu; 36iv; 3a6n; 3afa; 3an2; 3av1; 3av2; 3ayw; 3aze; 3azf; 3azg; 3azh; 3azi; 3azj; 3azk; 3azl; 3azm; 3azn; 3w97; 3w98; 3w99; 3wtp; 4ym5; 4ym6; 4z5t; 5av5; 5av6; 5av8; 5av9; 5avb; 5avc; 5b0y; 5b0z; 5b24; 5b2i; 5b2j; 5b40; 5cpi; 5cpj; 5cpk; 5gse; 5gtc; 5gxq; 5x7x; 5y0c; 5y0d; 5z23; 5zbx; 6buz; 6hkt; 6ipu; 6iq4; 6jr0; 6jr1; 6jxd; 6kxv; 6l49; 6l4a; 6l9z; 6la2; 6la8; 6la9; 6lab; 6ler; 6m3v; 6m44; 6r8y; 6r91; 6r92; 6t90; 6t93; 6usj; 6v2k; 6yov; 7by0; 7c0m; 7ccq; 7cow; 7d1z; 7d20; 7k5x; 7k5y; 7k60; 7k61; 7k63; 7lya; 7lyb; 7lyc; 7nl0; 7scy; 7vz4; 7w9v; 7xse; 7xsx; 7xsz; 7xt7; 7xtd; 7xti; 7xvl; 7xvm; 7xx5; 7xx6; 7xzx; 7xzy; 7xzz; 7y00; 7y7i; 7zi4; 8g57; 8h0v; 8h0w; 8hag; 8hah; 8hai; 8hak; 8hal; 8ham; 8han; 8he5; 8i17; 8ihl; 8jh2; 8jh3; 8jh4; 8jl9; 8jla; 8jlb; 8jld; 8jne; 8jnf; 8kb5; 8kcy; 8kd1; 8ke0; 8osj; 8osk; 8osl; 8ots; 8ott; 8rgm; 8smw; 8smx; 8smy; 8smz; 8sn0; 8sn1; 8sn2; 8sn3; 8sn4; 8sn5; 8sn6; 8sn7; 8sn8; 8sn9; 8sna; 8u14; 8upf; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8xrj; 8xvs; 8y3c; 8y3d; 8y3e; 8y3f; 8ybj; 8ybk; 8yny; 8yti; 9be5; 9igw; 9igx; 9j0n; 9j0o; 9j0p; 9j8m; 9j8w; 9l1x; 9l22; 9r04; 9r2m; 9r2p; 9r2q; 9rl4; 9rmc; 9rn1; 9rn2; 9uxw; 9uz7; 9uz9; 9wms; 9wmt; 9wmu; 9wmv; 9wmw			199 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P0C0S5	H2AZ1	PDBe-KB	3wa9; 4cay; 5b31; 5b32; 5b33; 5fug; 5z30; 6jou; 7yrd; 9inc; 9ogr; 9ogz; 9oh0; 9oh1; 9oh2; 9ubd			16 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	7e8d; 8gui; 8guj; 9be5; 9e05; 9e09; 9e3d; 9e3r; 9e49; 9si3; 9si9; 9sj5; 9slj			13 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P0C5Z0	H2AB2	PDBe-KB	9ii7			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P16104	H2AX	PDBe-KB	6k1i; 6k1j; 6k1k; 9mmo; 9q80; 9q8x; 9q9f; 9qcr; 9qcs; 9qms			10 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	7ea8; 9w6t			2 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P30117		PDBe-KB	7vcl			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P62799		PDBe-KB	36iu; 9si3; 9si9; 9sj5			4 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	3w97; 5b32; 5b40; 5gse; 6hts; 6l4a; 6r90; 8jla; 8u14; 8y3d; 8y3e; 8ybk; 9e05; 9igx; 9mmt; 9oh2; 9q9f; 9qcs; 9qms			19 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P68431	H3C1	PDBe-KB	8he5; 9q9f; 9qcs; 9qms			4 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	P84229		PDBe-KB	7by0			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q15906	VPS72	PDBe-KB	5fug; 9inc			2 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	9gmk; 9gmr			2 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q6XXM1		PDBe-KB	7by0			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q71UI9	H2AZ2	PDBe-KB	3waa			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q8CGP7		PDBe-KB	8ott			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q9BTM1	H2AJ	PDBe-KB	6kvd			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q9BTT0	ANP32E	PDBe-KB	4cay			1 PDB entries	true
+P06899:K58	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	8i17			1 PDB entries	true
+P06899:K58	pdb_dna	at_residue	dna			PDBe-KB	6hts; 7wbw; 7xzy; 8he5; 9j0o			5 PDB entries	true
+P06899:K86	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	6r90; 8hak; 9uxw			3 PDB entries	true
+P06899:K86	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	9e05			1 PDB entries	true
+P06899:K86	pdb_protein	at_residue	protein	P16104	H2AX	PDBe-KB	9qms			1 PDB entries	true
+P06899:K86	pdb_dna	at_residue	dna			PDBe-KB	3aze; 3azk; 5b32; 5x7x; 6hkt; 6jou; 6jr0; 6l49; 6l4a; 6la2; 6m44; 6r91; 6t93; 6usj; 7by0; 7ccq; 7ccr; 7k5y; 7k61; 7wbw; 7xsz; 7xvm; 7xx5; 7xzx; 7xzy; 7xzz; 7y00; 8gui; 8guj; 8hai; 8hak; 8ihl; 8jne; 8jnf; 8kcy; 8osk; 8qkt; 8y3c; 8y3d; 8yny; 9e09; 9e3d; 9e3r; 9e49; 9j0n; 9j0o; 9j0p; 9mmo; 9q8x; 9q9f; 9qcr; 9qcs; 9qms; 9r2p; 9sj5; 9uz9			56 PDB entries	true
+P06899:K86	pdb_self	at_residue	self			PDBe-KB	5b0z; 6a5l; 6a5t; 6a5u; 6inq; 6ir9; 6j4x; 6j4y; 6j4z; 6j50; 6j51; 9j8o			12 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	A0A8V0Z4U5		PDBe-KB	7y7i			1 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	P12956	XRCC6	PDBe-KB	9q80			1 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	P16104	H2AX	PDBe-KB	9qcs			1 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	P35659	DEK	PDBe-KB	8kcy; 9l1x; 9l22			3 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	P49450	CENPA	PDBe-KB	7d20			1 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	P51532	SMARCA4	PDBe-KB	9rl4			1 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	6hkt; 7xvm; 9qcs			3 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	Q06609	RAD51	PDBe-KB	8jne			1 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	Q99728	BARD1	PDBe-KB	7lyb; 7lyc			2 PDB entries	true
+P06899:K109	pdb_protein	at_residue	protein	Q9UBC3	DNMT3B	PDBe-KB	9e05; 9e3r			2 PDB entries	true
+P06899:K109	pdb_dna	at_residue	dna			PDBe-KB	5gse; 6la2			2 PDB entries	true
+P06899:K109	pdb_self	at_residue	self			PDBe-KB	9mmo			1 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	C4QYQ8		PDBe-KB	7xsx; 7xtd			2 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	6la2; 6t90; 6yov; 8ots; 8ott; 9rmc; 9rn1			7 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	P0C0S5	H2AZ1	PDBe-KB	9ubd			1 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	7lyc			1 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	P16104	H2AX	PDBe-KB	9qcs			1 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	P35659	DEK	PDBe-KB	8kcy; 9l1x			2 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	Q12824	SMARCB1	PDBe-KB	9rl4			1 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	Q8IYW5	RNF168	PDBe-KB	8smw; 8smx; 8smy; 8smz; 8sn0; 8sn1; 8sn2; 8sn3; 8sn4; 8sn5; 8sn6; 8sn7; 8sn8; 8sn9; 8sna; 8u14; 8upf			17 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	Q99728	BARD1	PDBe-KB	7lyb; 7lyc			2 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	Q9QR71		PDBe-KB	5gtc			1 PDB entries	true
+P06899:K117	pdb_protein	at_residue	protein	Q9UBC3	DNMT3B	PDBe-KB	9e09			1 PDB entries	true
+P06899:K117	pdb_dna	at_residue	dna			PDBe-KB	5gse; 6la2			2 PDB entries	true
+P06899:K117	pdb_self	at_residue	self			PDBe-KB	9mmo			1 PDB entries	true
+P07195:K58	pdb_self	at_residue	self			PDBe-KB	1i0z; 1t2f; 7dbj; 7dbk; 8qde; 8s88; 9qyk			7 PDB entries	true
+P07355:K10	pdb_protein	at_residue	protein	P26447	S100A4	PDBe-KB	5lpu			1 PDB entries	true
+P07355:K10	pdb_protein	at_residue	protein	P60903	S100A10	PDBe-KB	4ftg			1 PDB entries	true
+P07355:K10	pdb_protein	at_residue	protein	Q09666	AHNAK	PDBe-KB	4ftg			1 PDB entries	true
+P07355:K10	pdb_protein	at_residue	protein	Q14527	HLTF	PDBe-KB	4hrh			1 PDB entries	true
+P07900:K100	pdb_self	at_residue	self			PDBe-KB	7krj; 7l7i; 7l7j; 8ffv; 8ffw; 9kmr; 9kqn			7 PDB entries	true
+P07900:K283	pdb_protein	at_residue	protein	Q9BXM7	PINK1	PDBe-KB	9kmr; 9kqn			2 PDB entries	true
+P07900:K615	pdb_self	at_residue	self			PDBe-KB	3q6m; 7krj; 7kw7; 7l7i; 7l7j; 7rxz; 8ffv; 8ffw; 9kox; 9kqn			10 PDB entries	true
+P07942:K1718	pdb_protein	at_residue	protein	P11047	LAMC1	PDBe-KB	5xau			1 PDB entries	true
+P08238:K607	pdb_self	at_residue	self			PDBe-KB	5fwk; 5fwl; 5fwm; 5fwp; 7z37; 7z38; 7zub; 8eoa; 8eob; 8gae; 8gft; 8qmo			12 PDB entries	true
+P09467:K43	pdb_self	at_residue	self			PDBe-KB	1fta; 2fhy; 2fie; 2fix; 2jjk; 2vt5; 2wbb; 2wbd; 2y5k; 2y5l; 3kbz; 3kc0; 3kc1; 4mjo; 5ldz; 5pzq; 5pzr; 5pzs; 5pzt; 5pzu; 5pzv; 5pzw; 5pzx; 5pzy; 5pzz; 5q00; 5q01; 5q02; 5q03; 5q04; 5q05; 5q06; 5q07; 5q08; 5q09; 5q0a; 5q0b; 6ls5; 6lw2; 7c9q; 7cvh; 7cvn; 7cwe; 7ezf; 7ezp; 7ezr; 7wjv; 7wvb; 8xbk; 9xds; 9xv1			51 PDB entries	true
+P09651:K144	rna_crosslink	within_3	rna			Kramer2014				a crosslinked residue within 3 residues. [G]FAFVTFDDHDSVDK at 147 (653.0884 Da)	false
+P09651:K144	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. K[R]GFAFVTFDDHDSVDK at 146 (244.0695 Da), [G]FAFVTFDDHDSVDKIVIQK at 147 (244.0695 Da)	false
+P09651:K144	rna_crosslink	within_3	rna			XRNAX				a crosslinked residue within 3 residues. [R]GFAFVTFDDHDSVDK at 146 (324.0359 Da), [G]FAFVTFDDHDSVDK at 147 (324.0359/959.1137 Da), [G]FAFVTFDDHDSVDKIVIQK at 147 (324.0359 Da), KR[G]FAFVTFDDHDSVDK at 147 (635.0778 Da)	false
+P09651:K144	rna_crosslink	within_3	rna			pRBS-ID				a crosslinked residue within 3 residues. [K]RGFAFVTFDDHDSVDK at 145 (226.0594 Da), K[R]GFAFVTFDDHDSVDK at 146 (226.0594 Da), [R]GFAFVTFDDHDSVDK at 146 (226.0594/94.0168 Da)	false
+P09651:K144	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. [K]RGFAFVTFDDHDSVDK at 145 (306.0253/611.0666 Da), K[R]GFAFVTFDDHDSVDK at 146 (306.0253/612.0506/635.0778/651.0727/964.1303 Da), [R]GFAFVTFDDHDSVDKIVIQK at 146 (635.0778 Da), KR[G]FAFVTFDDHDSVDK at 147 (635.0778 Da)	false
+P09651:K144	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P09651:K144	capri_adj_peptide	in_fragment	rna			CAPRI				131-144 IEVIEIMTDRGSGK	true
+P09651:K144	pdb_rna	at_residue	rna			PDBe-KB	6dcl			1 PDB entries	true
+P09651:K145	rna_crosslink	at_residue	rna			pRBS-ID				[K]RGFAFVTFDDHDSVDK at 145 (226.0594 Da)	true
+P09651:K145	rna_crosslink	at_residue	rna			pepR-MS				[K]RGFAFVTFDDHDSVDK at 145 (306.0253/611.0666 Da)	true
+P09651:K145	pdb_rna	at_residue	rna			PDBe-KB	5mpl; 6dcl			2 PDB entries	true
+P09651:K161	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. RGFAFVTFDDHDS[V]DK at 159 (244.0695 Da), RGFAFVTFDDHDS[V]DKIVIQK at 159 (244.0695 Da), KRGFAFVTFDDHDSV[D]K at 160 (244.0695 Da), RGFAFVTFDDHDSVDKIV[I]QK at 164 (244.0695 Da)	false
+P09651:K161	rna_crosslink	within_3	rna			XRNAX				a crosslinked residue within 3 residues. RGFAFVTFDDHDSV[D]K at 160 (653.0884 Da)	false
+P09651:K161	capri_xl_peptide	in_peptide	rna			CAPRI				146-161 RGFAFVTFDDHDSVDK, 147-161 GFAFVTFDDHDSVDK	true
+P09651:K161	capri_adj_peptide	in_fragment	rna			CAPRI				146-161 RGFAFVTFDDHDSVDK	true
+P09651:K161	rbrid_residue	at_residue	rna			RBR-ID				147-166 GFAFVTFDDHDSVDKIVIQK (log2 +4SU/-4SU -0.56, p 0.0022)	true
+P09651:K183	pdb_rna	at_residue	rna			PDBe-KB	5mpl; 6dcl; 8x0n			3 PDB entries	true
+P09874:K425	pdb_dna	at_residue	dna			PDBe-KB	7scy			1 PDB entries	true
+P09884:K625	pdb_protein	at_residue	protein	P0C6U8		PDBe-KB	7opl			1 PDB entries	true
+P09884:K625	pdb_protein	at_residue	protein	P15927	RPA2	PDBe-KB	9mj5			1 PDB entries	true
+P09972:K111	rbrid_residue	at_residue	rna			RBR-ID				109-134 VDKGVVPLAGTDGETTTQGLDGLSER (log2 +4SU/-4SU -1.36, p 4.2e-05)	true
+P09972:K111	pdb_self	at_residue	self			PDBe-KB	1xfb			1 PDB entries	true
+P0C0S5:K5	pdb_protein	at_residue	protein	O60885	BRD4	PDBe-KB	6ko2			1 PDB entries	true
+P0C0S5:K8	pdb_protein	at_residue	protein	O60885	BRD4	PDBe-KB	6ko2			1 PDB entries	true
+P0DMS8:K227	pdb_protein	at_residue	protein	P63097		PDBe-KB	8x16			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	G0S3B8		PDBe-KB	9yrm			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	O00159	MYO1C	PDBe-KB	4byf			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	O15554	KCNN4	PDBe-KB	6cnm			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	O43525	KCNQ3	PDBe-KB	22rj; 5j03; 9x5j; 9x65			4 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	O43526	KCNQ2	PDBe-KB	8ijk; 8j01; 8j02; 8j03; 8j04; 8j05; 8w4u; 9x5j; 9xb9; 9xed			10 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	P11716		PDBe-KB	8dve; 8y40; 9zn6; 9zn7; 9zn8; 9zn9; 9zna; 9znd			8 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	P29966	MARCKS	PDBe-KB	1iwq			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	P51787	KCNQ1	PDBe-KB	12dk; 4umo; 4v0c; 6v01; 7vuo; 7vvd; 7vvh; 8sik; 9vec; 9vei; 9wd8			11 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	P53355	DAPK1	PDBe-KB	2x0g			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	P56696	KCNQ4	PDBe-KB	6b8l; 6b8m; 6b8n; 6b8p; 6n5w			5 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	P70057		PDBe-KB	5vms; 9my3			2 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	P97479		PDBe-KB	5wsu			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q05096		PDBe-KB	4l79; 5v7x			2 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q13698	CACNA1S	PDBe-KB	2vay			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q13936	CACNA1C	PDBe-KB	3g43; 6u3d			2 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q14524	SCN5A	PDBe-KB	4dck; 4ovn			2 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q5T4S7	UBR4	PDBe-KB	9d9z; 9hxw; 9xti; 9xtj			4 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q6DN90	IQSEC1	PDBe-KB	7vmb			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q709C8	VPS13C	PDBe-KB	9yqp; 9yrp			2 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q8N2C7	UNC80	PDBe-KB	7sx4			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q92736	RYR2	PDBe-KB	7ua4			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q96RL7	VPS13A	PDBe-KB	9yg4			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q99250	SCN2A	PDBe-KB	4jpz; 6but			2 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q9H095	DRC9	PDBe-KB	4lzx			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q9H1D0	TRPV6	PDBe-KB	6e2f; 9cui; 9cuk			3 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q9NR82	KCNQ5	PDBe-KB	6b8q			1 PDB entries	true
+P0DP23:K116	pdb_protein	at_residue	protein	Q9R186		PDBe-KB	6e2g			1 PDB entries	true
+P0DP23:K116	pdb_self	at_residue	self			PDBe-KB	4upu; 7vus			2 PDB entries	true
+P0DP24:K116	pdb_protein	at_residue	protein	A0A2S3R7M0		PDBe-KB	8k9z; 8ka0; 8ka1			3 PDB entries	true
+P0DP24:K116	pdb_protein	at_residue	protein	Q5ZTK6		PDBe-KB	7mir			1 PDB entries	true
+P0DP25:K14	pdb_protein	at_residue	protein	Q16816	PHKG1	PDBe-KB	8z5m; 8z5p; 8z5q; 8z5r; 8z5t			5 PDB entries	true
+P0DP25:K95	pdb_protein	at_residue	protein	O43526	KCNQ2	PDBe-KB	9ixy			1 PDB entries	true
+P0DP25:K95	pdb_protein	at_residue	protein	P42212		PDBe-KB	7byl; 7bym; 7byn			3 PDB entries	true
+P0DP25:K95	pdb_protein	at_residue	protein	P56696	KCNQ4	PDBe-KB	7byl; 7bym; 7byn			3 PDB entries	true
+P0DP25:K116	pdb_protein	at_residue	protein	O43526	KCNQ2	PDBe-KB	7cr3; 7cr4; 7cr7; 9ixy			4 PDB entries	true
+P0DP25:K116	pdb_protein	at_residue	protein	P42212		PDBe-KB	7byl; 7bym; 7byn			3 PDB entries	true
+P0DP25:K116	pdb_protein	at_residue	protein	P51787	KCNQ1	PDBe-KB	7xnl; 7xnn			2 PDB entries	true
+P0DP25:K116	pdb_protein	at_residue	protein	P56696	KCNQ4	PDBe-KB	7byl; 7bym; 7byn; 7vnr			4 PDB entries	true
+P0DP25:K116	pdb_protein	at_residue	protein	Q9NR82	KCNQ5	PDBe-KB	9liz			1 PDB entries	true
+P0DPK2:K57	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	5ay8			1 PDB entries	true
+P0DPK2:K57	pdb_dna	at_residue	dna			PDBe-KB	5ay8			1 PDB entries	true
+P0DPK2:K65	pdb_dna	at_residue	dna			PDBe-KB	5ay8			1 PDB entries	true
+P0DPK5:K5	pdb_protein	at_residue	protein	Q9UPN9	TRIM33	PDBe-KB	7zdd			1 PDB entries	true
+P0DPK5:K57	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	43ig			1 PDB entries	true
+P0DPK5:K65	pdb_dna	at_residue	dna			PDBe-KB	43ig			1 PDB entries	true
+P10412:K26	pdb_protein	at_residue	protein	Q13185	CBX3	PDBe-KB	3tzd			1 PDB entries	true
+P10412:K26	pdb_protein	at_residue	protein	Q8N8U2	CDYL2	PDBe-KB	5jjz			1 PDB entries	true
+P10636:K576	pdb_protein	at_residue	protein	Q2XVP4		PDBe-KB	6cvj; 7pqc; 7pqp			3 PDB entries	true
+P10636:K576	pdb_self	at_residue	self			PDBe-KB	28lj; 28lo; 28lp; 28lq			4 PDB entries	true
+P10636:K628	pdb_protein	at_residue	protein	Q2XVP4		PDBe-KB	7pqc; 7pqp			2 PDB entries	true
+P10636:K628	pdb_self	at_residue	self			PDBe-KB	10ij; 10ik; 10ln; 10mr; 10ms; 10no; 10np; 10nq; 10nr; 10nt; 11lu; 11lv; 11lw; 22jy; 28lj; 28lo; 28lp; 28lq; 2on9; 33wm; 33wp; 34rf; 37vx; 37vy; 3ovl; 4e0m; 4e0n; 4e0o; 4np8; 5k7n; 5o3l; 5o3o; 5o3t; 6gx5; 6hre; 6hrf; 6nwp; 6nwq; 6qjh; 6qjm; 6qjp; 6qjq; 6tjo; 6tjx; 6vh7; 6vha; 7mkf; 7mkg; 7mkh; 7nrq; 7nrs; 7nrt; 7nrv; 7nrx; 7p65; 7p66; 7p67; 7p68; 7p6a; 7p6b; 7p6c; 7p6d; 7p6e; 7qjv; 7qjw; 7qjx; 7qjy; 7qjz; 7qk1; 7qk2; 7qk3; 7qk5; 7qk6; 7qkf; 7qkg; 7qkh; 7qki; 7qkj; 7qkk; 7qkl; 7qkm; 7qku; 7qkv; 7qkw; 7qkx; 7qkz; 7ql0; 7ql1; 7ql2; 7ql3; 7ql4; 7r4t; 7r5h; 7u0z; 7upe; 7upf; 7upg; 7ymn; 7ypg; 8azu; 8bgs; 8bgv; 8byn; 8caq; 8cax; 8fug; 8g54; 8g55; 8g58; 8ore; 8orf; 8org; 8ot6; 8ot9; 8otc; 8otg; 8oth; 8oti; 8otj; 8ppo; 8q27; 8q2j; 8q2k; 8q2l; 8q7f; 8q7l; 8q7m; 8q7p; 8q7t; 8q88; 8q8c; 8q8d; 8q8e; 8q8f; 8q8l; 8q8m; 8q8r; 8q8s; 8q8u; 8q8v; 8q8w; 8q8x; 8q8y; 8q8z; 8q92; 8q97; 8q98; 8q99; 8q9a; 8q9b; 8q9c; 8q9d; 8q9e; 8q9f; 8q9g; 8q9h; 8q9i; 8q9j; 8q9k; 8q9l; 8q9m; 8q9o; 8qcp; 8qcr; 8qjj; 8r3t; 8seh; 8sei; 8ttl; 8ttn; 8uq7; 8v1n; 8wcp; 8zwl; 8zwm; 8zx6; 9axz; 9b3a; 9b3c; 9b4l; 9b4m; 9b4n; 9b4o; 9bbl; 9bbm; 9bxi; 9bxo; 9bxq; 9bxr; 9cgx; 9cgz; 9czi; 9czl; 9dme; 9eog; 9eoh; 9erm; 9ern; 9ero; 9fh6; 9gg0; 9gg1; 9gg6; 9h5g; 9h5j; 9hbb; 9mc2; 9mr8; 9o6v; 9o6w; 9o6x; 9o6y; 9o6z; 9o76; 9o79; 9o7b; 9o7c; 9o8h; 9pgo; 9pva; 9r2f; 9r88; 9r89; 9r8a; 9r8d; 9s2b; 9shs; 9tzx; 9wit; 9x6y; 9xge; 9xgf; 9xgg; 9xgh; 9xgi; 9xgj; 9xhu; 9xhv; 9xhw; 9xhx; 9xjj; 9xkv			242 PDB entries	true
+P10636:K648	pdb_protein	at_residue	protein	P02554		PDBe-KB	7pqc; 7pqp			2 PDB entries	true
+P10636:K648	pdb_self	at_residue	self			PDBe-KB	10ij; 10ik; 10ln; 10mr; 10ms; 10no; 10np; 10nq; 10nr; 10nt; 11lu; 11lv; 11lw; 28lj; 28lo; 28lp; 28lq; 33wm; 33wp; 34rf; 37vx; 37vy; 5o3l; 5o3o; 5o3t; 6gx5; 6hre; 6hrf; 6nwp; 6nwq; 6tjo; 6tjx; 6vh7; 6vha; 6vhl; 7mkf; 7mkg; 7mkh; 7nrq; 7nrs; 7nrt; 7nrv; 7nrx; 7p65; 7p66; 7p67; 7p68; 7p6a; 7p6b; 7p6c; 7p6d; 7p6e; 7qjv; 7qjw; 7qjx; 7qjy; 7qjz; 7qk1; 7qk2; 7qk5; 7qkf; 7qki; 7qkj; 7qkk; 7qkl; 7qku; 7qkv; 7qkx; 7ql0; 7ql1; 7ql3; 7ql4; 7r4t; 7r5h; 7u0z; 7upe; 7upf; 7upg; 7ymn; 7ypg; 8azu; 8bgs; 8bgv; 8byn; 8caq; 8cax; 8fug; 8g58; 8ore; 8orf; 8org; 8ot6; 8ot9; 8otc; 8otg; 8oth; 8oti; 8otj; 8q27; 8q2j; 8q2k; 8q2l; 8q7f; 8q7l; 8q7m; 8q7p; 8q7t; 8q88; 8q8c; 8q8d; 8q8e; 8q8f; 8q8l; 8q8m; 8q8r; 8q8s; 8q8u; 8q8v; 8q8w; 8q8x; 8q8y; 8q8z; 8q92; 8q97; 8q98; 8q99; 8q9a; 8q9b; 8q9c; 8q9d; 8q9e; 8q9f; 8q9g; 8q9h; 8q9i; 8q9j; 8q9k; 8q9l; 8q9m; 8q9o; 8qcp; 8qcr; 8qjj; 8r3t; 8seh; 8sei; 8ttn; 8uq7; 8zwl; 8zwm; 8zx6; 9b4l; 9b4m; 9b4n; 9b4o; 9bbl; 9bbm; 9bxi; 9bxo; 9bxq; 9bxr; 9cgx; 9cgz; 9czi; 9czl; 9eog; 9eoh; 9erm; 9ern; 9ero; 9fh6; 9gg0; 9gg1; 9gg6; 9h5g; 9h5j; 9hbb; 9mr8; 9o6v; 9o6w; 9o6x; 9o6y; 9o6z; 9o76; 9o79; 9o7b; 9o7c; 9o8h; 9pgo; 9r2f; 9r2h; 9r88; 9r89; 9r8a; 9r8d; 9shs; 9tzx; 9x6y; 9xge; 9xgf; 9xgg; 9xgi; 9xgj; 9xhu; 9xhv; 9xhw; 9xhx; 9xjj; 9xkv			209 PDB entries	true
+P10636:K657	pdb_protein	at_residue	protein	P02554		PDBe-KB	7pqc; 7pqp			2 PDB entries	true
+P10636:K657	pdb_protein	at_residue	protein	Q2XVP4		PDBe-KB	7pqc			1 PDB entries	true
+P10636:K657	pdb_self	at_residue	self			PDBe-KB	10ij; 10ik; 10ln; 10mr; 10ms; 10no; 10np; 10nq; 10nr; 10nt; 11lu; 11lv; 11lw; 28lj; 28lo; 28lp; 28lq; 33wm; 33wp; 34rf; 37vx; 37vy; 5o3l; 5o3o; 5o3t; 6gx5; 6hre; 6hrf; 6nwp; 6nwq; 6tjo; 6tjx; 6vh7; 6vha; 7mkf; 7mkg; 7mkh; 7nrq; 7nrs; 7nrt; 7nrv; 7nrx; 7p65; 7p66; 7p67; 7p68; 7p6a; 7p6b; 7p6c; 7p6d; 7p6e; 7qjv; 7qjw; 7qjx; 7qjy; 7qjz; 7qk1; 7qk2; 7qk5; 7qkf; 7qki; 7qkj; 7qkk; 7qkl; 7qku; 7qkv; 7qkx; 7ql0; 7ql1; 7ql3; 7ql4; 7r4t; 7r5h; 7u0z; 7upe; 7upf; 7upg; 7ymn; 7ypg; 8azu; 8bgs; 8bgv; 8byn; 8caq; 8cax; 8fug; 8g58; 8ore; 8orf; 8org; 8ot6; 8ot9; 8otc; 8otg; 8oth; 8oti; 8otj; 8q27; 8q2j; 8q2k; 8q2l; 8q7f; 8q7l; 8q7m; 8q7p; 8q7t; 8q88; 8q8c; 8q8d; 8q8e; 8q8f; 8q8l; 8q8m; 8q8r; 8q8s; 8q8u; 8q8v; 8q8w; 8q8x; 8q8y; 8q8z; 8q92; 8q97; 8q98; 8q99; 8q9a; 8q9b; 8q9c; 8q9d; 8q9e; 8q9f; 8q9g; 8q9h; 8q9i; 8q9j; 8q9k; 8q9l; 8q9m; 8q9o; 8qcp; 8qcr; 8qjj; 8seh; 8sei; 8ttn; 8uq7; 8zwl; 8zwm; 8zx6; 9b4l; 9b4m; 9b4n; 9b4o; 9bbl; 9bbm; 9bxi; 9bxo; 9bxq; 9bxr; 9cgx; 9cgz; 9czi; 9czl; 9eog; 9eoh; 9erm; 9ern; 9ero; 9fh6; 9gg0; 9gg1; 9gg6; 9h5g; 9h5j; 9hbb; 9mr8; 9o6v; 9o6w; 9o6x; 9o6y; 9o6z; 9o76; 9o79; 9o7b; 9o7c; 9o8h; 9pgo; 9r2f; 9r2h; 9r88; 9r89; 9r8a; 9r8d; 9shs; 9tzx; 9wit; 9x6y; 9xge; 9xgf; 9xgg; 9xgi; 9xgj; 9xhu; 9xhv; 9xhw; 9xhx; 9xjj; 9xkv			208 PDB entries	true
+P10809:K58	pdb_self	at_residue	self			PDBe-KB	4pj1; 6ht7; 6mrc; 6mrd; 8g7l; 8g7m; 8g7n; 8g7o; 9es0; 9es1; 9es2; 9es4; 9es5; 9es6; 9h5s; 9h5t; 9h5u; 9l8p; 9shg; 9shh; 9shi; 9shj; 9shl			23 PDB entries	true
+P10809:K133	pdb_self	at_residue	self			PDBe-KB	4pj1; 6ht7; 6mrc; 6mrd; 8g7l; 8g7m; 8g7o; 9es0; 9es1; 9es2; 9es4; 9es5; 9es6; 9h5s; 9h5t; 9h5u; 9shg; 9shh; 9shi; 9shj; 9shl			21 PDB entries	true
+P10809:K473	pdb_self	at_residue	self			PDBe-KB	4pj1			1 PDB entries	true
+P10809:K481	pdb_self	at_residue	self			PDBe-KB	9h5u			1 PDB entries	true
+P11234:K16	pdb_protein	at_residue	protein	Q15311	RALBP1	PDBe-KB	2kwi; 6zqt; 6zrn			3 PDB entries	true
+P11940:K299	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. YQGVNL[Y]VK at 297 (244.0695 Da)	false
+P11940:K299	capri_xl_peptide	in_peptide	rna			CAPRI				291-299 YQGVNLYVK	true
+P11940:K299	capri_adj_peptide	in_fragment	rna			CAPRI				285-299 QDRITRYQGVNLYVK	true
+P12956:K451	pdb_protein	at_residue	protein	P13010	XRCC5	PDBe-KB	1jeq; 1jey; 6erf; 6erg; 6erh; 6zhe; 7axz; 7k0y; 7k1j; 7k1n; 7lsy; 7nfc; 7sgl; 7su3; 7z6o; 7z87; 7z88; 7zt6; 7zvt; 7zwa; 7zyg; 8ag4; 8ag5; 8asc; 8bh3; 8bhv; 8bhy; 8bot; 8ezb; 8rd4; 9cq3; 9cq6; 9cqc; 9gd7; 9gyf; 9hzg; 9i04; 9igw; 9igx; 9iol; 9n81; 9n83; 9ox8; 9q80; 9q8x; 9q9f; 9qcr; 9qcs; 9qms; 9zmm			50 PDB entries	true
+P12956:K570	pdb_protein	at_residue	protein	P13010	XRCC5	PDBe-KB	1jeq			1 PDB entries	true
+P12956:K575	pdb_protein	at_residue	protein	P13010	XRCC5	PDBe-KB	1jeq			1 PDB entries	true
+P12956:K575	pdb_protein	at_residue	protein	Q14191	WRN	PDBe-KB	9hzg			1 PDB entries	true
+P12956:K575	pdb_protein	at_residue	protein	Q9NYB0	TERF2IP	PDBe-KB	8rd4			1 PDB entries	true
+P12956:K582	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P13535:K132	pdb_protein	at_residue	protein	Q8NB12	SMYD1	PDBe-KB	9nvb			1 PDB entries	true
+P13639:K407	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P13693:K34	pdb_self	at_residue	self			PDBe-KB	5o9m; 6izb; 6ize			3 PDB entries	true
+P14406:K25	pdb_protein	at_residue	protein	P00414	MT-CO3	PDBe-KB	9i6f; 9i7u			2 PDB entries	true
+P14406:K25	pdb_protein	at_residue	protein	P10606	COX5B	PDBe-KB	9i6f			1 PDB entries	true
+P14866:K34	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 29-46 SGAMVkmaaaGGGGGGGR (lower case: the residues the crosslink may sit on)	true
+P14866:K34	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 29-46 SGAMVkmaaaGGGGGGGR (lower case: the residues the crosslink may sit on)	false
+P14866:K97	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. TDNAGDQHGGGGGGGGGAGAAGGGGGGENYDD[P]HKTPASPVVHIR at 95 (306.0253 Da)	false
+P14866:K97	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P14866:K97	capri_adj_peptide	in_fragment	rna			CAPRI				63-97 TDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDPHK	true
+P14866:K97	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 61-107 LKTDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphKTPASPVVHIR, 61-107 LKTDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphkTPASPVVHIR, 61-107 LKTDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphktPASPVVHIR, 61-107 LKTDNAGDQhgggggGGGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDQhggggggGGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDQhgggggggGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDqhgggggGGGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDqhgggggggGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 63-107 TDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphKTPASPVVHIR, 63-107 TDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphkTPASPVVHIR (lower case: the residues the crosslink may sit on)	true
+P14866:K97	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 61-107 LKTDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphKTPASPVVHIR, 61-107 LKTDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphkTPASPVVHIR, 61-107 LKTDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphktPASPVVHIR, 61-107 LKTDNAGDQhgggggGGGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDQhggggggGGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDQhgggggggGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDqhgggggGGGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 61-107 LKTDNAGDqhgggggggGGAGAAGGGGGGENYDDPHKTPASPVVHIR, 63-107 TDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphKTPASPVVHIR, 63-107 TDNAGDQHGGGGGGGGGAGAAGGGGGGENYDDphkTPASPVVHIR (lower case: the residues the crosslink may sit on)	false
+P15880:K142	pdb_rna	at_residue	rna			PDBe-KB	28zu; 28zv; 28zx; 28zy; 5a2q; 5flx; 5vyc; 6g18; 6g5h; 6g5i; 6om0; 6zlw; 6zmt; 6zmw; 6zn5; 6zuo; 6zv6; 6zvh; 6zvj; 6zxd; 6zxe; 6zxf; 6zxg; 6zxh; 7jqb; 7jqc; 7k5i; 7qp6; 7qp7; 7r4x; 7wtx; 7wtz; 7wu0; 8oz0; 8pj1; 8pj2; 8pj3; 8pj4; 8pj5; 8pj6; 8ppk; 8ppl; 8t4s; 8xp2; 8xp3; 8xxl; 8zdb; 8zdc; 8zdd; 9bkd; 9bln; 9ed0; 9g8o; 9kmt; 9kmv; 9kmw; 9kmx; 9kmy; 9kmz; 9kn0			60 PDB entries	true
+P15927:K85	dna_binding_region	in_region	dna			UniProt					false
+P16401:K27	pdb_protein	at_residue	protein	Q9Y468	L3MBTL1	PDBe-KB	2rhi			1 PDB entries	true
+P16402:K47	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P16989:K150	capri_adj_peptide	in_fragment	rna			CAPRI				131-150 YLRSVGDGETVEFDVVEGEK	true
+P17480:K627	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 618-635 LAEEQQKQYkvhLDLWVK, 618-635 LAEEQQKQykvhLDLWVK, 618-635 LAEEQQkqykvhLDLWVK, 618-635 LAEeqqkqykvhLDLWVK, 625-635 QYkvhLDLWVK (lower case: the residues the crosslink may sit on)	true
+P17480:K627	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 618-635 LAEEQQKQYkvhLDLWVK, 618-635 LAEEQQKQykvhLDLWVK, 618-635 LAEEQQkqykvhLDLWVK, 618-635 LAEeqqkqykvhLDLWVK, 625-635 QYkvhLDLWVK (lower case: the residues the crosslink may sit on)	false
+P17480:K627	dna_binding_region	in_region	dna			UniProt					false
+P17480:K635	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 618-635 LAEEQQKQYkvhLDLWVK, 618-635 LAEEQQKQykvhLDLWVK, 618-635 LAEEQQkqykvhLDLWVK, 618-635 LAEeqqkqykvhLDLWVK, 625-635 QYkvhLDLWVK (lower case: the residues the crosslink may sit on)	false
+P17844:K32	rna_crosslink	within_3	rna			pRBS-ID				a crosslinked residue within 3 residues. AGPL[S]GKKFGNPGEK at 30 (226.0594 Da), AGPLS[G]KKFGNPGEK at 31 (226.0594 Da)	false
+P17844:K32	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. AGPLS[G]KKFGNPGEK at 31 (611.0666/612.0506/651.0727/940.1191/980.1253 Da), AGPLSGK[K]FGNPGEK at 33 (611.0666/612.0506/617.0673/651.0727/916.1361 Da), AGPLSGKK[F]GNPGEK at 34 (611.0666/612.0506/651.0727 Da), K[F]GNPGEK at 34 (306.0253/635.0778/94.0167 Da), KF[G]NPGEKLVK at 35 (645.0543 Da)	false
+P17844:K32	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P17844:K32	capri_adj_peptide	in_fragment	rna			CAPRI				1-32 MSGYSSDRDRGRDRGFGAPRFGGSRAGPLSGK	true
+P17844:K40	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. KFGN[P]GEK at 37 (571.1064/611.0666/612.0506/617.0673/651.0727 Da), KFGNP[G]EK at 38 (651.0727 Da)	false
+P17844:K40	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P18858:K407	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 392-407 LMLPPPPltasgvFSK (lower case: the residues the crosslink may sit on)	false
+P19338:K348	rna_crosslink	candidate_residue	rna			RBS-ID				[K]FGYVDFESAEDLEK at 348 (244.0695 Da)	true
+P19338:K348	capri_adj_peptide	in_fragment	rna			CAPRI				334-348 NDLAVVDVRIGMTRK	true
+P20290:K54	pdb_protein	at_residue	protein	P35268	RPL22	PDBe-KB	9fq0			1 PDB entries	true
+P20700:K312	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 298-315 mriESLSSQLSNLQKESR, 298-315 mrieslSSQLSNLQKESR (lower case: the residues the crosslink may sit on)	false
+P21333:K700	rbrid_residue	at_residue	rna			RBR-ID				685-700 TGVAVNKPAEFTVDAK (log2 +4SU/-4SU -0.38, p 0.0057)	true
+P22626:K104	rna_crosslink	candidate_residue	rna			pepR-MS				AVAREESG[K]PGAHVTVK at 104 (651.0727 Da)	true
+P22626:K104	capri_xl_peptide	in_peptide	rna			CAPRI				96-104 AVAREESGK, 100-112 EESGKPGAHVTVK	true
+P22626:K104	capri_adj_peptide	in_fragment	rna			CAPRI				95-112 RAVAREESGKPGAHVTVK	true
+P22626:K104	pdb_self	at_residue	self			PDBe-KB	7wm3			1 PDB entries	true
+P23141:K275	pdb_self	at_residue	self			PDBe-KB	1mx5; 1ya4; 1ya8; 1yah; 1yaj; 2dqy; 2dqz; 2dr0; 2hrq; 2hrr; 5a7f; 8eor			12 PDB entries	true
+P23246:K314	capri_xl_peptide	in_peptide	rna			CAPRI				297-314 CRLFVGNLPADITEDEFK, 299-314 LFVGNLPADITEDEFK	true
+P23246:K314	capri_adj_peptide	in_fragment	rna			CAPRI				292-314 TYTQRCRLFVGNLPADITEDEFK	true
+P23246:K426	rna_crosslink	within_3	rna			pRBS-ID				a crosslinked residue within 3 residues. K[A]FERCSEGVFLLTTTPR at 427 (226.0594 Da), KA[F]ERCSEGVFLLTTTPR at 428 (226.0594 Da)	false
+P23246:K426	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. GIVEFASKPA[A]R at 424 (651.0727 Da)	false
+P23497:K70	pdb_protein	at_residue	protein	P0AEX9		PDBe-KB	9tnz			1 PDB entries	true
+P23497:K70	pdb_self	at_residue	self			PDBe-KB	9tnz			1 PDB entries	true
+P23527:K58	pdb_protein	at_residue	protein	Q3KSS1		PDBe-KB	7wlp			1 PDB entries	true
+P23527:K117	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 110-126 HAVSEGTKAVTKYTSSK, 110-126 hAVSEGTKAVTKYTSSK, 110-126 haVSEGTKAVTKYTSSK, 110-126 havSEGTKAVTKYTSSK, 110-126 havseGTKAVTKYTSSK (lower case: the residues the crosslink may sit on)	false
+P23528:K22	pdb_protein	at_residue	protein	P60709	ACTB	PDBe-KB	9qfd; 9qfe; 9qfj; 9qfk; 9qfo; 9qfq; 9qfw			7 PDB entries	true
+P23528:K22	pdb_protein	at_residue	protein	P68135		PDBe-KB	6uby; 6uc0; 6uc4; 6vao			4 PDB entries	true
+P24821:K825	pdb_protein	at_residue	protein	P29965	CD40LG	PDBe-KB	6brb			1 PDB entries	true
+P24928:K1887	rbrid_residue	at_residue	rna			RBR-ID				1874-1887 YSPTSPTYSPTTPK (log2 +4SU/-4SU -0.49, p 0.00039)	true
+P25054:K586	pdb_protein	at_residue	protein	Q5JTC6	AMER1	PDBe-KB	4yk6			1 PDB entries	true
+P25054:K586	pdb_protein	at_residue	protein	Q9NR80	ARHGEF4	PDBe-KB	3nmz			1 PDB entries	true
+P25208:K77	pdb_protein	at_residue	protein	Q13952	NFYC	PDBe-KB	1n1j; 4awl; 4csr; 6qmp; 6qmq; 6qms; 7ah8; 8qu2; 8qu3; 8qu4; 9r4d			11 PDB entries	true
+P25208:K77	pdb_dna	at_residue	dna			PDBe-KB	4awl			1 PDB entries	true
+P25208:K80	pdb_dna	at_residue	dna			PDBe-KB	4awl			1 PDB entries	true
+P25789:K210	pdb_protein	at_residue	protein	Q14997	PSME4	PDBe-KB	8cvs; 9tms			2 PDB entries	true
+P26012:K295	pdb_protein	at_residue	protein	P06756	ITGAV	PDBe-KB	6om1; 6om2; 6uja; 6ujb; 6ujc; 7y1t; 8tcf; 8vs6; 8vsd; 9ind			10 PDB entries	true
+P26358:K142	pdb_protein	at_residue	protein	A8MW92	PHF20L1	PDBe-KB	6l1f			1 PDB entries	true
+P26378:K213	pdb_rna	at_residue	rna			PDBe-KB	1fxl; 1g2e			2 PDB entries	true
+P26599:K518	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. GFKFFQ[K]DR at 515 (306.0253 Da), K[M]ALIQMGSVEEAVQALIDLHNHDLGENHHLR at 519 (612.0506 Da), M[A]LIQMGSVEEAVQALIDLHNHDLGENHHLR at 520 (322.0025 Da)	false
+P26599:K518	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P26599:K518	rbrid_residue	at_residue	rna			RBR-ID				518-549 KMALIQMGSVEEAVQALIDLHNHDLGENHHLR (log2 +4SU/-4SU -0.84, p 0.0007)	true
+P26599:K518	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide	false
+P26599:K518	pdb_rna	at_residue	rna			PDBe-KB	2adc			1 PDB entries	true
+P28069:K273	dna_binding_region	in_region	dna			UniProt					false
+P29373:K39	pdb_self	at_residue	self			PDBe-KB	1cbq; 3i17; 7oxx			3 PDB entries	true
+P30050:K4	pdb_protein	at_residue	protein	Q9UKD2	MRTO4	PDBe-KB	8idt; 8idy			2 PDB entries	true
+P30050:K11	pdb_protein	at_residue	protein	Q9UKD2	MRTO4	PDBe-KB	8idt			1 PDB entries	true
+P30101:K61	pdb_protein	at_residue	protein	P01899		PDBe-KB	7qng			1 PDB entries	true
+P30566:K264	pdb_self	at_residue	self			PDBe-KB	2j91; 2vd6; 4ffx; 4flc			4 PDB entries	true
+P30876:K1052	pdb_dna	at_residue	dna			PDBe-KB	5iy7; 5iyb			2 PDB entries	true
+P31946:K51	pdb_protein	at_residue	protein	P03372	ESR1	PDBe-KB	5n10			1 PDB entries	true
+P31946:K51	pdb_protein	at_residue	protein	P13569	CFTR	PDBe-KB	6hep			1 PDB entries	true
+P31946:K51	pdb_protein	at_residue	protein	Q51451		PDBe-KB	2c23			1 PDB entries	true
+P31946:K51	pdb_protein	at_residue	protein	Q6ZS72	PEAK3	PDBe-KB	8dp5			1 PDB entries	true
+P31946:K51	pdb_protein	at_residue	protein	Q93SQ1		PDBe-KB	6gn0; 6gn8; 6gnj; 6gnk			4 PDB entries	true
+P31946:K51	pdb_protein	at_residue	protein	Q9I788		PDBe-KB	6gnn			1 PDB entries	true
+P31946:K70	pdb_protein	at_residue	protein	Q9NP71	MLXIPL	PDBe-KB	6ygj			1 PDB entries	true
+P31948:K312	pdb_protein	at_residue	protein	P07900	HSP90AA1	PDBe-KB	7kw7			1 PDB entries	true
+P32321:K31	pdb_self	at_residue	self			PDBe-KB	2w4l			1 PDB entries	true
+P33778:K58	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	3x1s; 9ge5			2 PDB entries	true
+P33778:K58	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	9w6t			1 PDB entries	true
+P33778:K58	pdb_protein	at_residue	protein	Q15906	VPS72	PDBe-KB	9c62			1 PDB entries	true
+P33778:K58	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	9fgq			1 PDB entries	true
+P33778:K58	pdb_protein	at_residue	protein	Q8CGP4		PDBe-KB	3x1u			1 PDB entries	true
+P33778:K58	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	8yjm			1 PDB entries	true
+P33778:K86	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	9w6t			1 PDB entries	true
+P33993:K75	pdb_protein	at_residue	protein	P25205	MCM3	PDBe-KB	6xtx; 6xty; 7pfo; 7w1y; 8b9d; 8s09; 8s0a; 8s0b; 8s0d; 8w0f; 8w0g; 8w0i; 9c6g; 9caq; 9e2z; 9lxd; 9lxe			17 PDB entries	true
+P35222:K354	pdb_protein	at_residue	protein	P09803		PDBe-KB	7ar4			1 PDB entries	true
+P35232:K11	pdb_protein	at_residue	protein	Q99623	PHB2	PDBe-KB	9o6s			1 PDB entries	true
+P35269:K24	pdb_protein	at_residue	protein	P13984	GTF2F2	PDBe-KB	1f3u; 29tk; 29wd; 30fh; 5iy6; 5iy7; 5iy8; 5iy9; 5iya; 5iyb; 5iyc; 5iyd; 6o9l; 7edx; 7eg7; 7eg8; 7eg9; 7ega; 7lbm; 7nvs; 7nvt; 7nvu; 7zwd; 8byq; 8s51; 8s52; 8s54; 8s55; 8s5n; 8wat; 8wav; 8waw; 8wax; 8way; 8waz; 8wb0			36 PDB entries	true
+P35579:K139	pdb_protein	at_residue	protein	P02607		PDBe-KB	9szr			1 PDB entries	true
+P35579:K1676	pdb_self	at_residue	self			PDBe-KB	9szr			1 PDB entries	true
+P35998:K169	pdb_protein	at_residue	protein	P54578	USP14	PDBe-KB	7w3m			1 PDB entries	true
+P35998:K169	pdb_protein	at_residue	protein	P62191	PSMC1	PDBe-KB	5t0j; 5vhm			2 PDB entries	true
+P35998:K169	pdb_protein	at_residue	protein	Q13200	PSMD2	PDBe-KB	5t0c; 5t0g; 7qxw; 9bv3; 9e8h			5 PDB entries	true
+P36578:K234	rna_crosslink	at_residue	rna			pepR-MS				NIPGITLLNVS[K]LNILK at 234 (306.0253 Da)	true
+P36578:K234	rna_crosslink	at_residue	rna			pepR-MS_focused					true
+P36578:K234	pdb_rna	at_residue	rna			PDBe-KB	29iy; 6lqm; 6lsr; 6lss; 6lu8; 6om0; 6y6x; 7bhp; 7f5s; 7ow7; 8a3d; 8fkp; 8fkq; 8fkr; 8fks; 8fkt; 8fku; 8fkv; 8fkw; 8fkx; 8fky; 8fkz; 8fl0; 8fl2; 8fl3; 8fl4; 8fl7; 8fl9; 8fla; 8flb; 8flc; 8fld; 8fle; 8idt; 8idy; 8ie3; 8ine; 8inf; 8ink; 8ipd; 8ipx; 8ipy; 8ir1; 8ir3; 8ohd; 8oj0; 8oj5; 8oj8; 8qfd; 8qyx; 8rl2; 9gmo; 9p9j; 9p9k; 9qer; 9qet			56 PDB entries	true
+P36776:K145	pdb_self	at_residue	self			PDBe-KB	32fe; 32ff; 7ngp; 7ngq; 8ojl; 8oka; 8om7; 8ovf			8 PDB entries	true
+P36956:K342	pdb_self	at_residue	self			PDBe-KB	1am9			1 PDB entries	true
+P40227:K45	pdb_protein	at_residue	protein	P50990	CCT8	PDBe-KB	6nr8; 6nr9; 6nra; 6nrb; 6nrc; 6nrd; 6qb8; 7lum; 7lup; 7nvl; 7nvo; 7trg; 7tub; 7wu7; 7wz3; 7x0a; 7x3j; 7x3u; 7x6q; 7x7y; 8hki; 8i9u; 8ib8; 8sfe; 8sff; 8sgq; 8sh9; 8sha; 8shd; 8she; 8shf; 8shg; 8shl; 8shn; 8sho; 8shp; 8shq; 8sht; 9noc; 9noo; 9nop; 9noq; 9nq1; 9nr1; 9nrd; 9nre; 9nrf; 9nrg; 9nrh; 9q0e; 9q0g; 9q0u; 9q0v; 9q1x; 9s72; 9umt			56 PDB entries	true
+P40227:K58	pdb_protein	at_residue	protein	P50990	CCT8	PDBe-KB	6nra; 6nrb; 6nrd			3 PDB entries	true
+P40938:K66	pdb_protein	at_residue	protein	P12004	PCNA	PDBe-KB	8umv; 8umw			2 PDB entries	true
+P42224:K296	pdb_self	at_residue	self			PDBe-KB	11jg			1 PDB entries	true
+P42224:K525	pdb_self	at_residue	self			PDBe-KB	11jg			1 PDB entries	true
+P42224:K637	pdb_self	at_residue	self			PDBe-KB	11jg; 1bf5; 38yk; 8yyu			4 PDB entries	true
+P43405:K368	pdb_self	at_residue	self			PDBe-KB	8wyw			1 PDB entries	true
+P43694:K300	pdb_dna	at_residue	dna			PDBe-KB	8vg0; 8vg1			2 PDB entries	true
+P46776:K110	pdb_rna	at_residue	rna			PDBe-KB	29iy; 6lqm; 6lsr; 6lss; 6lu8; 6om0; 6y6x; 7bhp; 7f5s; 7ow7; 8a3d; 8fkz; 8fl2; 8fl3; 8fl4; 8fl6; 8fl7; 8fl9; 8fla; 8flb; 8flc; 8fld; 8fle; 8flf; 8idt; 8idy; 8ie3; 8ine; 8inf; 8ink; 8ipd; 8ipx; 8ipy; 8ir1; 8ir3; 8ohd; 8oj0; 8oj5; 8oj8; 8qfd; 8qyx; 8rl2; 9gmo; 9p9j; 9p9k; 9qer; 9qet			47 PDB entries	true
+P46777:K164	pdb_protein	at_residue	protein	Q9NVX2	NLE1	PDBe-KB	8fl0; 8ir1; 8ir3; 8rl2; 9qer; 9qet			6 PDB entries	true
+P46779:K84	pdb_rna	at_residue	rna			PDBe-KB	29iy; 6lqm; 6lsr; 6lss; 6lu8; 6om0; 6y6x; 7bhp; 7f5s; 7ow7; 8a3d; 8fkq; 8fks; 8fku; 8fkw; 8fkx; 8fky; 8fkz; 8fl0; 8fl2; 8fl3; 8fl6; 8fl7; 8fl9; 8fla; 8flb; 8flc; 8fld; 8fle; 8flf; 8idt; 8idy; 8ie3; 8ine; 8inf; 8ink; 8ipd; 8ipx; 8ipy; 8ir1; 8ir3; 8ohd; 8oj0; 8oj5; 8oj8; 8qfd; 8qyx; 8rl2; 9fpz; 9fq0; 9gj5; 9gj6; 9gmo; 9p9j; 9p9k; 9qer; 9qet			57 PDB entries	true
+P46783:K25	pdb_protein	at_residue	protein	P62273	RPS29	PDBe-KB	5a2q; 5oa3; 9kmy			3 PDB entries	true
+P46783:K25	pdb_rna	at_residue	rna			PDBe-KB	28zu; 28zv; 28zx; 28zy; 5a2q; 5flx; 5oa3; 5vyc; 6g5h; 6om0; 6ybs; 6zlw; 6zmt; 6zn5; 6zoj; 6zol; 6zuo; 6zv6; 6zvh; 6zvj; 6zxd; 6zxe; 6zxg; 6zxh; 7k5i; 7qp6; 7qp7; 7r4x; 8oz0; 8pj1; 8pj2; 8pj3; 8pj4; 8pj5; 8pj6; 8ppk; 8ppl; 8t4s; 8xp2; 8xp3; 8xxl; 8zdb; 8zdc; 8zdd; 9bkd; 9bln; 9ed0; 9g8o; 9kmw; 9kmy; 9kn0			51 PDB entries	true
+P47914:K5	pdb_rna	at_residue	rna			PDBe-KB	29iy; 6lqm; 6lsr; 6om0; 6y6x; 7bhp; 7f5s; 7ow7; 8a3d; 8ohd; 8oj0; 8oj5; 8oj8; 8qfd; 8qyx; 9gmo; 9p9j; 9p9k			18 PDB entries	true
+P48059:K297	pdb_protein	at_residue	protein	Q15404	RSU1	PDBe-KB	7d2s; 7d2t; 7d2u; 7lt9			4 PDB entries	true
+P48431:K42	dna_binding_region	in_region	dna			UniProt					false
+P48431:K42	pdb_protein	at_residue	protein	O00629	KPNA4	PDBe-KB	6wx8			1 PDB entries	true
+P48431:K42	pdb_protein	at_residue	protein	P52293		PDBe-KB	6wx7			1 PDB entries	true
+P48431:K42	pdb_protein	at_residue	protein	P52294	KPNA1	PDBe-KB	6wx9			1 PDB entries	true
+P48431:K42	pdb_dna	at_residue	dna			PDBe-KB	1o4x; 6t90; 6yov; 9rl4; 9rmc; 9rn1; 9rn2			7 PDB entries	true
+P48431:K117	pdb_protein	at_residue	protein	O00629	KPNA4	PDBe-KB	6wx8			1 PDB entries	true
+P48431:K117	pdb_protein	at_residue	protein	P52293		PDBe-KB	6wx7			1 PDB entries	true
+P48431:K117	pdb_protein	at_residue	protein	P52294	KPNA1	PDBe-KB	6wx9			1 PDB entries	true
+P48643:K35	pdb_protein	at_residue	protein	P50991	CCT4	PDBe-KB	7lup; 8ib8; 8sff; 8sh9; 8sha; 8shd; 8she; 8shf; 8shg; 8shl; 8shn; 8sho; 8shp; 8shq; 8sht; 9noc; 9noo; 9nop; 9noq; 9nq1; 9nr1; 9nrd; 9nre; 9nrf; 9nrg; 9nrh; 9q0e; 9q0g; 9q0u; 9q0v; 9q1x; 9s72			32 PDB entries	true
+P49588:K943	pdb_self	at_residue	self			PDBe-KB	5t5s			1 PDB entries	true
+P49736:K807	pdb_protein	at_residue	protein	O43913	ORC5	PDBe-KB	8rwv; 8s0e			2 PDB entries	true
+P49736:K807	pdb_protein	at_residue	protein	P33992	MCM5	PDBe-KB	7w1y			1 PDB entries	true
+P49736:K807	pdb_protein	at_residue	protein	Q14566	MCM6	PDBe-KB	7w1y; 8w0f; 9lxd; 9lxe; 9lxf			5 PDB entries	true
+P49750:K735	rbrid_residue	at_residue	rna			RBR-ID				707-735 SALPYSSFSSDQGLGESSAAPSQPITAVK (log2 +4SU/-4SU -0.77, p 0.00077)	true
+P49792:K1286	pdb_protein	at_residue	protein	P62826	RAN	PDBe-KB	7mnw			1 PDB entries	true
+P49815:K438	pdb_protein	at_residue	protein	Q92574	TSC1	PDBe-KB	9ce3			1 PDB entries	true
+P49917:K104	pdb_protein	at_residue	protein	Q9H9Q4	NHEJ1	PDBe-KB	9cqc; 9n81			2 PDB entries	true
+P50991:K55	pdb_protein	at_residue	protein	P17987	TCP1	PDBe-KB	6nr8; 6nr9; 6nra; 6nrb; 6nrc; 6nrd; 6qb8; 7lum; 7lup; 7nvl; 7trg; 7tub; 7wu7; 7wz3; 7x0a; 7x3j; 7x3u; 7x6q; 8hki; 8ib8; 8sfe; 8sff; 8sgq; 8sh9; 8sha; 8shd; 8she; 8shf; 8shg; 8shl; 8shn; 8sho; 8shp; 8shq; 8sht; 9noc; 9noo; 9nop; 9noq; 9nq1; 9nr1; 9nrd; 9nre; 9nrf; 9nrg; 9nrh; 9q0e; 9q0g; 9q0u; 9q0v; 9q1x; 9s72; 9umt			53 PDB entries	true
+P50991:K65	pdb_protein	at_residue	protein	P17987	TCP1	PDBe-KB	6nr8; 6nra; 6nrb; 6nrc; 6nrd; 7x6q; 8ib8; 8sh9; 8sha; 8she; 8shf; 8shn; 8sho; 8sht; 9noc; 9noo; 9nop; 9noq; 9nq1; 9nrd; 9nre; 9nrf; 9nrg; 9nrh; 9q0e; 9q0g; 9q0u; 9q0v; 9s72			29 PDB entries	true
+P51610:K1884	pdb_self	at_residue	self			PDBe-KB	4go6			1 PDB entries	true
+P52630:K197	pdb_protein	at_residue	protein	Q91H74		PDBe-KB	8t12; 8t13			2 PDB entries	true
+P53396:K12	rbrid_residue	at_residue	rna			RBR-ID				5-17 AISEQTGKELLYK (log2 +4SU/-4SU -0.69, p 0.0037)	true
+P54619:K79	pdb_protein	at_residue	protein	P54646	PRKAA2	PDBe-KB	4zhx; 5ezv; 6b1u; 6b2e; 7myj; 8bik			6 PDB entries	true
+P54619:K79	pdb_protein	at_residue	protein	Q13131	PRKAA1	PDBe-KB	5ezv; 7jhh			2 PDB entries	true
+P55072:K315	pdb_protein	at_residue	protein	Q9H867	VCPKMT	PDBe-KB	7oat; 8hl7			2 PDB entries	true
+P55072:K315	pdb_self	at_residue	self			PDBe-KB	10qq; 10qr; 11ve; 3hu2; 4kod; 5c18; 5c19; 5c1a; 5c1b; 5dyg; 5dyi; 5ftj; 5ftl; 6hd0; 6mck; 7jy5; 7k56; 7k57; 7k59; 7l5w; 7ln5; 7mdm; 7mdo; 7r7t; 7r7u; 7rl6; 7rl9; 7rlb; 7rld; 7rlg; 7rli; 7rlj; 7vct; 7vcu; 7y4w; 7y53; 7y59; 8fcl; 8fcm; 8fcn; 8fcq; 8fcr; 8fct; 8hrz; 8kg2; 8pqx; 8rs9; 8rsb; 8uv2; 8uvo; 8uvp; 8yka; 9dil; 9mpq; 9mpr; 9yrc			56 PDB entries	true
+P59540:K214	pdb_protein	at_residue	protein	P63092	GNAS	PDBe-KB	7xp4; 7xp5; 7xp6			3 PDB entries	true
+P59540:K214	pdb_protein	at_residue	protein	P63096	GNAI1	PDBe-KB	9w0r; 9w0t; 9w0u; 9w0w			4 PDB entries	true
+P59540:K222	pdb_protein	at_residue	protein	P63096	GNAI1	PDBe-KB	9w0r			1 PDB entries	true
+P59540:K226	pdb_protein	at_residue	protein	P63092	GNAS	PDBe-KB	7xp4; 7xp5; 7xp6			3 PDB entries	true
+P59540:K226	pdb_protein	at_residue	protein	P63096	GNAI1	PDBe-KB	9w0s; 9w0t; 9w0u; 9w0w			4 PDB entries	true
+P60228:K409	pdb_protein	at_residue	protein	O00303	EIF3F	PDBe-KB	8ppl			1 PDB entries	true
+P60228:K409	pdb_protein	at_residue	protein	Q99613	EIF3C	PDBe-KB	28zx; 28zy			2 PDB entries	true
+P60228:K409	pdb_protein	at_residue	protein	Q9Y262	EIF3L	PDBe-KB	6zvj; 8pj1; 8pj2; 8pj3; 8pj4; 8ppl; 8rg0			7 PDB entries	true
+P60660:K98	pdb_protein	at_residue	protein	P35580	MYH10	PDBe-KB	9z3w; 9z3z; 9z40; 9z4q			4 PDB entries	true
+P60709:K84	pdb_protein	at_residue	protein	O15020	SPTBN2	PDBe-KB	6anu			1 PDB entries	true
+P60709:K84	pdb_protein	at_residue	protein	P16455	MGMT	PDBe-KB	9qf2; 9qfb; 9qfe; 9qfg; 9qfk			5 PDB entries	true
+P60709:K84	pdb_protein	at_residue	protein	Q08043	ACTN3	PDBe-KB	3lue			1 PDB entries	true
+P60709:K84	pdb_protein	at_residue	protein	Q86TU7	SETD3	PDBe-KB	6ict; 6ox3			2 PDB entries	true
+P60709:K84	pdb_protein	at_residue	protein	Q9BR76	CORO1B	PDBe-KB	9qf2; 9qfb; 9qfe; 9qfg; 9qfk			5 PDB entries	true
+P60709:K284	pdb_protein	at_residue	protein	A0A250E4R0		PDBe-KB	9p1i			1 PDB entries	true
+P60709:K284	pdb_protein	at_residue	protein	O96019	ACTL6A	PDBe-KB	6ltj; 8qr1; 8x15; 8x19; 8x1c; 8xvg; 8xvt; 9c57; 9c6n; 9cac; 9cae; 9rl4; 9uxa; 9uxb; 9uxc; 9wbz; 9wc1; 9y3d; 9y3e; 9y3f; 9y3g; 9y3h			22 PDB entries	true
+P60709:K284	pdb_protein	at_residue	protein	P07737	PFN1	PDBe-KB	6nbw; 8rty			2 PDB entries	true
+P60709:K284	pdb_protein	at_residue	protein	Q5ZSJ0		PDBe-KB	9b2z			1 PDB entries	true
+P60709:K284	pdb_self	at_residue	self			PDBe-KB	3lue			1 PDB entries	true
+P61011:K457	rbrid_residue	at_residue	rna			RBR-ID				449-457 NVSQSQMAK (log2 +4SU/-4SU -0.48, p 0.0037)	true
+P61981:K50	pdb_protein	at_residue	protein	P07101	TH	PDBe-KB	4j6s			1 PDB entries	true
+P61981:K50	pdb_protein	at_residue	protein	P13569	CFTR	PDBe-KB	5d3e			1 PDB entries	true
+P61981:K50	pdb_protein	at_residue	protein	P42575	CASP2	PDBe-KB	6gkf; 6gkg; 6sad			3 PDB entries	true
+P61981:K50	pdb_protein	at_residue	protein	P56524	HDAC4	PDBe-KB	3uzd			1 PDB entries	true
+P61981:K50	pdb_protein	at_residue	protein	Q5S007	LRRK2	PDBe-KB	9ci3			1 PDB entries	true
+P61981:K50	pdb_protein	at_residue	protein	Q96PU5	NEDD4L	PDBe-KB	6zbt; 6zc9			2 PDB entries	true
+P61981:K50	pdb_protein	at_residue	protein	Q96RR4	CAMKK2	PDBe-KB	6fel; 6y4k; 6y6b			3 PDB entries	true
+P61981:K50	pdb_protein	at_residue	protein	Q9UIK4	DAPK2	PDBe-KB	7a6r; 7a6y			2 PDB entries	true
+P62195:K38	pdb_protein	at_residue	protein	O43242	PSMD3	PDBe-KB	5t0h; 5t0i; 5t0j; 5vfr; 7qy7; 7qya; 8cvt; 9heu; 9szt; 9szv			10 PDB entries	true
+P62195:K38	pdb_protein	at_residue	protein	P43686	PSMC4	PDBe-KB	12bm; 22mm; 5l4g; 5ln3; 6msb; 6msd; 6msh; 6wjd; 7qxn; 7qxp; 7qxu; 7qxw; 7qxx; 7qyb; 7w37; 7w38; 7w3g; 7w3i; 7w3j; 7w3k; 7w3m; 8jri; 8jrt; 8jti; 8k0g; 8usb; 9bui; 9bv1; 9bv2; 9bv3; 9bw4; 9e8h; 9e8i; 9e8k; 9e8o; 9heu; 9k4z; 9k56; 9k5e; 9mbp; 9nkf; 9pmj; 9pmo; 9pmq; 9pro; 9prt; 9szt; 9szv; 9u7r; 9uf8			50 PDB entries	true
+P62249:K4	rna_crosslink	candidate_residue	rna			RBS-ID				PS[K]GPLQSVQVFGR at 4 (244.0695 Da)	true
+P62249:K4	rna_crosslink	candidate_residue	rna			pepR-MS				PS[K]GPLQSVQVFGR at 4 (306.0253 Da)	true
+P62249:K4	pdb_rna	at_residue	rna			PDBe-KB	6om0; 6zvh; 8xp2; 8xp3; 8xxl			5 PDB entries	true
+P62249:K26	pdb_rna	at_residue	rna			PDBe-KB	28zv; 28zy; 5a2q; 5flx; 5oa3; 6g18; 6om0; 6ybs; 6zlw; 6zmt; 6zmw; 6zn5; 6zoj; 6zol; 6zuo; 6zv6; 6zvh; 6zvj; 6zxd; 6zxe; 6zxf; 7mq9; 7qp7; 7r4x; 8pj1; 8pj2; 8pj3; 8pj4; 8pj5; 8pj6; 8ppk; 8ppl; 8t4s; 8xp2; 8xp3; 8xxl; 8zdb; 9ed0; 9kmz; 9kn0			40 PDB entries	true
+P62266:K37	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+P62266:K37	pdb_protein	at_residue	protein	Q14692	BMS1	PDBe-KB	7mq9			1 PDB entries	true
+P62266:K37	pdb_rna	at_residue	rna			PDBe-KB	28zu; 28zv; 28zx; 28zy; 4cxg; 4cxh; 5a2q; 5flx; 5vyc; 6g18; 6g5h; 6om0; 6zlw; 6zmt; 6zn5; 6zv6; 6zvh; 6zvj; 6zxe; 6zxh; 7r4x; 7wts; 7wtt; 7wtu; 8pj1; 8pj2; 8pj3; 8pj5; 8pj6; 8ppk; 8t4s; 8xp2; 8xp3; 8xxl; 8zdc; 8zdd; 9bkd; 9bln; 9ed0; 9kmv; 9kmx; 9kn0			42 PDB entries	true
+P62266:K48	pdb_protein	at_residue	protein	Q14692	BMS1	PDBe-KB	7mq9			1 PDB entries	true
+P62266:K48	pdb_rna	at_residue	rna			PDBe-KB	28zu; 28zv; 28zx; 28zy; 4cxg; 5a2q; 5flx; 5oa3; 5vyc; 6g18; 6g5h; 6g5i; 6om0; 6ybw; 6zlw; 6zmt; 6zmw; 6zn5; 6zoj; 6zok; 6zuo; 6zv6; 6zvh; 6zvj; 6zxd; 6zxe; 6zxf; 6zxg; 6zxh; 7k5i; 7qp6; 7qp7; 7r4x; 7wts; 7wtt; 7wtu; 7wtv; 7wtw; 7wtx; 7wtz; 7wu0; 8oz0; 8pj1; 8pj2; 8pj3; 8pj4; 8pj5; 8pj6; 8ppk; 8t4s; 8xp2; 8xp3; 8xxl; 8zdb; 8zdc; 8zdd; 9bkd; 9bln; 9ed0; 9g8o; 9kmt; 9kmv; 9kmw; 9kmx; 9kmy; 9kmz; 9kn0			67 PDB entries	true
+P62424:K121	pdb_protein	at_residue	protein	Q14137	BOP1	PDBe-KB	8fkp; 8fkq; 8fkr; 8fks; 8fkt; 8fku; 8fkv; 8fkw; 8fky			9 PDB entries	true
+P62424:K121	pdb_protein	at_residue	protein	Q9NZM5	NOP53	PDBe-KB	8fl2; 8fl6; 8fla; 8fld			4 PDB entries	true
+P62424:K121	pdb_protein	at_residue	protein	Q9Y3C1	NOP16	PDBe-KB	8fkp; 8fkq; 8fkr; 8fks; 8fkt; 8fku; 8fkv; 8fkw; 8fkx; 8fky			10 PDB entries	true
+P62424:K121	pdb_rna	at_residue	rna			PDBe-KB	8fkp; 8fkq; 8fkr; 8fks; 8fkt; 8fku; 8fkv; 8fkw; 8fkx; 8fky			10 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	O14929	HAT1	PDBe-KB	6vo5			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	O60885	BRD4	PDBe-KB	3uvx; 3uw9			2 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	7eic; 7eid			2 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	P49450	CENPA	PDBe-KB	6mup			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	P55201	BRPF1	PDBe-KB	4qyd			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	P68431	H3C1	PDBe-KB	8yti			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	P75960		PDBe-KB	6rxs			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	Q09472	EP300	PDBe-KB	8hag; 8haj; 8hak			3 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	Q12830	BPTF	PDBe-KB	3qzv			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	Q6PL18	ATAD2	PDBe-KB	4qut			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	Q92793	CREBBP	PDBe-KB	4n4f; 8hal; 8ham; 8han			4 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	Q96HA7	TONSL	PDBe-KB	5ja4			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	Q9NTG7	SIRT3	PDBe-KB	5zgc			1 PDB entries	true
+P62805:K13	pdb_protein	at_residue	protein	Q9ULI0	ATAD2B	PDBe-KB	8uhl			1 PDB entries	true
+P62805:K21	dna_binding_region	in_region	dna			UniProt					false
+P62805:K21	pdb_protein	at_residue	protein	O60885	BRD4	PDBe-KB	3uvy			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	O75164	KDM4A	PDBe-KB	2qqs			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	O75530	EED	PDBe-KB	3ij1; 3jpx			2 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	9w6f			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	P30117		PDBe-KB	7vcq			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	P49736	MCM2	PDBe-KB	5bnv			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	P68431	H3C1	PDBe-KB	6l9z; 6la2; 6lab; 7bwd; 7c0m; 7k60; 7k61; 7lyb; 7lyc; 7v90; 7v96; 7v9j; 7v9k; 7v9s; 7va4; 7xvl; 7xvm; 7xx6; 8evg; 8evi; 8hag; 8hah; 8haj; 8hal; 8han; 8jhf; 8kcy; 8kd1; 8ox1; 8smw; 8sn0; 8sn3; 8sn6; 8sn9; 8txx; 8u13; 8u14; 8upf; 8vlr; 8yti; 9uz7; 9w6f; 9w6j; 9w6k; 9w6l; 9w6m; 9w6p; 9w6q; 9w6t; 9w71; 9w72; 9w73; 9yle			53 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	P84243	H3-3A	PDBe-KB	6r0c; 6rny; 7cj0; 7xse; 7xsx; 7xsz; 7xtd; 7xti; 9l06; 9wmw			10 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q09472	EP300	PDBe-KB	8haj			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q12888	TP53BP1	PDBe-KB	2ig0; 2lvm; 7yqk			3 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q15059	BRD3	PDBe-KB	8b5a			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q24K09		PDBe-KB	7lmk; 7lmm			2 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q3UHR0		PDBe-KB	8ye8			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q4FZB7	KMT5B	PDBe-KB	7yrd; 8jhf; 8jhg			3 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q71DI3	H3C15	PDBe-KB	6t7a; 6t7c; 7jzv; 7pet; 7peu; 7pex; 7pey; 7pez; 7pf0; 7pf4; 7pfa; 7pfc; 7pfd; 7pfe; 7pft; 7pfu; 7pfv; 7xcr; 7xct; 7xd0; 8hr1; 8vwv; 8x7i; 8x7j; 8x7k; 8zjr; 8zjt; 9ipu			28 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q7Z4V5	HDGFL2	PDBe-KB	3qby			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q92784	DPF3	PDBe-KB	2kwn; 2kwo			2 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q92793	CREBBP	PDBe-KB	2rny; 4n3w; 8ham			3 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q96H22	CENPN	PDBe-KB	6muo; 6mup			2 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q96HA7	TONSL	PDBe-KB	5ja4			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q99728	BARD1	PDBe-KB	7lyc			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q9BQI6	SLF1	PDBe-KB	8pef			1 PDB entries	true
+P62805:K21	pdb_protein	at_residue	protein	Q9NQR1	KMT5A	PDBe-KB	1zkk; 3f9w; 3f9x; 3f9y; 3f9z; 5teg; 7d1z; 7d20			8 PDB entries	true
+P62805:K21	pdb_dna	at_residue	dna			PDBe-KB	10xz; 5z23; 6l4a; 6l9z; 6la2; 6lab; 6r94; 6rny; 6se6; 6t79; 6y5e; 7k5y; 7pet; 7peu; 7pev; 7pew; 7pex; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7va4; 8haj; 8hak; 8hal; 8kd1; 8ke0; 8smw; 8smx; 8smy; 8smz; 8sn0; 8sn1; 8sn6; 8sn7; 8sn8; 8txv; 8u13; 8u14; 8upf; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8vmj; 8vmn; 8vob; 8x7i; 8yti; 8yv8; 8zjr; 8zjt; 9dwi; 9ipu; 9jc6; 9l1x; 9mll; 9w6f; 9w6j; 9w6k; 9w6l; 9w6m; 9w6p; 9w6q; 9w6t; 9w71; 9w72; 9w73			81 PDB entries	true
+P62805:K21	pdb_self	at_residue	self			PDBe-KB	7v96; 7v9k; 7va4			3 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	A0A1B8Y854		PDBe-KB	9e3u			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	A0A8J1LZU9		PDBe-KB	8vmj; 8vmn			2 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	O60814	H2BC12	PDBe-KB	6ke9; 6l9h; 6le9; 6t79; 6t7a; 6t7c; 6y5d; 6y5e; 7bwd; 7dbp; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7v90; 7v96; 7v9c; 7v9j; 7v9k; 7v9s; 7va4; 7xcr; 7xct; 7xd1; 7yqk; 8grm; 8grq; 8hqy; 8hr1; 8ieg; 8iej; 8jhf; 8q36; 8q3e; 8q3m; 8q3x; 8w9e; 8w9f; 8wg5; 8x7i; 8x7j; 8x7k; 8yv8; 8zjr; 8zjt; 9d3r; 9gw2; 9ipu; 9kqo; 9rzc; 9rze; 9s0u; 9u5u; 9xsf; 9zeo			73 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P02281		PDBe-KB	8aag; 8vo0; 8vob			3 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P06899	H2BC11	PDBe-KB	3a6n; 3afa; 3an2; 3av1; 3azf; 3azh; 3azj; 3azl; 3w97; 3w99; 3wa9; 3waa; 3wtp; 4ym5; 4z5t; 5av5; 5av6; 5av8; 5av9; 5avb; 5avc; 5ay8; 5b0z; 5b24; 5b2i; 5b2j; 5b31; 5b32; 5b33; 5b40; 5cpi; 5cpj; 5gse; 5jrg; 5x7x; 5y0c; 5y0d; 5z30; 5zbx; 6a5l; 6a5o; 6a5p; 6a5t; 6a5u; 6buz; 6hkt; 6inq; 6ipu; 6iq4; 6ir9; 6j4w; 6j4x; 6j4y; 6j4z; 6j50; 6j51; 6jou; 6jr0; 6jr1; 6jxd; 6k1i; 6k1j; 6k1k; 6kvd; 6kxv; 6l49; 6l4a; 6l9z; 6la2; 6la8; 6la9; 6lab; 6m3v; 6m44; 6o1d; 6r8y; 6r8z; 6r90; 6r91; 6r92; 6r94; 6t93; 6usj; 6v2k; 6yov; 7by0; 7c0m; 7ccq; 7cow; 7d1z; 7d20; 7e8d; 7k5x; 7k5y; 7k60; 7k61; 7k63; 7lya; 7lyb; 7nl0; 7scy; 7wbw; 7wbx; 7xse; 7xsx; 7xsz; 7xt7; 7xtd; 7xti; 7xvl; 7xvm; 7xx5; 7xx6; 7xzx; 7xzy; 7xzz; 7y00; 7yrd; 7zi4; 8gui; 8guj; 8h0v; 8h0w; 8hag; 8hah; 8hai; 8haj; 8hak; 8hal; 8ham; 8han; 8he5; 8jh2; 8jh3; 8jh4; 8jl9; 8jla; 8jnd; 8jne; 8jnf; 8kb5; 8kcy; 8kd1; 8ke0; 8osj; 8osk; 8ots; 8ott; 8smw; 8smx; 8smy; 8smz; 8sn0; 8sn1; 8sn2; 8sn3; 8sn4; 8sn6; 8sn7; 8sn8; 8sn9; 8u14; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8xbt; 8xbu; 8xrj; 8y3c; 8y3d; 8y3e; 8y3f; 8ybj; 8ybk; 8yny; 8yti; 9e05; 9e09; 9e3d; 9e3r; 9e49; 9gmk; 9igw; 9igx; 9ii7; 9j0n; 9j0o; 9j0p; 9j8m; 9j8n; 9j8o; 9j8w; 9l1x; 9mls; 9ogr; 9ogs; 9ogz; 9oh0; 9oh1; 9oh2; 9q80; 9q8x; 9q9f; 9qcs; 9qms; 9r04; 9r2m; 9r2p; 9r2q; 9rl4; 9rmc; 9rn1; 9rn2; 9uxw; 9uz7; 9uz9; 9wms; 9wmt; 9wmu; 9wmv; 9wmw			223 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	8yjm			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P33778	H2BC3	PDBe-KB	3x1s; 3x1u; 8yjm; 9fgq; 9ge5; 9w6t			6 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P49450	CENPA	PDBe-KB	9k9l			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P49736	MCM2	PDBe-KB	5bnv; 5ja4			2 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P62807	H2BC4	PDBe-KB	10xz; 10ya; 10yb; 10yc; 10yd; 43ib; 43ie; 43if; 43ig; 5gt0; 6c0w; 6r0c; 6rny; 6se0; 6se6; 6see; 6sef; 6seg; 6upl; 6x5a; 6xjd; 7pii; 7u46; 7u47; 7u4d; 7u50; 7u51; 7u52; 7u53; 7uv9; 7yyh; 8atf; 8jbx; 8ooa; 8ox0; 8ox1; 8qzm; 8vws; 8vwu; 8vwv; 8x15; 8x19; 8x1c; 9dwf; 9dwg; 9dwh; 9dwi; 9dwj; 9dwl; 9eoz; 9l06; 9nqu; 9tax; 9v6q; 9v6s; 9v6x; 9v8l; 9v9h; 9v9p			59 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P68431	H3C1	PDBe-KB	7y60			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	P70696		PDBe-KB	3x1v			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q13112	CHAF1B	PDBe-KB	7y5u; 8iqg			2 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q16778	H2BC21	PDBe-KB	6m4d; 6m4g; 6m4h; 7u0g; 8evg; 8evi; 8h1t; 8yjf; 9gcg; 9ge4; 9gel; 9gev; 9gf6; 9gfb; 9gfm; 9w6e; 9w6f; 9w6g; 9w6h; 9w6i; 9w6j; 9w6k; 9w6l; 9w6m; 9w6n; 9w6o; 9w6p; 9w6q; 9w71; 9w72; 9w73; 9yly; 9ymf			33 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q2M2T1		PDBe-KB	7xd0			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q5QNW6	H2BC18	PDBe-KB	10yf; 6muo; 6mup			3 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q7Z2G1	H2BW1	PDBe-KB	8jcd			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q8WXX5	DNAJC9	PDBe-KB	7ciz; 7cj0			2 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q96A08	H2BC1	PDBe-KB	5gsu; 8vlr			2 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q99879	H2BC14	PDBe-KB	10ye; 10yg; 10yh; 9d3n; 9d3o; 9d3p; 9d3q; 9d3s; 9d3t			9 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q9NVP2	ASF1B	PDBe-KB	5bnx; 5bo0; 7vcq			3 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q9NXA8	SIRT5	PDBe-KB	6acp			1 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q9UER7	DAXX	PDBe-KB	4h9n; 4h9o; 4h9p; 4h9q; 4h9r; 5kdm			6 PDB entries	true
+P62805:K92	pdb_protein	at_residue	protein	Q9Y294	ASF1A	PDBe-KB	5c3i; 7v6q; 8z50			3 PDB entries	true
+P62805:K92	pdb_self	at_residue	self			PDBe-KB	7x57; 7x58; 7y5w; 7y60; 7yoz; 9k9l; 9ujs			7 PDB entries	true
+P62807:K47	pdb_protein	at_residue	protein	Q8C6L5		PDBe-KB	7a08			1 PDB entries	true
+P62807:K47	pdb_rna	at_residue	rna			PDBe-KB	7trf; 9q0z; 9q10; 9q12; 9q14; 9q16; 9q18			7 PDB entries	true
+P62807:K47	pdb_dna	at_residue	dna			PDBe-KB	6c0w; 6rny; 6see; 7u4d; 9eoz; 9v8l; 9v9h			7 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	8jbx; 8txv; 8txw; 8txx; 8u13			5 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	P0C0S5	H2AZ1	PDBe-KB	9nfy; 9nfz; 9ng0			3 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	10xz; 10ya; 10yb; 10yc; 10yd; 5kgf; 6r0c; 6rny; 6x59; 6x5a; 6xjd; 7jo9; 7u50; 7u51; 7u52; 7u53; 7uv9; 8atf; 8qzm; 8vws; 8vwu; 8vwv; 9dwg; 9dwh; 9dwi; 9dwj; 9nqu			27 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	P49450	CENPA	PDBe-KB	6se0			1 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	7u50; 8jbx; 9v9p			3 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	P84233		PDBe-KB	9ng0			1 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q15906	VPS72	PDBe-KB	9nfy; 9nfz; 9ng0			3 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	43ib; 43ie; 43ig; 6se6; 6see; 6sef; 6seg			7 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q71DI3	H3C15	PDBe-KB	9nfz			1 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q93077	H2AC6	PDBe-KB	7a08; 7pii; 7r5r; 7ywx; 7yyh; 8ooa; 8ox0; 8ox1; 8x15; 8x1c; 9eoz; 9l06; 9tax			13 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q96KK5	H2AC12	PDBe-KB	9v6s; 9v6x; 9v8l; 9v9h; 9v9p			5 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q96QV6	H2AC1	PDBe-KB	5gt0			1 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q9BTM1	H2AJ	PDBe-KB	9q0z; 9q12; 9q14; 9q18			4 PDB entries	true
+P62807:K58	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	6upk; 6upl			2 PDB entries	true
+P62807:K86	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	9dwl			1 PDB entries	true
+P62807:K86	pdb_dna	at_residue	dna			PDBe-KB	6se0; 6se6; 6see; 6sef; 6upk; 6upl; 6xjd; 7u52; 8x15; 9tax; 9v6q			11 PDB entries	true
+P62807:K109	pdb_protein	at_residue	protein	P35226	BMI1	PDBe-KB	9v6s; 9v8l; 9v9h; 9v9p			4 PDB entries	true
+P62807:K109	pdb_protein	at_residue	protein	P49450	CENPA	PDBe-KB	9tax			1 PDB entries	true
+P62807:K109	pdb_protein	at_residue	protein	Q99496	RNF2	PDBe-KB	9v6s; 9v6x			2 PDB entries	true
+P62807:K117	pdb_protein	at_residue	protein	O95931	CBX7	PDBe-KB	9v9p			1 PDB entries	true
+P62807:K117	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	5kgf			1 PDB entries	true
+P62807:K117	pdb_protein	at_residue	protein	Q12888	TP53BP1	PDBe-KB	5kgf			1 PDB entries	true
+P62807:K117	pdb_protein	at_residue	protein	Q8IYW5	RNF168	PDBe-KB	8txw; 8txx; 8u13			3 PDB entries	true
+P62829:K91	pdb_protein	at_residue	protein	P39023	RPL3	PDBe-KB	29iy; 6lqm; 6lsr; 6lss; 6lu8; 6om0; 6y6x; 7f5s; 8a3d; 8fkp; 8fkq; 8fkr; 8fks; 8fkt; 8fku; 8fkv; 8fkw; 8fkx; 8fky; 8fkz; 8fl0; 8fl2; 8fl3; 8fl4; 8fl6; 8fl7; 8fl9; 8fla; 8flb; 8flc; 8fld; 8fle; 8flf; 8idt; 8idy; 8ie3; 8ine; 8inf; 8ink; 8ipd; 8ipx; 8ipy; 8ir1; 8ir3; 8ohd; 8oj0; 8oj5; 8oj8; 8qfd; 8qyx; 8rl2; 9gmo; 9p9j; 9p9k; 9qer; 9qet			56 PDB entries	true
+P62829:K91	pdb_protein	at_residue	protein	P56537	EIF6	PDBe-KB	8fkp; 8fku			2 PDB entries	true
+P62829:K91	pdb_rna	at_residue	rna			PDBe-KB	6om0; 8ie3; 8ir1			3 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	A0A590UJY2		PDBe-KB	21du; 9asb			2 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	A0A5A9NRD5		PDBe-KB	9jco; 9uwm; 9uwq; 9x3z			4 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	A0A804HIH4		PDBe-KB	9bip			1 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	A0ACM8EI87		PDBe-KB	9m55; 9m57			2 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	A8MTJ3	GNAT3	PDBe-KB	9oxb			1 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	J9SQF3		PDBe-KB	8ddx			1 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P04899	GNAI2	PDBe-KB	6d9h; 7f8v; 7ld3; 7ld4; 7wvx; 7wvy; 7xxi; 7yk7; 8k6m; 8y45; 8zbw; 9k6l; 9kfi; 9kfj; 9xdq			15 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P08754	GNAI3	PDBe-KB	7t10; 8gy7; 8ikl; 8szh; 8szi; 8wgb; 9ycy			7 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P09471	GNAO1	PDBe-KB	6g79; 6oik; 7d76; 7ej0; 7ej8; 7ejk; 7y24; 8i97; 8jhn; 8tzq; 8u02; 8xwv; 8xx7; 8xxh; 8yn7; 9bsb; 9dyd; 9dye; 9kug; 9kv6; 9kvp; 9t88; 9t8c; 9vav			24 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P19086	GNAZ	PDBe-KB	9md1			1 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P29992	GNA11	PDBe-KB	8qeg; 8qeh; 9p87			3 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P38405	GNAL	PDBe-KB	8iw1; 8kgk; 9ldv; 9ldw; 9ldx; 9le0; 9le2			7 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P48542		PDBe-KB	4kfm			1 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P50148	GNAQ	PDBe-KB	7f6g; 7f6h; 7f6i; 7f8w; 8iys; 8szg; 8xgo; 8y51; 9d0a; 9ll9; 9lla; 9llb; 9m1h; 9vaw; 9xfi; 9xiy; 9xjp			17 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P59768	GNG2	PDBe-KB	9wnd; 9xhh			2 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P63092	GNAS	PDBe-KB	6e3y; 6eg8; 6li3; 6orv; 6pb1; 6wi9; 6wpw; 6x19; 7bb7; 7c2e; 7cx4; 7ept; 7ezk; 7f1z; 7f53; 7f55; 7f58; 7ki0; 7lci; 7lly; 7rmg; 7s3i; 7tyi; 7tyo; 7tyx; 7w56; 7wcm; 7wuj; 7xou; 7xp5; 7xt9; 7xtb; 7xtc; 7xw5; 7xy6; 7xy7; 7y3g; 7yp7; 8e3z; 8f2b; 8gdz; 8ge1; 8ge2; 8ge3; 8ge4; 8ge5; 8ge6; 8ge7; 8ge8; 8ge9; 8gea; 8geb; 8gec; 8ged; 8gee; 8gef; 8geg; 8geh; 8gei; 8gej; 8gfv; 8gfw; 8gfx; 8gfy; 8gfz; 8gg0; 8gg1; 8gg2; 8gg3; 8gg4; 8gg5; 8gg6; 8gg7; 8gg8; 8gg9; 8gga; 8ggb; 8ggc; 8gge; 8h4k; 8hj0; 8hmp; 8inr; 8iq4; 8irv; 8iw4; 8iw9; 8jlk; 8jln; 8jlo; 8jlp; 8jlq; 8jlr; 8jlz; 8jpp; 8kgk; 8kh5; 8smv; 8u8f; 8unl; 8unm; 8unn; 8uno; 8unp; 8unq; 8unr; 8uns; 8unt; 8unu; 8unv; 8unw; 8unx; 8uny; 8unz; 8uo0; 8uo1; 8uo2; 8uo3; 8uo4; 8uxv; 8uy0; 8vhf; 8wc3; 8wc8; 8x2k; 8xoj; 8yut; 8yw5; 8zd1; 8zfz; 8zr5; 8zw0; 9avg; 9bkj; 9bp3; 9bub; 9buc; 9bue; 9d0a; 9ebn; 9ebq; 9gl2; 9gyo; 9i52; 9i54; 9iv1; 9iv2; 9j31; 9jfv; 9jfw; 9jfx; 9jfz; 9ll9; 9lla; 9llb; 9llf; 9llj; 9lyb; 9m1h; 9m8v; 9mxu; 9mze; 9mzf; 9n1p; 9nt9; 9qxl; 9u5e; 9xjw			168 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P63096	GNAI1	PDBe-KB	10ja; 12iz; 12ja; 20yc; 20zi; 20zj; 20zl; 24qh; 6lfm; 6lml; 6n4b; 6pb1; 7cmv; 7e2x; 7e2y; 7e2z; 7ew7; 7ezk; 7f1q; 7f1r; 7f1s; 7jhj; 7l0p; 7l0q; 7l0r; 7l0s; 7mts; 7na8; 7rkm; 7sbf; 7t2g; 7t6b; 7u2k; 7v69; 7vdh; 7vdl; 7vfx; 7vl8; 7vv5; 7w0l; 7w0m; 7w0o; 7w56; 7wf7; 7wj5; 7wu4; 7wu5; 7wuj; 7x9a; 7x9b; 7x9c; 7x9y; 7xa3; 7xbw; 7xbx; 7xk2; 7xk8; 7xmr; 7y67; 7ykd; 7yon; 8feg; 8fy8; 8fye; 8fyl; 8fyt; 8fyx; 8gag; 8gcp; 8gdc; 8gur; 8gus; 8h4k; 8hbd; 8hn8; 8hnk; 8ia8; 8ija; 8ikg; 8inr; 8irs; 8irt; 8irv; 8iw1; 8iw4; 8iw9; 8iz4; 8j18; 8j21; 8j22; 8j6p; 8j6q; 8jd3; 8jim; 8jlk; 8jln; 8jlp; 8jlq; 8jlr; 8jxt; 8jxv; 8k2x; 8k4o; 8k4p; 8pjk; 8pkm; 8sg1; 8szg; 8u1u; 8u4n; 8u4o; 8u4p; 8ugy; 8utd; 8vvf; 8wc3; 8wc8; 8wca; 8wog; 8wp1; 8wwi; 8wwj; 8wwm; 8xgu; 8xml; 8xoj; 8xqe; 8xqn; 8xqo; 8xqs; 8xxu; 8xzf; 8xzg; 8xzi; 8y62; 8yic; 8yn6; 8yut; 8z87; 8z8b; 8zjg; 9asb; 9ast; 9avg; 9b65; 9bkj; 9cgk; 9d61; 9dyf; 9epp; 9epq; 9erx; 9hyi; 9ij9; 9j0b; 9j0f; 9jid; 9jks; 9jkv; 9jky; 9jr0; 9k1c; 9k1d; 9kft; 9ko2; 9kt6; 9l3y; 9ll8; 9ll9; 9lla; 9llb; 9m1h; 9mb9; 9ns9; 9ode; 9odf; 9odg; 9odj; 9odk; 9odl; 9odo; 9odp; 9oxa; 9p0k; 9p0m; 9p7z; 9p82; 9p84; 9pa5; 9ppw; 9ppz; 9pud; 9pxw; 9pxx; 9pxy; 9py2; 9py3; 9py4; 9r41; 9r42; 9u7l; 9upy; 9vax; 9vb0; 9vb1; 9vo1; 9w0m; 9w0o; 9w0p; 9w0q; 9w0r; 9w0s; 9w0t; 9w0u; 9w0w; 9xfi; 9xjp			217 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	P63097		PDBe-KB	9xc6; 9xdr; 9xhh			3 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	Q14344	GNA13	PDBe-KB	7sf7; 7sf8; 7t6b; 8ikl; 8zx4; 8zx5; 9e51; 9v0u			8 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	Q5FWY2		PDBe-KB	9w45			1 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	Q5JWF2	GNAS	PDBe-KB	8gy7; 9bkk; 9wnd			3 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	Q8VC57		PDBe-KB	8jkb			1 PDB entries	true
+P62873:K89	pdb_protein	at_residue	protein	Q9NXV2	KCTD5	PDBe-KB	8u7z; 8u81; 8u82; 8u83; 8u84			5 PDB entries	true
+P62937:K118	pdb_protein	at_residue	protein	P69717		PDBe-KB	7upn			1 PDB entries	true
+P62937:K118	pdb_self	at_residue	self			PDBe-KB	1rmh; 7upn			2 PDB entries	true
+P62987:K98	pdb_rna	at_residue	rna			PDBe-KB	29iw; 29ix; 29iy; 5t2c; 6lqm; 7f5s; 8qyx; 9gy4; 9xja; 9xjh			10 PDB entries	true
+P63010:K35	pdb_protein	at_residue	protein	P84092		PDBe-KB	2jkr; 2jkt; 2vgl; 4uqi; 6qh5; 6yae; 7og1; 7oho; 7z5c			9 PDB entries	true
+P63010:K322	pdb_protein	at_residue	protein	P84092		PDBe-KB	6yaf; 6yah; 7og1			3 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P03372	ESR1	PDBe-KB	9sv3			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P04049	RAF1	PDBe-KB	3cu8; 3nkx; 4fj3; 4ihl			4 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P04150	NR3C1	PDBe-KB	6ymo; 6yo8; 6yos; 8a9g			4 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P07359	GP1BA	PDBe-KB	8we2; 8wf6			2 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P0DOJ7		PDBe-KB	1qjb			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P0DTC9		PDBe-KB	7zit			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P13569	CFTR	PDBe-KB	5d2d; 5d3f			2 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P13612	ITGA4	PDBe-KB	4hkc			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P15056	BRAF	PDBe-KB	6u2h; 6xag; 7mfd; 7mfe; 7mff; 8vyo; 8vyp; 8vyr; 8vys; 8vyu; 9o2z			11 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P15146		PDBe-KB	9fum; 9fvl			2 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P30307	CDC25C	PDBe-KB	5m35; 5m36; 5m37			3 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P40818	USP8	PDBe-KB	6f09			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P61587	RND3	PDBe-KB	4bg6			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	P68431	H3C1	PDBe-KB	2c1j; 2c1n			2 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q02156	PRKCE	PDBe-KB	2wh0			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q07889	SOS1	PDBe-KB	6f08			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q15831	STK11	PDBe-KB	5wxn			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q29495		PDBe-KB	1ib1			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q6UUV9	CRTC1	PDBe-KB	7d8h; 7d8p; 7d9v			3 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q93SQ3		PDBe-KB	4n7g; 4n7y; 4n84; 5j31			4 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q96RR4	CAMKK2	PDBe-KB	6eww			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q99683	MAP3K5	PDBe-KB	6ejl			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q9P0N9	TBC1D7	PDBe-KB	5ulo			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q9P289	STK26	PDBe-KB	5xy9			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q9UBF8	PI4KB	PDBe-KB	5nas			1 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q9UQC2	GAB2	PDBe-KB	5ewz; 5exa			2 PDB entries	true
+P63104:K49	pdb_protein	at_residue	protein	Q9Y3M2	CBY1	PDBe-KB	4wrq			1 PDB entries	true
+P63104:K68	pdb_protein	at_residue	protein	Q29495		PDBe-KB	1ib1			1 PDB entries	true
+P63104:K212	pdb_protein	at_residue	protein	P15056	BRAF	PDBe-KB	6u2h; 6xag; 7mfd; 8vyo; 8vys; 9o2z			6 PDB entries	true
+P63104:K212	pdb_protein	at_residue	protein	P30307	CDC25C	PDBe-KB	5m37			1 PDB entries	true
+P63104:K212	pdb_protein	at_residue	protein	Q29495		PDBe-KB	1ib1			1 PDB entries	true
+P63261:K84	pdb_protein	at_residue	protein	Q86TU7	SETD3	PDBe-KB	6v63; 6wk1			2 PDB entries	true
+P68104:K255	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. IG[G]IGTVPVGR at 258 (244.0695 Da)	false
+P68431:K5	pdb_protein	at_residue	protein	I1N521		PDBe-KB	5vab			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O14646	CHD1	PDBe-KB	2b2t; 2b2u; 2b2w			3 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O14686	KMT2D	PDBe-KB	9yly; 9ymf			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O15016	TRIM66	PDBe-KB	6ieu			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O15164	TRIM24	PDBe-KB	3o37			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O15392	BIRC5	PDBe-KB	3uee; 3uef; 3uig; 3uii; 3uik; 4a0j; 4a0n; 6yif; 6yih; 7lbk; 7lbo; 7lbp; 7lbq			13 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O15417	TNRC18	PDBe-KB	8ds8			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O60341	KDM1A	PDBe-KB	2uxn; 2x0l; 5h6q; 5h6r; 5x60			5 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O75151	PHF2	PDBe-KB	3kqi			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O75530	EED	PDBe-KB	8vmi			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	O95619	YEATS4	PDBe-KB	8iiy; 8iiz; 8ij0			3 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P0AEX9		PDBe-KB	8iiy; 8iiz			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P21784		PDBe-KB	2v83; 2v85; 2v88; 2v89			4 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P23497	SP100	PDBe-KB	5fb0; 5fb1			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P26358	DNMT1	PDBe-KB	5wvo			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P29375	KDM5A	PDBe-KB	5c11; 7klr			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P36124		PDBe-KB	5tdr; 5tdw			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	5hjb; 6ls6; 6mil			3 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P45973	CBX5	PDBe-KB	3fdt			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P61964	WDR5	PDBe-KB	2cnx; 2co0; 4a7j; 8hmx			4 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P62979	RPS27A	PDBe-KB	5wvo			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	P83916	CBX1	PDBe-KB	6d07; 6d08			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q03164	KMT2A	PDBe-KB	3lqi; 3lqj			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q09028	RBBP4	PDBe-KB	7y5u; 8iqg			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q12830	BPTF	PDBe-KB	2fsa; 2ri7; 6aze			3 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q14149	MORC3	PDBe-KB	5svx; 5svy			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q14839	CHD4	PDBe-KB	2l75			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q2LAE1		PDBe-KB	6qxz			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q504Y3	ZCWPW2	PDBe-KB	4z0r			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q56A73	SPIN4	PDBe-KB	4uy4			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q5VWG9	TAF3	PDBe-KB	5c13; 5wxg; 5wxh			3 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q7JXA8		PDBe-KB	4u68			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q86UU0	BCL9L	PDBe-KB	4up0			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q8IYH5	ZZZ3	PDBe-KB	6e83; 6e86			2 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q8NB78	KDM1B	PDBe-KB	4fwf			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q8WTS6	SETD7	PDBe-KB	1o9s			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q8WYB5	KAT6B	PDBe-KB	5u2j			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q924W6		PDBe-KB	7ebk			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q92784	DPF3	PDBe-KB	2kwj; 5i3l; 5szb; 5szc			4 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q92794	KAT6A	PDBe-KB	3v43; 4lk9; 4lka; 4llb			4 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q96EQ9		PDBe-KB	4c1q			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q96KQ7	EHMT2	PDBe-KB	5jhn; 5jin; 5jiy; 5jj0; 5t0k; 5t0m			6 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q96T88	UHRF1	PDBe-KB	2lgg; 3asl; 3sou; 3sow; 3zvy			5 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q99549	MPHOSPH8	PDBe-KB	3qo2			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9BPZ2	SPIN2B	PDBe-KB	5lug			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9BRQ0	PYGO2	PDBe-KB	4up0			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9BTC0	DIDO1	PDBe-KB	4l7x			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9BVI0	PHF20	PDBe-KB	5tbn			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9FFF5		PDBe-KB	5y20			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9H0M4	ZCWPW1	PDBe-KB	2rr4			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9UIF9	BAZ2A	PDBe-KB	5t8r			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9UNL4	ING4	PDBe-KB	2vnf			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9UPN9	TRIM33	PDBe-KB	3u5n; 3u5o; 3u5p			3 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9VG78		PDBe-KB	5wle			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9Y3Y4	PYGO1	PDBe-KB	2vpg			1 PDB entries	true
+P68431:K5	pdb_protein	at_residue	protein	Q9Y6K1	DNMT3A	PDBe-KB	4qbq; 4qbr; 4qbs			3 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	I1N521		PDBe-KB	5vab			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O15016	TRIM66	PDBe-KB	6ieu			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O15164	TRIM24	PDBe-KB	3o37			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O15417	TNRC18	PDBe-KB	8ds8			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O60341	KDM1A	PDBe-KB	2x0l; 5h6q; 5h6r; 5x60			4 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O60885	BRD4	PDBe-KB	5nnc; 5nnd			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O75164	KDM4A	PDBe-KB	2oq6; 2ot7; 2ox0; 3u4s; 6hgt			5 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O94953	KDM4B	PDBe-KB	4lxl			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	O95619	YEATS4	PDBe-KB	8iiy; 8iiz			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P05205		PDBe-KB	1q3l			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P0AEX9		PDBe-KB	8iiy; 8iiz			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P21784		PDBe-KB	2v83; 2v85			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P26358	DNMT1	PDBe-KB	5wvo			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P35189		PDBe-KB	6min; 6mio; 6miq			3 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	5hjb; 6ls6; 6mil; 6mim			4 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P45973	CBX5	PDBe-KB	3fdt			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P62979	RPS27A	PDBe-KB	5wvo			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P63104	YWHAZ	PDBe-KB	2c1j; 2c1n			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	P83916	CBX1	PDBe-KB	6d07; 6d08			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q09028	RBBP4	PDBe-KB	7y5u; 8iqg			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q14149	MORC3	PDBe-KB	5svx; 5svy			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q14839	CHD4	PDBe-KB	2l75			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q15047	SETDB1	PDBe-KB	6bhd; 6bhe; 6bhi			3 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q504Y3	ZCWPW2	PDBe-KB	4z0r			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q6B0I6	KDM4D	PDBe-KB	4hon			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q7JXA8		PDBe-KB	4u68			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q8IE47		PDBe-KB	3u31; 3u3d			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q8IXJ6	SIRT2	PDBe-KB	4y6l			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q8N6T7	SIRT6	PDBe-KB	3zg6; 5y2f			2 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q8X225		PDBe-KB	1peg			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q924W6		PDBe-KB	7ebk			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q92784	DPF3	PDBe-KB	2kwj			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q96KQ7	EHMT2	PDBe-KB	5jhn; 5jin; 5jiy; 5jj0; 5t0k; 5t0m			6 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q96T88	UHRF1	PDBe-KB	2lgg			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q99549	MPHOSPH8	PDBe-KB	3qo2			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q9AXT8		PDBe-KB	4ft2			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q9H9B1	EHMT1	PDBe-KB	3b95			1 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q9NXA8	SIRT5	PDBe-KB	3rig; 3riy; 4f4u; 4f56			4 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q9UPN9	TRIM33	PDBe-KB	3u5n; 3u5o; 3u5p			3 PDB entries	true
+P68431:K10	pdb_protein	at_residue	protein	Q9Y6F8	CDY1	PDBe-KB	6v41			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	O15054	KDM6B	PDBe-KB	5oy3; 6f6d			2 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	O95619	YEATS4	PDBe-KB	8iiy			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	P0AEX9		PDBe-KB	8iiy			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	P26358	DNMT1	PDBe-KB	5wvo			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	2ndf; 2ndg; 5hjd			3 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	P62979	RPS27A	PDBe-KB	5wvo			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	Q15059	BRD3	PDBe-KB	5hjc			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	Q8IXJ6	SIRT2	PDBe-KB	9vem; 9vew; 9vg0; 9vg3; 9vge; 9vgz; 9vh0			7 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	Q924W6		PDBe-KB	7ebk			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	Q92973	TNPO1	PDBe-KB	5j3v			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	Q9UBL3	ASH2L	PDBe-KB	9ymf			1 PDB entries	true
+P68431:K19	pdb_protein	at_residue	protein	Q9UPN9	TRIM33	PDBe-KB	3u5o; 3u5p			2 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	B9RU15		PDBe-KB	5va6			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	G0RYC6		PDBe-KB	5kjh			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	G0S8H7		PDBe-KB	5kjh			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	G0SDW4		PDBe-KB	5kjh			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	O15054	KDM6B	PDBe-KB	5oy3; 6f6d			2 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	O15164	TRIM24	PDBe-KB	3o34			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	O75164	KDM4A	PDBe-KB	5d6y			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	P55197	MLLT10	PDBe-KB	5dah			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q15910	EZH2	PDBe-KB	8vml; 8vnv			2 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q3UHR0		PDBe-KB	6vil			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q8N8U2	CDYL2	PDBe-KB	6v2h; 6v3n			2 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q8VDS3		PDBe-KB	4x3k			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q92800	EZH1	PDBe-KB	7td5			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q92973	TNPO1	PDBe-KB	5j3v			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q9NTG7	SIRT3	PDBe-KB	8hly			1 PDB entries	true
+P68431:K24	pdb_protein	at_residue	protein	Q9UBL3	ASH2L	PDBe-KB	9ymf			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	B9RU15		PDBe-KB	5va6			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	G0RYC6		PDBe-KB	5kjh; 5kkl			2 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	G0S8H7		PDBe-KB	5kjh; 5kkl; 5wfc			3 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	G0SDW4		PDBe-KB	5kjh; 5kkl			2 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	O15054	KDM6B	PDBe-KB	5oy3; 6f6d			2 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	O15164	TRIM24	PDBe-KB	3o34; 3o35			2 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	O41094		PDBe-KB	3kmt			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	O75530	EED	PDBe-KB	7td5			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	O95619	YEATS4	PDBe-KB	5xtz; 8i60; 8iiz			3 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	P0AEX9		PDBe-KB	8iiz			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	P53930		PDBe-KB	6axj			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	P55197	MLLT10	PDBe-KB	5dah			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q03111	MLLT1	PDBe-KB	5j9s; 7x88; 7x8b; 7x8f; 7x8g			5 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q15910	EZH2	PDBe-KB	5hyn; 8vml; 8vnv			3 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q3UHR0		PDBe-KB	6vil			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q5NCY0		PDBe-KB	4ezh			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q8N8U2	CDYL2	PDBe-KB	6v2h; 6v3n			2 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q8VDS3		PDBe-KB	4x3k			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q92800	EZH1	PDBe-KB	7td5			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q92973	TNPO1	PDBe-KB	5j3v			1 PDB entries	true
+P68431:K28	pdb_protein	at_residue	protein	Q9ULM3	YEATS2	PDBe-KB	5iql; 5xnv; 6lsd			3 PDB entries	true
+P68431:K28	pdb_self	at_residue	self			PDBe-KB	5kkl			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	O43189	PHF1	PDBe-KB	2m0o; 6wav			2 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	O96028	NSD2	PDBe-KB	7e8d			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	P16402	H1-3	PDBe-KB	7xx5			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	P59997		PDBe-KB	4tn7			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q15910	EZH2	PDBe-KB	8vml; 8vnv			2 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q5T6S3	PHF19	PDBe-KB	4bd3			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q8R5C8		PDBe-KB	4n4h			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q92793	CREBBP	PDBe-KB	8han			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q9BYW2	SETD2	PDBe-KB	5v21; 5v22			2 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q9C086	INO80B	PDBe-KB	9gfb; 9gfm			2 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q9Y3E1	HDGFL3	PDBe-KB	6iis; 6iit			2 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q9Y483	MTF2	PDBe-KB	5xfr			1 PDB entries	true
+P68431:K37	pdb_protein	at_residue	protein	Q9Z1B8		PDBe-KB	5xfq			1 PDB entries	true
+P68431:K37	pdb_dna	at_residue	dna			PDBe-KB	5z30; 5zbx; 6la2; 6r8z; 6v2k; 7v90; 7v96; 7v9j; 7v9k; 7v9s; 7xx5; 8vg2; 8vnv; 8yti			14 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	O43189	PHF1	PDBe-KB	2m0o; 6wav			2 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	O96028	NSD2	PDBe-KB	7e8d			1 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	P16402	H1-3	PDBe-KB	7xx5			1 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	P59997		PDBe-KB	4tn7			1 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q12432		PDBe-KB	8w9e; 8w9f			2 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q15910	EZH2	PDBe-KB	8vml; 8vnv			2 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q5T6S3	PHF19	PDBe-KB	4bd3			1 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q8R5C8		PDBe-KB	4n4h			1 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q9BYW2	SETD2	PDBe-KB	5v21; 5v22			2 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q9C086	INO80B	PDBe-KB	9gfb; 9gfm			2 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q9Y3E1	HDGFL3	PDBe-KB	6iis; 6iit			2 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q9Y483	MTF2	PDBe-KB	5xfr			1 PDB entries	true
+P68431:K38	pdb_protein	at_residue	protein	Q9Z1B8		PDBe-KB	5xfq			1 PDB entries	true
+P68431:K38	pdb_dna	at_residue	dna			PDBe-KB	2cv5; 3afa; 3aze; 3azf; 3azg; 3azh; 3azi; 3azl; 3azn; 3w97; 3w98; 3w99; 3wa9; 3waa; 4ym6; 5av5; 5av6; 5av8; 5av9; 5avb; 5avc; 5b2i; 5b2j; 5jrg; 5y0c; 5y0d; 5z30; 5zbx; 6jou; 6jr0; 6jr1; 6l9z; 6la2; 6la8; 6la9; 6m44; 6r8z; 6r94; 6usj; 6v2k; 7cow; 7k5x; 7k5y; 7k60; 7k61; 7k63; 7lyc; 7scy; 7v90; 7v96; 7v9j; 7v9k; 7v9s; 7xvm; 7xx5; 7xx6; 7xzz; 7y00; 8evi; 8gui; 8hag; 8hah; 8hai; 8haj; 8hal; 8ham; 8ieg; 8iej; 8jbx; 8jnd; 8u13; 8u14; 8vfy; 8vfz; 8vg2; 8vnv; 8wg5; 8xbt; 8xbu; 8yti; 9j8o; 9j8w; 9yl3; 9yly; 9ymf			85 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	A0A2Y9FT95		PDBe-KB	8qkt			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	H2QSF5		PDBe-KB	8qkt			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	2cv5; 3afa; 3ayw; 3aze; 3azf; 3azg; 3azh; 3azi; 3azj; 3azk; 3azl; 3azm; 3azn; 3w96; 3w98; 3w99; 3wkj; 3x1s; 4ym5; 4ym6; 5av5; 5av6; 5av8; 5av9; 5avb; 5avc; 5b24; 5b2i; 5b2j; 5b31; 5cpi; 5cpk; 5gse; 5gtc; 5y0c; 5y0d; 5z23; 5zbx; 6hkt; 6hts; 6ipu; 6iq4; 6jr0; 6jr1; 6jxd; 6ke9; 6l49; 6l4a; 6l9h; 6l9z; 6la2; 6la8; 6la9; 6lab; 6le9; 6ler; 6m3v; 6m44; 6r8y; 6r90; 6r91; 6r92; 6r94; 6t90; 6t93; 6usj; 6yov; 7bwd; 7c0m; 7ccr; 7cow; 7d1z; 7k5x; 7k5y; 7k60; 7k61; 7k63; 7lya; 7lyb; 7lyc; 7nl0; 7scy; 7v96; 7v9j; 7v9s; 7va4; 7vz4; 7w9v; 7xd1; 7xvl; 7xvm; 7xx5; 7xx6; 7xzx; 7xzy; 7xzz; 7y00; 7zi4; 8h0v; 8h0w; 8hag; 8hai; 8haj; 8hak; 8hal; 8ham; 8han; 8he5; 8ieg; 8iej; 8ihl; 8jbx; 8jcc; 8jcd; 8jhg; 8jl9; 8jla; 8jnd; 8jne; 8jnf; 8kcy; 8kd1; 8ke0; 8osj; 8osk; 8ots; 8ott; 8q36; 8q3e; 8q3m; 8q3x; 8rgm; 8smw; 8smx; 8smy; 8smz; 8sn0; 8sn1; 8sn2; 8sn3; 8sn5; 8sn6; 8sn7; 8sn8; 8sn9; 8sna; 8txv; 8txw; 8txx; 8u13; 8u14; 8upf; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8vlr; 8w9e; 8w9f; 8wg5; 8xbt; 8xbu; 8xrj; 8xvs; 8y3c; 8y3d; 8y3e; 8y3f; 8ybj; 8yny; 8yti; 8yv8; 9ge5; 9gev; 9gf6; 9gfb; 9gfm; 9igw; 9igx; 9j8n; 9j8w; 9jc6; 9r04; 9r2m; 9r2p; 9r2q; 9rl4; 9rmc; 9rn1; 9rn2; 9uz7; 9yle; 9yly; 9ymf; 9zeo			196 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	P0C0S5	H2AZ1	PDBe-KB	3wa9; 5b31; 6jou			3 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	7e8d; 8gui; 8guj			3 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	P16104	H2AX	PDBe-KB	6k1i; 6k1j; 6k1k; 7yqk; 9mlr; 9mls; 9mmk; 9mmm; 9mmn; 9mmo; 9q80; 9q8x; 9q9f; 9qcr; 9qcs; 9qms			16 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	9w6e; 9w6f; 9w6g; 9w6h; 9w6i; 9w6n; 9w6o; 9w6q; 9w6t; 9w71			10 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	P51532	SMARCA4	PDBe-KB	9rl4; 9rn1			2 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	7y60			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q13111	CHAF1A	PDBe-KB	7y5u; 8iqg			2 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q16777	H2AC20	PDBe-KB	7u0g; 8evg; 8evi			3 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	43ib; 43ie; 9fgq			3 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q71UI9	H2AZ2	PDBe-KB	3waa			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q7L7L0	H2AC25	PDBe-KB	9ecp; 9fh9			2 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q8CGP4		PDBe-KB	3x1t; 3x1u			2 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q8CGP7		PDBe-KB	8ott			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q92793	CREBBP	PDBe-KB	5gh9			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q93077	H2AC6	PDBe-KB	6upk; 6upl; 8ooa; 8ox0; 8x15; 8x19; 8x1c			7 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q96KK5	H2AC12	PDBe-KB	9v6q; 9v8l; 9v9h; 9v9p			4 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q96QV6	H2AC1	PDBe-KB	5gsu; 5gt0			2 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q9BTM1	H2AJ	PDBe-KB	6kvd			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q9C086	INO80B	PDBe-KB	9gev; 9gf6; 9gfb; 9gfm			4 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q9H9F9	ACTR5	PDBe-KB	9ge5			1 PDB entries	true
+P68431:K57	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	8yjm			1 PDB entries	true
+P68431:K57	pdb_dna	at_residue	dna			PDBe-KB	2cv5; 3afa; 3aze; 3azh; 3azi; 3azj; 3azk; 3w96; 3w97; 3w98; 3w99; 3wa9; 3waa; 3x1s; 3x1t; 3x1u; 3x1v; 43ib; 43ie; 4ym5; 4ym6; 5b24; 5cpj; 5cpk; 5gse; 5gsu; 5gtc; 5jrg; 5y0c; 5y0d; 5zbx; 6hkt; 6hts; 6jr0; 6jr1; 6jxd; 6k1i; 6k1k; 6kvd; 6l49; 6l4a; 6l9z; 6la2; 6la8; 6la9; 6lab; 6ler; 6m3v; 6m44; 6r8y; 6r91; 6r92; 6r94; 6t90; 6usj; 6v2k; 6yov; 7bwd; 7ccq; 7ccr; 7cow; 7k5x; 7k5y; 7k61; 7lya; 7lyc; 7nl0; 7scy; 7u0g; 7v9j; 7v9s; 7vz4; 7xd1; 7xvl; 7xvm; 7xx5; 7xx6; 7xzz; 7y00; 7yqk; 8evg; 8grm; 8gui; 8guj; 8h0v; 8h0w; 8h1t; 8hag; 8hai; 8hak; 8hal; 8ham; 8han; 8he5; 8jbx; 8jl9; 8jnd; 8jne; 8jnf; 8kd1; 8ke0; 8ott; 8ox0; 8ox1; 8qkt; 8rgm; 8smw; 8smy; 8smz; 8sn9; 8sna; 8txw; 8u14; 8upf; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8vlr; 8w9e; 8w9f; 8wg5; 8x15; 8x19; 8xbt; 8xbu; 8xrj; 8y3c; 8y3d; 8y3f; 8yti; 9fh9; 9ge5; 9gel; 9j8m; 9j8o; 9jc6; 9mmk; 9mmm; 9mmn; 9mmo; 9r04; 9r2q; 9rmc; 9rn1; 9rn2; 9uz7; 9v6q; 9v6s; 9v8l; 9v9p; 9w6f; 9w6g; 9w6q; 9yly; 9ymf			157 PDB entries	true
+P68431:K57	pdb_self	at_residue	self			PDBe-KB	9w72			1 PDB entries	true
+P68431:K65	pdb_protein	at_residue	protein	P49736	MCM2	PDBe-KB	5c3i; 8yjf; 8yjm			3 PDB entries	true
+P68431:K65	pdb_dna	at_residue	dna			PDBe-KB	2cv5; 3afa; 3ayw; 3aze; 3azf; 3azg; 3azh; 3azi; 3azj; 3azk; 3azl; 3azm; 3azn; 3w96; 3w97; 3w98; 3w99; 3wa9; 3waa; 3wkj; 3x1s; 3x1t; 3x1u; 3x1v; 43ib; 43ie; 4ym5; 4ym6; 5av5; 5av6; 5av8; 5av9; 5avb; 5avc; 5b24; 5b2i; 5b2j; 5b31; 5cpi; 5cpj; 5cpk; 5gse; 5gsu; 5gt0; 5gtc; 5jrg; 5y0c; 5y0d; 5z23; 5z30; 5zbx; 6hkt; 6hts; 6ipu; 6iq4; 6jou; 6jr0; 6jr1; 6jxd; 6k1i; 6k1j; 6k1k; 6ke9; 6kvd; 6l49; 6l4a; 6l9h; 6l9z; 6la2; 6la8; 6la9; 6lab; 6le9; 6ler; 6m3v; 6m44; 6m4d; 6m4g; 6m4h; 6r8y; 6r8z; 6r90; 6r91; 6r92; 6r94; 6t90; 6t93; 6upk; 6upl; 6usj; 6v2k; 6yov; 7bwd; 7c0m; 7ccq; 7ccr; 7cow; 7d1z; 7dbp; 7e8d; 7k5x; 7k5y; 7k60; 7k61; 7k63; 7lya; 7lyb; 7lyc; 7nl0; 7scy; 7u0g; 7v90; 7v96; 7v9c; 7v9j; 7v9k; 7v9s; 7va4; 7vz4; 7w9v; 7x57; 7x58; 7xd1; 7xvl; 7xvm; 7xx5; 7xx6; 7xzx; 7xzy; 7xzz; 7y00; 7y5w; 7y60; 7yoz; 7yqk; 7zi4; 8evg; 8evi; 8grm; 8gui; 8guj; 8h0v; 8h0w; 8h1t; 8hag; 8hah; 8hai; 8haj; 8hak; 8hal; 8ham; 8han; 8he5; 8ieg; 8iej; 8ihl; 8j6s; 8jbx; 8jcc; 8jcd; 8jhf; 8jhg; 8jl9; 8jla; 8jnd; 8jne; 8jnf; 8kcy; 8kd1; 8ke0; 8ooa; 8osj; 8osk; 8osl; 8ots; 8ott; 8ox0; 8ox1; 8q36; 8q3e; 8q3m; 8q3x; 8qkt; 8rgm; 8smw; 8smx; 8smy; 8smz; 8sn0; 8sn1; 8sn2; 8sn3; 8sn4; 8sn5; 8sn6; 8sn7; 8sn8; 8sn9; 8sna; 8txv; 8txw; 8txx; 8u13; 8u14; 8upf; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8vlr; 8w9e; 8w9f; 8wg5; 8x15; 8x19; 8x1c; 8xbt; 8xbu; 8xbw; 8xrj; 8xvs; 8y3c; 8y3d; 8y3e; 8y3f; 8ybj; 8ybk; 8yny; 8yti; 8yv8; 9ecp; 9fgq; 9fh9; 9gcg; 9ge4; 9ge5; 9gel; 9gev; 9gf6; 9gfb; 9gfm; 9igw; 9igx; 9j8m; 9j8n; 9j8o; 9j8w; 9jc6; 9mll; 9mln; 9mlr; 9mls; 9mmk; 9mmm; 9mmn; 9q80; 9q8x; 9q9f; 9qcr; 9qcs; 9qms; 9r04; 9r2m; 9r2p; 9r2q; 9rl4; 9rmc; 9rn1; 9rn2; 9ujs; 9ujt; 9uz7; 9v6q; 9v6s; 9v6x; 9v8l; 9v9h; 9v9p; 9w6e; 9w6f; 9w6g; 9w6h; 9w6i; 9w6j; 9w6k; 9w6l; 9w6m; 9w6o; 9w6p; 9w6q; 9w6t; 9w71; 9w72; 9w73; 9xsf; 9yl3; 9yle; 9yly; 9ymf; 9zeo			301 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	A0A8C1JQV0		PDBe-KB	8qkt			1 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	O08785		PDBe-KB	8osk; 8osl			2 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	P35226	BMI1	PDBe-KB	8grm; 9v6q; 9v6s; 9v6x; 9v8l; 9v9h; 9v9p			7 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	2cv5; 3afa; 3ayw; 3aze; 3azf; 3azg; 3azh; 3azi; 3azj; 3azk; 3azl; 3azm; 3azn; 3w96; 3w97; 3w98; 3w99; 3wa9; 3waa; 3wkj; 3x1s; 3x1t; 3x1u; 3x1v; 43ib; 43ie; 4ym5; 4ym6; 4z2m; 5av5; 5av6; 5av8; 5av9; 5avb; 5avc; 5b24; 5b2i; 5b2j; 5b31; 5c3i; 5cpi; 5cpj; 5cpk; 5gse; 5gsu; 5gt0; 5gtc; 5jrg; 5y0c; 5y0d; 5z30; 6hkt; 6hts; 6ipu; 6iq4; 6jou; 6jr0; 6jr1; 6jxd; 6k1i; 6k1j; 6k1k; 6ke9; 6kvd; 6l49; 6l4a; 6l9h; 6l9z; 6la2; 6la8; 6la9; 6lab; 6le9; 6ler; 6m3v; 6m44; 6m4g; 6m4h; 6r8y; 6r8z; 6r90; 6r91; 6r94; 6t90; 6t93; 6upk; 6upl; 6usj; 6v2k; 6yov; 7bwd; 7c0m; 7ccq; 7ccr; 7cow; 7d1z; 7e8d; 7k5x; 7k5y; 7k60; 7k61; 7k63; 7lya; 7lyb; 7lyc; 7nl0; 7scy; 7u0g; 7v90; 7v96; 7v9c; 7v9j; 7v9k; 7v9s; 7va4; 7vz4; 7w9v; 7x57; 7x58; 7xd1; 7xvl; 7xvm; 7xx5; 7xx6; 7xzx; 7xzy; 7xzz; 7y00; 7y5u; 7y5w; 7y60; 7yoz; 7yqk; 7zi4; 8evg; 8evi; 8grm; 8gui; 8guj; 8h0v; 8h0w; 8h1t; 8hag; 8hah; 8hai; 8hak; 8ham; 8han; 8he5; 8ieg; 8iej; 8ihl; 8jbx; 8jcc; 8jcd; 8jhf; 8jhg; 8jl9; 8jla; 8jnd; 8jne; 8jnf; 8kcy; 8kd1; 8ke0; 8ooa; 8osj; 8osk; 8ott; 8ox0; 8ox1; 8q36; 8q3e; 8q3m; 8q3x; 8rgm; 8smw; 8smx; 8smy; 8smz; 8sn0; 8sn1; 8sn2; 8sn3; 8sn4; 8sn6; 8sn7; 8sn8; 8sn9; 8sna; 8txv; 8txw; 8txx; 8u13; 8u14; 8upf; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8vlr; 8w9e; 8w9f; 8wg5; 8x15; 8x19; 8x1c; 8xbt; 8xbu; 8xbw; 8xrj; 8xvs; 8y3c; 8y3d; 8y3e; 8y3f; 8ybj; 8ybk; 8yjf; 8yny; 8yti; 8yv8; 9ecp; 9fgq; 9fh9; 9gcg; 9ge4; 9ge5; 9gel; 9gev; 9gf6; 9gfb; 9gfm; 9igw; 9igx; 9j8m; 9j8n; 9j8o; 9j8w; 9jc6; 9mll; 9mln; 9mlr; 9mmk; 9mmm; 9mmn; 9mmo; 9mmt; 9q80; 9q8x; 9q9f; 9qcr; 9qcs; 9qms; 9r04; 9r2m; 9r2p; 9r2q; 9rl4; 9rmc; 9rn1; 9rn2; 9ujs; 9ujt; 9uz7; 9v6s; 9v6x; 9v8l; 9v9h; 9v9p; 9w6e; 9w6f; 9w6g; 9w6h; 9w6i; 9w6j; 9w6k; 9w6l; 9w6m; 9w6n; 9w6p; 9w6q; 9w6t; 9w71; 9w72; 9w73; 9xsf; 9yl3; 9yle; 9yly; 9ymf; 9zeo			293 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	Q15291	RBBP5	PDBe-KB	9yly			1 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	Q6PI98	INO80C	PDBe-KB	9gev			1 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	Q7Z4V5	HDGFL2	PDBe-KB	3qj6			1 PDB entries	true
+P68431:K80	pdb_protein	at_residue	protein	Q9Y230	RUVBL2	PDBe-KB	9ge5			1 PDB entries	true
+P68431:K80	pdb_dna	at_residue	dna			PDBe-KB	5gse; 8y3e			2 PDB entries	true
+P68431:K123	pdb_protein	at_residue	protein	B3LNW5		PDBe-KB	5wyi			1 PDB entries	true
+P68431:K123	pdb_protein	at_residue	protein	P14349		PDBe-KB	8q36; 8q3e			2 PDB entries	true
+P68431:K123	pdb_protein	at_residue	protein	P49450	CENPA	PDBe-KB	5zbx			1 PDB entries	true
+P68431:K123	pdb_protein	at_residue	protein	Q92560	BAP1	PDBe-KB	8h1t			1 PDB entries	true
+P68431:K123	pdb_protein	at_residue	protein	Q9Y294	ASF1A	PDBe-KB	5c3i; 7v6q			2 PDB entries	true
+P68431:K123	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	4z2m; 8yjf; 8yjm			3 PDB entries	true
+P68431:K123	pdb_dna	at_residue	dna			PDBe-KB	3azk; 3x1v; 5cpk; 6l49; 6l4a; 6m44; 6usj; 6v2k; 7cow; 7v9j; 7v9k; 7v9s; 7va4; 7xx6; 7xzx; 7xzy; 7xzz; 7y00; 7y5w; 8h1t; 8hag; 8hai; 8ihl; 8jl9; 8vfz; 8vlr; 8x19; 8xrj; 8y3c; 8y3f; 8ybj; 9gfb; 9rmc; 9rn1; 9ujt; 9uz7			36 PDB entries	true
+P68431:K123	pdb_self	at_residue	self			PDBe-KB	2cv5; 3afa; 3ayw; 3aze; 3azf; 3azg; 3azh; 3azi; 3azj; 3azk; 3azl; 3azm; 3azn; 3w96; 3w97; 3w98; 3w99; 3wa9; 3waa; 3wkj; 3x1s; 3x1t; 3x1u; 3x1v; 4ym5; 4ym6; 4z2m; 5av5; 5av6; 5av8; 5av9; 5avb; 5avc; 5b24; 5b2i; 5b2j; 5b31; 5cpj; 5cpk; 5gse; 5gsu; 5gt0; 5gtc; 5jrg; 5y0c; 5y0d; 5zbx; 6hkt; 6hts; 6ipu; 6iq4; 6jou; 6jr0; 6jr1; 6jxd; 6k1i; 6k1j; 6k1k; 6ke9; 6kvd; 6l49; 6l4a; 6l9h; 6l9z; 6la2; 6la9; 6lab; 6le9; 6ler; 6m3v; 6m44; 6m4d; 6m4g; 6m4h; 6r8y; 6r8z; 6r90; 6r91; 6r92; 6r94; 6t90; 6t93; 6upk; 6upl; 6usj; 6v2k; 6yov; 7bwd; 7c0m; 7ccq; 7ccr; 7cow; 7d1z; 7dbp; 7e8d; 7k5x; 7k5y; 7k60; 7k61; 7k63; 7lyb; 7lyc; 7nl0; 7scy; 7u0g; 7v96; 7v9c; 7v9j; 7v9k; 7v9s; 7va4; 7vz4; 7x57; 7x58; 7xd1; 7xvl; 7xvm; 7xx5; 7xx6; 7xzx; 7xzy; 7xzz; 7y00; 7y5w; 7y60; 7yoz; 7yqk; 7zi4; 8evg; 8evi; 8grm; 8gui; 8guj; 8h0v; 8h0w; 8h1t; 8hag; 8hah; 8hai; 8haj; 8hak; 8hal; 8ham; 8han; 8he5; 8ieg; 8iej; 8ihl; 8j6s; 8jcc; 8jhf; 8jl9; 8jla; 8jnd; 8jne; 8jnf; 8kcy; 8kd1; 8ooa; 8osj; 8osk; 8ots; 8ott; 8ox0; 8ox1; 8q36; 8q3e; 8q3m; 8q3x; 8qkt; 8rgm; 8sn1; 8sn2; 8sn3; 8sn4; 8sn6; 8txv; 8txw; 8txx; 8u13; 8u14; 8vfy; 8vfz; 8vg0; 8vg1; 8vg2; 8vlr; 8w9e; 8w9f; 8wg5; 8x15; 8x19; 8x1c; 8xbt; 8xbu; 8xvs; 8y3c; 8y3d; 8y3e; 8y3f; 8ybj; 8ybk; 8yjf; 8yjm; 8yny; 8yti; 8yv8; 9ecp; 9fgq; 9fh9; 9gcg; 9ge4; 9ge5; 9gel; 9gev; 9gf6; 9gfb; 9gfm; 9igw; 9igx; 9j8m; 9j8n; 9j8o; 9jc6; 9mll; 9mln; 9mlr; 9mls; 9q80; 9q8x; 9q9f; 9qcr; 9qcs; 9qms; 9r04; 9r2m; 9r2p; 9r2q; 9rl4; 9rmc; 9rn1; 9rn2; 9ujs; 9ujt; 9uz7; 9v6q; 9v6s; 9v6x; 9v8l; 9v9h; 9v9p; 9w6e; 9w6f; 9w6g; 9w6h; 9w6i; 9w6j; 9w6k; 9w6l; 9w6m; 9w6n; 9w6o; 9w6p; 9w6q; 9w6t; 9w71; 9w72; 9w73; 9yl3; 9yle; 9yly; 9ymf; 9zeo			273 PDB entries	true
+P78345:K139	pdb_protein	at_residue	protein	Q32NC0	RMP24	PDBe-KB	9uh9; 9uha			2 PDB entries	true
+P78345:K139	pdb_protein	at_residue	protein	Q9H633	RPP21	PDBe-KB	6ahu			1 PDB entries	true
+P78345:K139	pdb_rna	at_residue	rna			PDBe-KB	9uha			1 PDB entries	true
+P78371:K248	pdb_protein	at_residue	protein	O14775	GNB5	PDBe-KB	8shd; 8shf; 8shg; 8sho; 8shp; 8shq; 8sht; 9noc; 9noo; 9nop; 9nre; 9q0e			12 PDB entries	true
+P78371:K248	pdb_protein	at_residue	protein	P48643	CCT5	PDBe-KB	7trg			1 PDB entries	true
+P78371:K248	pdb_protein	at_residue	protein	P50991	CCT4	PDBe-KB	7nvl; 7trg; 7tub; 7x6q; 8sff; 8sgq; 8sh9; 8sha; 8shd; 8she; 8shf; 8shg; 8shl; 8shn; 8shp; 8shq; 9noc; 9noo; 9nop; 9noq; 9nq1; 9nr1; 9nrd; 9nre; 9nrf; 9nrg; 9nrh; 9q0g; 9q0u; 9q0v; 9s72			31 PDB entries	true
+P78371:K250	pdb_protein	at_residue	protein	O14775	GNB5	PDBe-KB	9noo; 9nop; 9nre			3 PDB entries	true
+P78371:K250	pdb_protein	at_residue	protein	P48643	CCT5	PDBe-KB	7lum; 7lup; 7nvl; 7trg; 7tub; 7x6q; 8i9u; 8ib8; 8sff; 8sgq; 8sh9; 8sha; 8shd; 8she; 8shf; 8shg; 8shl; 8shn; 8sho; 8shp; 8shq; 8sht; 9noc; 9noo; 9nop; 9noq; 9nq1; 9nr1; 9nrd; 9nre; 9nrf; 9nrg; 9nrh; 9q0e; 9q0g; 9q0u; 9q0v; 9q1x; 9s72; 9umt			40 PDB entries	true
+P82663:K28	pdb_protein	at_residue	protein	Q9Y2R5	MRPS17	PDBe-KB	7pnx; 7pny; 7pnz; 7po1; 7po3; 8ois; 8qrl; 9h51; 9h52; 9h54; 9h55; 9ror; 9rov			13 PDB entries	true
+P82675:K330	capri_adj_peptide	in_fragment	rna			CAPRI				311-330 GYGLRCHRAIITICRLIGIK	true
+P83731:K123	pdb_rna	at_residue	rna			PDBe-KB	5a2q			1 PDB entries	true
+P83881:K53	pdb_rna	at_residue	rna			PDBe-KB	29iy; 6lqm; 6lsr; 6lss; 6lu8; 6om0; 6y6x; 7bhp; 7f5s; 7ow7; 8a3d; 8fl6; 8fl7; 8fl9; 8fla; 8flb; 8flc; 8fld; 8fle; 8flf; 8idt; 8idy; 8ine; 8inf; 8ohd; 8oj0; 8oj5; 8oj8; 8qfd; 8qyx; 9gmo; 9p9j; 9p9k			33 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	6pzv			1 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	4tmp			1 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	P46100	ATRX	PDBe-KB	3ql9; 3qla; 3qlc; 4w5a			4 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	P61964	WDR5	PDBe-KB	9xtl			1 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q14149	MORC3	PDBe-KB	4qq4			1 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q504Y3	ZCWPW2	PDBe-KB	4o62			1 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q8IZD2	KMT2E	PDBe-KB	4l58			1 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q8NB78	KDM1B	PDBe-KB	4gu0; 4gur; 4gus			3 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q92784	DPF3	PDBe-KB	9uth			1 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q96T88	UHRF1	PDBe-KB	3ask; 4gy5			2 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q9BZ95	NSD3	PDBe-KB	4gne; 4gnf; 4gng			3 PDB entries	true
+P84243:K5	pdb_protein	at_residue	protein	Q9Y6K1	DNMT3A	PDBe-KB	4u7t			1 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	6pzv			1 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	4tmp			1 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	P46100	ATRX	PDBe-KB	3ql9; 3qla; 4w5a			3 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	Q24K09		PDBe-KB	6pzv			1 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	Q8NB78	KDM1B	PDBe-KB	4gu0; 4gur; 4gus			3 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	Q96T88	UHRF1	PDBe-KB	3ask; 4gy5			2 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	Q9BZ95	NSD3	PDBe-KB	4gnf; 4gng			2 PDB entries	true
+P84243:K10	pdb_protein	at_residue	protein	Q9Y6K1	DNMT3A	PDBe-KB	4u7t			1 PDB entries	true
+P84243:K19	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	6pzv			1 PDB entries	true
+P84243:K19	pdb_protein	at_residue	protein	Q24K09		PDBe-KB	6pzv			1 PDB entries	true
+P84243:K19	pdb_protein	at_residue	protein	Q49A26	GLYR1	PDBe-KB	4gur; 4gus			2 PDB entries	true
+P84243:K19	pdb_protein	at_residue	protein	Q86X55	CARM1	PDBe-KB	5dwq; 5dx0			2 PDB entries	true
+P84243:K19	pdb_protein	at_residue	protein	Q8NB78	KDM1B	PDBe-KB	4gu0; 4gur; 4gus			3 PDB entries	true
+P84243:K19	pdb_protein	at_residue	protein	Q9WVG6		PDBe-KB	7okp			1 PDB entries	true
+P84243:K24	pdb_protein	at_residue	protein	P26017		PDBe-KB	1pdq			1 PDB entries	true
+P84243:K24	pdb_protein	at_residue	protein	Q8NB78	KDM1B	PDBe-KB	4gu0			1 PDB entries	true
+P84243:K24	pdb_protein	at_residue	protein	Q92784	DPF3	PDBe-KB	9uth			1 PDB entries	true
+P84243:K24	pdb_protein	at_residue	protein	Q9ESU6		PDBe-KB	3muk			1 PDB entries	true
+P84243:K28	pdb_protein	at_residue	protein	P26017		PDBe-KB	1pdq			1 PDB entries	true
+P84243:K28	pdb_protein	at_residue	protein	Q9ESU6		PDBe-KB	3muk			1 PDB entries	true
+P84243:K37	pdb_protein	at_residue	protein	C4QY01		PDBe-KB	9wms; 9wmt; 9wmu; 9wmv			4 PDB entries	true
+P84243:K37	pdb_protein	at_residue	protein	Q8R5C8		PDBe-KB	4n4i			1 PDB entries	true
+P84243:K37	pdb_protein	at_residue	protein	Q9BYW2	SETD2	PDBe-KB	5jjy; 6j9j; 8rzu; 9g4a			4 PDB entries	true
+P84243:K37	pdb_protein	at_residue	protein	Q9ULU4	ZMYND8	PDBe-KB	7cwh			1 PDB entries	true
+P84243:K37	pdb_dna	at_residue	dna			PDBe-KB	3wtp; 8jh4			2 PDB entries	true
+P84243:K38	pdb_protein	at_residue	protein	C4QY01		PDBe-KB	9wms; 9wmt; 9wmu; 9wmv			4 PDB entries	true
+P84243:K38	pdb_protein	at_residue	protein	Q8R5C8		PDBe-KB	4n4i			1 PDB entries	true
+P84243:K38	pdb_protein	at_residue	protein	Q9BYW2	SETD2	PDBe-KB	5jjy; 6j9j; 8rzu; 9g4a			4 PDB entries	true
+P84243:K38	pdb_protein	at_residue	protein	Q9ULU4	ZMYND8	PDBe-KB	7cwh			1 PDB entries	true
+P84243:K38	pdb_dna	at_residue	dna			PDBe-KB	3wtp			1 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	C4QY01		PDBe-KB	9wms; 9wmt			2 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	F2QPX0		PDBe-KB	7xt7			1 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	3av2; 3wtp; 5b32; 5x7x; 6a5l; 6a5o; 6a5p; 6a5t; 6a5u; 6inq; 6ir9; 6j4w; 6j4x; 6j4y; 6j4z; 6j50; 6j51; 7wbw; 7wbx; 7xse; 7xsx; 7xsz; 7xt7; 7xtd; 8jh2; 8jh3; 8jh4; 8kb5; 9j0o; 9j0p; 9l1x; 9uxw; 9uz9; 9wms; 9wmt; 9wmu; 9wmv			37 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	P0C0S5	H2AZ1	PDBe-KB	5b32; 5b33			2 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	P0C0S6		PDBe-KB	9b3p			1 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	6r0c; 6rny			2 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	43if			1 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	Q93077	H2AC6	PDBe-KB	9eoz			1 PDB entries	true
+P84243:K57	pdb_protein	at_residue	protein	Q9UER7	DAXX	PDBe-KB	4h9n; 4h9o; 4h9p; 4h9q; 4h9r; 4h9s; 5kdm			7 PDB entries	true
+P84243:K57	pdb_dna	at_residue	dna			PDBe-KB	3av2; 3wtp; 5b32; 5b33; 5x7x; 6a5l; 6a5o; 6a5u; 6inq; 6j4z; 6j50; 6j51; 6r0c; 6rny; 8jh2; 8jh3; 8kb5; 9j0o; 9j0p; 9uxw; 9uz9; 9wmu; 9wmv			23 PDB entries	true
+P84243:K65	pdb_protein	at_residue	protein	C4R0E6		PDBe-KB	7xti			1 PDB entries	true
+P84243:K65	pdb_protein	at_residue	protein	C4R4Y0		PDBe-KB	9uxw			1 PDB entries	true
+P84243:K65	pdb_protein	at_residue	protein	P49736	MCM2	PDBe-KB	5bnv; 5bnx; 5ja4; 7ciz; 7cj0			5 PDB entries	true
+P84243:K65	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	8kb5			1 PDB entries	true
+P84243:K65	pdb_protein	at_residue	protein	Q9UER7	DAXX	PDBe-KB	4h9n; 4h9o; 4h9p; 4h9q; 4h9r; 4h9s; 5kdm			7 PDB entries	true
+P84243:K65	pdb_dna	at_residue	dna			PDBe-KB	3av2; 3wtp; 43if; 5b32; 5b33; 5x7x; 6a5l; 6a5o; 6a5p; 6a5t; 6a5u; 6inq; 6ir9; 6j4w; 6j4x; 6j4y; 6j4z; 6j50; 6j51; 6r0c; 6rny; 7a08; 7wbw; 7wbx; 7xse; 7xsx; 7xsz; 7xt7; 7xtd; 7xti; 8jh2; 8jh3; 8jh4; 8kb5; 9b3p; 9eoz; 9ii7; 9j0n; 9j0o; 9j0p; 9l06; 9l1x; 9l22; 9uxw; 9uz9; 9wms; 9wmt; 9wmu; 9wmv; 9wmw			50 PDB entries	true
+P84243:K80	pdb_protein	at_residue	protein	C4QZQ7		PDBe-KB	9uxw			1 PDB entries	true
+P84243:K80	pdb_protein	at_residue	protein	C4R370		PDBe-KB	9wmt			1 PDB entries	true
+P84243:K80	pdb_protein	at_residue	protein	P62799		PDBe-KB	9b3p			1 PDB entries	true
+P84243:K80	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	3av2; 3wtp; 43if; 4h9n; 4h9o; 4h9p; 4h9q; 4h9r; 5b32; 5b33; 5bnv; 5bnx; 5ja4; 5x7x; 6a5l; 6a5o; 6a5p; 6a5t; 6a5u; 6inq; 6ir9; 6j4w; 6j4x; 6j4y; 6j4z; 6j50; 6j51; 6r0c; 6rny; 7a08; 7ciz; 7cj0; 7wbw; 7wbx; 7xse; 7xsx; 7xsz; 7xt7; 7xtd; 7xti; 8jh2; 8jh3; 8jh4; 8kb5; 9eoz; 9ii7; 9j0n; 9j0o; 9j0p; 9l06; 9l1x; 9l22; 9uxw; 9uz9; 9wms; 9wmt; 9wmu; 9wmv; 9wmw			59 PDB entries	true
+P84243:K80	pdb_protein	at_residue	protein	Q9UER7	DAXX	PDBe-KB	4h9p			1 PDB entries	true
+P84243:K123	pdb_protein	at_residue	protein	F2QNN8		PDBe-KB	7xti; 9wmw			2 PDB entries	true
+P84243:K123	pdb_protein	at_residue	protein	P35659	DEK	PDBe-KB	9l1x			1 PDB entries	true
+P84243:K123	pdb_protein	at_residue	protein	P49321	NASP	PDBe-KB	7v1l			1 PDB entries	true
+P84243:K123	pdb_protein	at_residue	protein	Q94K88		PDBe-KB	7w5m			1 PDB entries	true
+P84243:K123	pdb_protein	at_residue	protein	Q9NVP2	ASF1B	PDBe-KB	5bnx; 7v1m; 7vcq			3 PDB entries	true
+P84243:K123	pdb_protein	at_residue	protein	Q9UER7	DAXX	PDBe-KB	4h9n; 4h9o; 4h9p; 4h9q; 4h9r; 4h9s; 5kdm			7 PDB entries	true
+P84243:K123	pdb_dna	at_residue	dna			PDBe-KB	7a08; 9ii7; 9j0p; 9uxw; 9uz9			5 PDB entries	true
+P84243:K123	pdb_self	at_residue	self			PDBe-KB	3av2; 5b32; 5b33; 5bnv; 5ja4; 5x7x; 6a5l; 6a5o; 6a5p; 6a5t; 6a5u; 6inq; 6ir9; 6j4w; 6j4x; 6j4y; 6j4z; 6j50; 6j51; 6rny; 7a08; 7wbw; 7wbx; 7xse; 7xsx; 7xsz; 7xt7; 7xtd; 7xti; 8jh2; 8jh3; 8jh4; 8kb5; 9b3p; 9eoz; 9ii7; 9j0n; 9j0o; 9j0p; 9uxw; 9uz9; 9wms; 9wmt; 9wmu; 9wmv; 9wmw			46 PDB entries	true
+P98177:K174	dna_binding_region	in_region	dna			UniProt					false
+Q00341:K360	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. AN[S]FTVSSVAAPSWLHR at 363 (244.0695 Da)	false
+Q00688:K201	pdb_protein	at_residue	protein	P42345	MTOR	PDBe-KB	5gpg			1 PDB entries	true
+Q00839:K215	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. K[A]EGGGGGGRPGAPAAGDGK at 216 (306.0253 Da), KA[E]GGGGGGRPGAPAAGDGK at 217 (611.0666/651.0727 Da), KAE[G]GGGGGRPGAPAAGDGK at 218 (612.0506 Da)	false
+Q00839:K215	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+Q00978:K110	dna_binding_region	in_region	dna			UniProt					false
+Q01085:K148	capri_xl_peptide	in_peptide	rna			CAPRI				139-148 GYGFVSFYNK	true
+Q01085:K148	capri_adj_peptide	in_fragment	rna			CAPRI				139-148 GYGFVSFYNK	true
+Q01094:K185	dna_binding_region	in_region	dna			UniProt					false
+Q01831:K359	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 339-361 LTADPGGSSETSSQVLEnhTKPK, 339-361 LTADPGGSSETSSQVLEnhtkPK (lower case: the residues the crosslink may sit on)	true
+Q01831:K359	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 339-361 LTADPGGSSETSSQVLEnhTKPK, 339-361 LTADPGGSSETSSQVLEnhtkPK (lower case: the residues the crosslink may sit on)	false
+Q04206:K310	pdb_protein	at_residue	protein	O60885	BRD4	PDBe-KB	2lsp; 4kv1			2 PDB entries	true
+Q04637:K781	capri_adj_peptide	in_fragment	rna			CAPRI				771-781 LTPQMFQQLMK	true
+Q04771:K243	pdb_self	at_residue	self			PDBe-KB	3q4u			1 PDB entries	true
+Q04837:K145	capri_adj_peptide	in_fragment	rna			CAPRI				123-145 NNVRRQATTIIADNIIFLSDQTK	true
+Q04917:K50	pdb_protein	at_residue	protein	Q8ND76	CCNY	PDBe-KB	9r2i; 9r2n			2 PDB entries	true
+Q04917:K50	pdb_protein	at_residue	protein	Q96PU5	NEDD4L	PDBe-KB	7nmz			1 PDB entries	true
+Q05397:K1000	pdb_self	at_residue	self			PDBe-KB	1ow7; 1ow8			2 PDB entries	true
+Q07020:K164	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. APGTPHSHTK[P]YVR at 165 (244.0695 Da)	false
+Q07020:K164	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. APGTPHSHTK[P]YVR at 165 (612.0506 Da)	false
+Q07020:K164	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+Q07020:K164	pdb_rna	at_residue	rna			PDBe-KB	29iy; 6lqm; 6lsr; 6lss; 6lu8; 6om0; 6y6x; 7bhp; 7f5s; 7ow7; 8a3d; 8fl6; 8fl7; 8fl9; 8fla; 8flb; 8flc; 8fld; 8fle; 8flf; 8idt; 8idy; 8ine; 8inf; 8ir3; 8ohd; 8oj0; 8oj5; 8oj8; 8qfd; 8qyx; 9gmo; 9p9j; 9p9k			34 PDB entries	true
+Q08211:K146	rna_crosslink	within_3	rna			RBS-ID				a crosslinked residue within 3 residues. GANLKD[Y]YSR at 148 (244.0695 Da)	false
+Q08211:K146	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. GANLKD[Y]YSR at 148 (306.0253/611.0666/612.0506/651.0727 Da), GANLKDY[Y]SR at 149 (306.0253/611.0666 Da)	false
+Q08211:K146	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+Q09472:K1590	pdb_protein	at_residue	protein	P06899	H2BC11	PDBe-KB	8hai			1 PDB entries	true
+Q09472:K1590	pdb_dna	at_residue	dna			PDBe-KB	8hah			1 PDB entries	true
+Q09472:K1590	pdb_self	at_residue	self			PDBe-KB	4bhw			1 PDB entries	true
+Q09666:K3404	rbrid_residue	at_residue	rna			RBR-ID				3403-3414 FKMPFLSISSPK (log2 +4SU/-4SU -0.69, p 0.00011)	true
+Q09666:K3414	rbrid_residue	at_residue	rna			RBR-ID				3403-3414 FKMPFLSISSPK (log2 +4SU/-4SU -0.69, p 0.00011)	true
+Q09666:K3681	rbrid_residue	at_residue	rna			RBR-ID				3671-3684 ISMPDFDLNLKGPK (log2 +4SU/-4SU -0.41, p 0.0041)	true
+Q12778:K233	dna_binding_region	in_region	dna			UniProt					false
+Q12857:K57	dna_binding_region	in_region	dna			UniProt					false
+Q12857:K152	dna_binding_region	in_region	dna			UniProt					false
+Q12931:K181	pdb_protein	at_residue	protein	Q8G9G1		PDBe-KB	6xg6			1 PDB entries	true
+Q12931:K181	pdb_self	at_residue	self			PDBe-KB	6xg6; 7kck			2 PDB entries	true
+Q12950:K123	dna_binding_region	in_region	dna			UniProt					false
+Q12962:K189	pdb_protein	at_residue	protein	Q8WTS6	SETD7	PDBe-KB	2f69; 3m53; 3m54; 3m55; 3m56; 3m57; 3m58; 3m59; 3m5a; 4j7f; 4j7i; 4j83; 4j8o; 5eg2			14 PDB entries	true
+Q13043:K420	pdb_self	at_residue	self			PDBe-KB	8jg5			1 PDB entries	true
+Q13111:K576	pdb_protein	at_residue	protein	Q09028	RBBP4	PDBe-KB	7y5k; 7y5l; 7y5o; 7y5u			4 PDB entries	true
+Q13151:K176	rna_crosslink	candidate_residue	rna			pepR-MS				KAVP[K]EDIYSGGGGGGSR at 176 (651.0727/941.1031/980.1253 Da)	true
+Q13151:K176	rbrid_residue	at_residue	rna			RBR-ID				173-189 AVPKEDIYSGGGGGGSR (log2 +4SU/-4SU -0.48, p 0.00017)	true
+Q13200:K712	pdb_protein	at_residue	protein	P35998	PSMC2	PDBe-KB	5ln3; 8usb; 9bui; 9bv3; 9e8h; 9e8i; 9k56; 9k5e			8 PDB entries	true
+Q13200:K712	pdb_protein	at_residue	protein	P62191	PSMC1	PDBe-KB	22mm; 9heu; 9k4z; 9k56; 9k5e; 9szt; 9szv			7 PDB entries	true
+Q13310:K361	rna_crosslink	within_3	rna			pRBS-ID				a crosslinked residue within 3 residues. IVGSK[P]LYVALAQR at 362 (226.0594 Da)	false
+Q13310:K524	capri_adj_peptide	in_fragment	rna			CAPRI				376-524 AHLTNQYMQRVAGMRALPANAILNQFQPAAGGYFVPAVPQAQGRPPYYTPNQLAQMRPNPRWQQGGRPQGFQGMPSAIRQSGPRPTLRHLAPTGSECPDRLAMDFGGAGAAQQGLTDSCQSGGVPTAVQNLAPRAAVAAAAPRAVAPYK	true
+Q13426:K169	pdb_protein	at_residue	protein	P49917	LIG4	PDBe-KB	3ii6; 7lsy; 7lt3; 7nfc; 7nfe; 8bh3; 8bhv; 8bhy; 8bot; 8eza; 8ezb; 9cq3; 9cq6; 9cqc; 9gd7; 9n81; 9n82; 9n83; 9ox8			19 PDB entries	true
+Q13426:K169	pdb_protein	at_residue	protein	Q0D2I5	IFFO1	PDBe-KB	6abo			1 PDB entries	true
+Q13426:K169	pdb_self	at_residue	self			PDBe-KB	1fu1; 1ik9; 3ii6; 7lt3; 7nfc; 7nfe; 8bh3; 8bhv; 8bhy; 8bot; 8eza; 8ezb; 9cq3; 9cq6; 9cqc; 9gd7; 9iax; 9n81; 9n82; 9n83; 9ox8			21 PDB entries	true
+Q13428:K155	rbrid_residue	at_residue	rna			RBR-ID				147-155 TVANLLSGK (log2 +4SU/-4SU -0.58, p 0.00081)	true
+Q13428:K155	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 147-158 TVANLLSGKSPR, 147-158 TVaNLLSGKSPR (lower case: the residues the crosslink may sit on)	false
+Q13523:K911	pdb_rna	at_residue	rna			PDBe-KB	8y6o			1 PDB entries	true
+Q13825:K211	pdb_self	at_residue	self			PDBe-KB	1hzd; 2zqq; 2zqr			3 PDB entries	true
+Q13889:K139	pdb_protein	at_residue	protein	Q13888	GTF2H2	PDBe-KB	28jm; 28js; 28jv; 28ke; 29vf; 29wd; 30ff; 30fh; 5o85; 6o9l; 6o9m; 6ro4; 7ad8; 7egc; 7lbm; 7nvw; 7nvx; 7nvy; 7nw0; 8bvw; 8byq; 9pd3; 9pd4; 9pd5			24 PDB entries	true
+Q13976:K10	pdb_self	at_residue	self			PDBe-KB	3nmd			1 PDB entries	true
+Q13976:K156	pdb_self	at_residue	self			PDBe-KB	3ogj; 4z07			2 PDB entries	true
+Q14103:K119	capri_xl_peptide	in_peptide	rna			CAPRI				115-119 DYFSK	true
+Q14126:K88	pdb_self	at_residue	self			PDBe-KB	7a7d			1 PDB entries	true
+Q14258:K273	pdb_self	at_residue	self			PDBe-KB	6fln			1 PDB entries	true
+Q14469:K109	pdb_self	at_residue	self			PDBe-KB	7c4o			1 PDB entries	true
+Q14562:K863	pdb_rna	at_residue	rna			PDBe-KB	6hyu			1 PDB entries	true
+Q14676:K1104	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 1081-1106 TRQDGSQEAPEAPLSSELEPFhPKPK, 1081-1106 TRQDGSQEAPEAPLSSELEPfhPKPK, 1081-1106 TRQDGSQEAPEAPLSSELEpfhPKPK (lower case: the residues the crosslink may sit on)	false
+Q14684:K682	pdb_protein	at_residue	protein	P62136	PPP1CA	PDBe-KB	7t0y			1 PDB entries	true
+Q14684:K683	pdb_protein	at_residue	protein	P62136	PPP1CA	PDBe-KB	7t0y			1 PDB entries	true
+Q14692:K1221	rbrid_residue	at_residue	rna			RBR-ID				1206-1221 KILALLDALSTVHSQK (log2 +4SU/-4SU -1.12, p 0.00015)	true
+Q14966:K1365	dna_binding_region	in_region	dna			UniProt					false
+Q15018:K219	pdb_protein	at_residue	protein	P46736	BRCC3	PDBe-KB	8pvy; 8py2			2 PDB entries	true
+Q15018:K219	pdb_self	at_residue	self			PDBe-KB	6h3c; 6r8f; 8pvy; 8py2			4 PDB entries	true
+Q15029:K602	pdb_protein	at_residue	protein	Q53GS9	USP39	PDBe-KB	8qoz; 8qp8; 8qpa; 8qpb; 8qpe			5 PDB entries	true
+Q15047:K1170	pdb_protein	at_residue	protein	Q8VDS3		PDBe-KB	4x3s			1 PDB entries	true
+Q15120:K278	pdb_self	at_residue	self			PDBe-KB	1y8n; 1y8o; 1y8p; 2pnr; 2q8i			5 PDB entries	true
+Q15366:K78	capri_adj_peptide	in_fragment	rna			CAPRI				71-78 AFAMIIDK	true
+Q15366:K115	rna_crosslink	candidate_residue	rna			pRBS-ID				LVVPASQCGSLIG[K]GGCK at 115 (226.0594 Da)	true
+Q15366:K115	capri_xl_peptide	in_peptide	rna			CAPRI				96-115 PPVTLRLVVPASQCGSLIGK, 102-115 LVVPASQCGSLIGK	true
+Q15366:K115	capri_adj_peptide	in_fragment	rna			CAPRI				79-115 LEEDISSSMTNSTAASRPPVTLRLVVPASQCGSLIGK	true
+Q15397:K220	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+Q15397:K220	pdb_dna	at_residue	dna			PDBe-KB	4wzw			1 PDB entries	true
+Q15477:K991	pdb_protein	at_residue	protein	P60866	RPS20	PDBe-KB	9g8o			1 PDB entries	true
+Q15477:K1225	pdb_protein	at_residue	protein	Q6PGP7	SKIC3	PDBe-KB	7qdr; 7qdy; 7qdz			3 PDB entries	true
+Q16186:K42	pdb_protein	at_residue	protein	Q99460	PSMD1	PDBe-KB	5v1y; 5v1z; 6oi4			3 PDB entries	true
+Q16555:K270	pdb_self	at_residue	self			PDBe-KB	2vm8			1 PDB entries	true
+Q16555:K293	pdb_self	at_residue	self			PDBe-KB	5mkv; 5x1d; 5yz5; 5yza; 5yzb; 6jv9; 6jvb; 8dnm			8 PDB entries	true
+Q16695:K5	pdb_protein	at_residue	protein	O60341	KDM1A	PDBe-KB	2v1d			1 PDB entries	true
+Q16695:K5	pdb_protein	at_residue	protein	Q8WYB5	KAT6B	PDBe-KB	6oie			1 PDB entries	true
+Q16695:K5	pdb_protein	at_residue	protein	Q96T88	UHRF1	PDBe-KB	3t6r			1 PDB entries	true
+Q16695:K10	pdb_protein	at_residue	protein	O60341	KDM1A	PDBe-KB	2v1d			1 PDB entries	true
+Q16695:K24	pdb_protein	at_residue	protein	O43189	PHF1	PDBe-KB	6wat			1 PDB entries	true
+Q16695:K24	pdb_protein	at_residue	protein	Q5T6S3	PHF19	PDBe-KB	6wau			1 PDB entries	true
+Q16695:K28	pdb_protein	at_residue	protein	O43189	PHF1	PDBe-KB	6wat			1 PDB entries	true
+Q16695:K28	pdb_protein	at_residue	protein	O75164	KDM4A	PDBe-KB	4v2v; 4v2w			2 PDB entries	true
+Q16695:K28	pdb_protein	at_residue	protein	Q15910	EZH2	PDBe-KB	8vmi			1 PDB entries	true
+Q16695:K28	pdb_protein	at_residue	protein	Q5T6S3	PHF19	PDBe-KB	6wau			1 PDB entries	true
+Q16695:K37	pdb_protein	at_residue	protein	A8MW92	PHF20L1	PDBe-KB	21ee			1 PDB entries	true
+Q16695:K37	pdb_protein	at_residue	protein	O75164	KDM4A	PDBe-KB	2ybp; 2ybs			2 PDB entries	true
+Q16695:K37	pdb_protein	at_residue	protein	P55201	BRPF1	PDBe-KB	3mo8			1 PDB entries	true
+Q16695:K37	pdb_protein	at_residue	protein	Q15910	EZH2	PDBe-KB	8vmi			1 PDB entries	true
+Q16695:K38	pdb_protein	at_residue	protein	A8MW92	PHF20L1	PDBe-KB	21ee			1 PDB entries	true
+Q16695:K38	pdb_protein	at_residue	protein	O75164	KDM4A	PDBe-KB	2ybp; 2ybs			2 PDB entries	true
+Q16695:K38	pdb_protein	at_residue	protein	Q15910	EZH2	PDBe-KB	8vmi			1 PDB entries	true
+Q16695:K57	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	3a6n			1 PDB entries	true
+Q16695:K65	pdb_dna	at_residue	dna			PDBe-KB	3a6n			1 PDB entries	true
+Q16695:K80	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	3a6n; 8z50			2 PDB entries	true
+Q16695:K123	pdb_protein	at_residue	protein	Q9Y294	ASF1A	PDBe-KB	8z50			1 PDB entries	true
+Q16695:K123	pdb_self	at_residue	self			PDBe-KB	3a6n			1 PDB entries	true
+Q16778:K47	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	9w6g			1 PDB entries	true
+Q16778:K47	pdb_dna	at_residue	dna			PDBe-KB	8evi; 9gev; 9w6g; 9w6q			4 PDB entries	true
+Q16778:K47	pdb_self	at_residue	self			PDBe-KB	9w6g			1 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	7bxt; 9gel; 9gev; 9gf6; 9gfb; 9gfm; 9yl3; 9yle; 9yly; 9ymf			10 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	P0C0S5	H2AZ1	PDBe-KB	9gcg; 9ge4			2 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	P0C5Z0	H2AB2	PDBe-KB	6m4g; 6m4h			2 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	6kbb; 8h1t; 8yjf; 9w6e; 9w6f; 9w6g; 9w6h; 9w6i; 9w6j; 9w6k; 9w6l; 9w6m; 9w6n; 9w6o; 9w6p; 9w6q; 9w71; 9w72; 9w73			19 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	P38326		PDBe-KB	6kbb			1 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	9w6h; 9w6i; 9w6o; 9w71; 9yle; 9yly; 9ymf			7 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	Q16777	H2AC20	PDBe-KB	7u0g; 8evg; 8evi			3 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	Q6XXM1		PDBe-KB	7bxt			1 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	Q9BTT0	ANP32E	PDBe-KB	4nft			1 PDB entries	true
+Q16778:K58	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	8yjf			1 PDB entries	true
+Q16778:K86	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	9w6j; 9w6k; 9w6l; 9w6m; 9w6p; 9w71; 9w72; 9w73			8 PDB entries	true
+Q16778:K86	pdb_dna	at_residue	dna			PDBe-KB	8h1t; 9w6f; 9w6h; 9w6i; 9w6o; 9w71; 9yle			7 PDB entries	true
+Q16778:K109	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	9ymf			1 PDB entries	true
+Q16778:K117	pdb_protein	at_residue	protein	P0CG47	UBB	PDBe-KB	9ymf			1 PDB entries	true
+Q16778:K117	pdb_protein	at_residue	protein	P20671	H2AC7	PDBe-KB	9w6e			1 PDB entries	true
+Q16778:K117	pdb_protein	at_residue	protein	Q6PI98	INO80C	PDBe-KB	9gfb			1 PDB entries	true
+Q16881:K607	pdb_self	at_residue	self			PDBe-KB	2cfy; 2j3n; 2zz0; 2zzb; 2zzc; 3qfa; 3qfb; 7x1r			8 PDB entries	true
+Q2NL82:K72	pdb_rna	at_residue	rna			PDBe-KB	6g18; 6zmt; 7wts; 7wtt; 7wtu; 7wtv; 7wtw; 7wtx; 7wtz; 7wu0; 8zdc; 8zdd			12 PDB entries	true
+Q32P51:K78	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. GFGFVTYATVEEVDAAMNTTPHKVD[G]RVVEPK at 81 (635.0778 Da)	false
+Q32P51:K144	capri_adj_peptide	in_fragment	rna			CAPRI				131-144 IEVIEIMTDRGSGK	true
+Q3MIT2:K273	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 256-273 IKEEDFLkqfpcppnsPK (lower case: the residues the crosslink may sit on)	false
+Q4G0J3:K381	pdb_rna	at_residue	rna			PDBe-KB	7slp; 7slq			2 PDB entries	true
+Q5JTH9:K613	pdb_protein	at_residue	protein	P08708	RPS17	PDBe-KB	7wtt; 7wtu; 7wtv; 7wtw; 7wtx; 7wtz; 7wu0			7 PDB entries	true
+Q5QNW6:K58	pdb_protein	at_residue	protein	Q93077	H2AC6	PDBe-KB	6muo			1 PDB entries	true
+Q5QNW6:K58	pdb_protein	at_residue	protein	Q96KK5	H2AC12	PDBe-KB	10yf			1 PDB entries	true
+Q5S007:K1359	pdb_self	at_residue	self			PDBe-KB	6ojf; 9c76			2 PDB entries	true
+Q5T4S7:K4089	pdb_protein	at_residue	protein	P0DP23	CALM1	PDBe-KB	9hxw; 9qws; 9xti; 9xtj			4 PDB entries	true
+Q5T4S7:K4100	pdb_protein	at_residue	protein	P0DP23	CALM1	PDBe-KB	9d9z; 9nwe; 9qwu; 9xti; 9xtj			5 PDB entries	true
+Q5TEC6:K5	pdb_protein	at_residue	protein	Q9UPN9	TRIM33	PDBe-KB	5mr8			1 PDB entries	true
+Q5TEC6:K5	pdb_protein	at_residue	protein	Q9Y657	SPIN1	PDBe-KB	4h75			1 PDB entries	true
+Q5TEC6:K10	pdb_protein	at_residue	protein	Q9UPN9	TRIM33	PDBe-KB	5mr8			1 PDB entries	true
+Q5VV17:K299	pdb_self	at_residue	self			PDBe-KB	4bop			1 PDB entries	true
+Q68E01:K45	pdb_protein	at_residue	protein	Q9BQ15	NABP2	PDBe-KB	8rbz			1 PDB entries	true
+Q69YN4:K1014	capri_adj_peptide	in_fragment	rna			CAPRI				979-1014 LNSILTQPWRLHVNMGTTLHRVTTISMARCTLTLLK	true
+Q69YN4:K1029	pdb_protein	at_residue	protein	Q15007	WTAP	PDBe-KB	7vf2; 7vf5; 7yg4			3 PDB entries	true
+Q6IA69:K222	pdb_self	at_residue	self			PDBe-KB	6ofb			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	O60341	KDM1A	PDBe-KB	8q1g; 8q1h; 8q1j			3 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	8z73; 9im4			2 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	P55895	RAG2	PDBe-KB	8t4r			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	P61964	WDR5	PDBe-KB	6oi3			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q03164	KMT2A	PDBe-KB	7w67; 7w6i; 7w6j; 7zez			4 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q09028	RBBP4	PDBe-KB	9v5m			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q13490	BIRC2	PDBe-KB	7trl			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q5HZG4		PDBe-KB	9qlm			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q8NEZ4	KMT2C	PDBe-KB	5f6k; 7w6l			2 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q96BD5	PHF21A	PDBe-KB	2puy			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q9NR48	ASH1L	PDBe-KB	7y0i; 8vld; 8vlf; 8zxc			4 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q9UPP1	PHF8	PDBe-KB	3kv4			1 PDB entries	true
+Q6NXT2:K5	pdb_protein	at_residue	protein	Q9W352		PDBe-KB	9c0o			1 PDB entries	true
+Q6NXT2:K10	pdb_protein	at_residue	protein	O60341	KDM1A	PDBe-KB	8q1g; 8q1h; 8q1j			3 PDB entries	true
+Q6NXT2:K10	pdb_protein	at_residue	protein	P42568	MLLT3	PDBe-KB	8z73; 9im4			2 PDB entries	true
+Q6NXT2:K10	pdb_protein	at_residue	protein	Q03164	KMT2A	PDBe-KB	7zez			1 PDB entries	true
+Q6NXT2:K10	pdb_protein	at_residue	protein	Q09028	RBBP4	PDBe-KB	9v5m			1 PDB entries	true
+Q6NXT2:K10	pdb_protein	at_residue	protein	Q9NR48	ASH1L	PDBe-KB	7y0i			1 PDB entries	true
+Q6NXT2:K10	pdb_protein	at_residue	protein	Q9NTG7	SIRT3	PDBe-KB	5bwn; 5bwo			2 PDB entries	true
+Q6NXT2:K10	pdb_protein	at_residue	protein	Q9UPP1	PHF8	PDBe-KB	3kv4			1 PDB entries	true
+Q6NXT2:K56	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	4z5t			1 PDB entries	true
+Q6NXT2:K56	pdb_protein	at_residue	protein	Q03518	TAP1	PDBe-KB	8t4f			1 PDB entries	true
+Q6NXT2:K56	pdb_dna	at_residue	dna			PDBe-KB	4z5t			1 PDB entries	true
+Q6NXT2:K64	pdb_dna	at_residue	dna			PDBe-KB	4z5t			1 PDB entries	true
+Q6NXT2:K122	pdb_self	at_residue	self			PDBe-KB	4z5t			1 PDB entries	true
+Q6P2C8:K134	pdb_protein	at_residue	protein	Q96HR3	MED30	PDBe-KB	7emf; 7enj; 7lbm; 8tqw			4 PDB entries	true
+Q6P2C8:K134	pdb_protein	at_residue	protein	Q9NVC6	MED17	PDBe-KB	7emf; 7enj; 7lbm; 8t9d; 8tqw; 8trh			6 PDB entries	true
+Q6P2Q9:K954	pdb_protein	at_residue	protein	O60231	DHX16	PDBe-KB	7qtt; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v			6 PDB entries	true
+Q6P2Q9:K954	pdb_protein	at_residue	protein	O75533	SF3B1	PDBe-KB	7dvq			1 PDB entries	true
+Q6P2Q9:K954	pdb_protein	at_residue	protein	Q14562	DHX8	PDBe-KB	7w59; 7w5a; 7w5b			3 PDB entries	true
+Q6P2Q9:K1425	pdb_protein	at_residue	protein	O75643	SNRNP200	PDBe-KB	8qpk; 8y6o			2 PDB entries	true
+Q6P2Q9:K1425	pdb_protein	at_residue	protein	O94906	PRPF6	PDBe-KB	8q7n; 8qoz; 8qpa; 8qpb; 8qpe			5 PDB entries	true
+Q6P2Q9:K1425	pdb_protein	at_residue	protein	Q13573	SNW1	PDBe-KB	5z58; 6ff4; 7aav; 7dvq; 7qtt; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v			11 PDB entries	true
+Q6P2Q9:K1425	pdb_protein	at_residue	protein	Q14562	DHX8	PDBe-KB	9xu3			1 PDB entries	true
+Q6P2Q9:K1425	pdb_protein	at_residue	protein	Q2TBE0	CWF19L2	PDBe-KB	6id0; 6id1; 8ro2			3 PDB entries	true
+Q6P2Q9:K1425	pdb_rna	at_residue	rna			PDBe-KB	8c6j; 9xtt			2 PDB entries	true
+Q6P2Q9:K1516	pdb_protein	at_residue	protein	O94906	PRPF6	PDBe-KB	8qpa; 8qpe			2 PDB entries	true
+Q6P2Q9:K1516	pdb_protein	at_residue	protein	Q8WWY3	PRPF31	PDBe-KB	8qp8			1 PDB entries	true
+Q6P2Q9:K1516	pdb_rna	at_residue	rna			PDBe-KB	6icz; 6id0; 6id1; 7w59; 7w5b; 8c6j; 8i0r; 8q7n; 8qpa; 8qpb; 8qpe; 8ro2; 9xtt			13 PDB entries	true
+Q6P2Q9:K1517	pdb_protein	at_residue	protein	O94906	PRPF6	PDBe-KB	8q7n; 8qoz; 8qpa; 8qpb; 8qpe			5 PDB entries	true
+Q6P2Q9:K1517	pdb_protein	at_residue	protein	Q15428	SF3A2	PDBe-KB	6ff4; 8i0r			2 PDB entries	true
+Q6P2Q9:K1517	pdb_protein	at_residue	protein	Q9H8W3	FAM204A	PDBe-KB	9xu3			1 PDB entries	true
+Q6P2Q9:K1517	pdb_rna	at_residue	rna			PDBe-KB	6ff4; 7qtt; 8c6j; 8ch6; 8i0t; 8i0v; 8qp8; 9xtt; 9xu3			9 PDB entries	true
+Q6PCT2:K69	pdb_dna	at_residue	dna			PDBe-KB	6asb			1 PDB entries	true
+Q6RFH5:K311	pdb_protein	at_residue	protein	Q9H9Y2	RPF1	PDBe-KB	8fkp; 8fkr; 8fkt; 8fkv			4 PDB entries	true
+Q6ZUT9:K470	rbrid_residue	at_residue	rna			RBR-ID				463-470 RTGVAVEK (log2 +4SU/-4SU -0.43, p 0.00034)	true
+Q70UQ0:K28	rbrid_residue	at_residue	rna			RBR-ID				24-33 SEGGKTPVAR (log2 +4SU/-4SU -0.32, p 0.0028)	true
+Q71DI3:K5	pdb_protein	at_residue	protein	Q8TF76	HASPIN	PDBe-KB	4ouc			1 PDB entries	true
+Q71DI3:K5	pdb_protein	at_residue	protein	Q99549	MPHOSPH8	PDBe-KB	3r93			1 PDB entries	true
+Q71DI3:K5	pdb_protein	at_residue	protein	Q9Y657	SPIN1	PDBe-KB	4mzf; 4mzg; 4mzh; 7bqz; 7bu9			5 PDB entries	true
+Q71DI3:K10	pdb_protein	at_residue	protein	Q96T88	UHRF1	PDBe-KB	3db3			1 PDB entries	true
+Q71DI3:K10	pdb_protein	at_residue	protein	Q99549	MPHOSPH8	PDBe-KB	3r93			1 PDB entries	true
+Q71DI3:K10	pdb_protein	at_residue	protein	Q9Y657	SPIN1	PDBe-KB	4mzf; 4mzg; 7bqz; 7bu9			4 PDB entries	true
+Q71DI3:K19	pdb_protein	at_residue	protein	Q5NCY0		PDBe-KB	9nqu			1 PDB entries	true
+Q71DI3:K28	pdb_protein	at_residue	protein	B9RU15		PDBe-KB	5vac			1 PDB entries	true
+Q71DI3:K28	pdb_protein	at_residue	protein	Q5NCY0		PDBe-KB	9nqu			1 PDB entries	true
+Q71DI3:K37	pdb_protein	at_residue	protein	P55201	BRPF1	PDBe-KB	2x4w; 2x4x; 2x4y			3 PDB entries	true
+Q71DI3:K37	pdb_protein	at_residue	protein	P59997		PDBe-KB	7uva			1 PDB entries	true
+Q71DI3:K37	pdb_protein	at_residue	protein	Q9BYW2	SETD2	PDBe-KB	9gw2; 9rzc; 9rze; 9s0u			4 PDB entries	true
+Q71DI3:K37	pdb_protein	at_residue	protein	Q9NRC8	SIRT7	PDBe-KB	9gmr			1 PDB entries	true
+Q71DI3:K37	pdb_protein	at_residue	protein	Q9UBC3	DNMT3B	PDBe-KB	5ciu			1 PDB entries	true
+Q71DI3:K37	pdb_protein	at_residue	protein	Q9Y2K7	KDM2A	PDBe-KB	7uv9			1 PDB entries	true
+Q71DI3:K37	pdb_dna	at_residue	dna			PDBe-KB	7yrd; 8vmn; 8vob; 9dwi			4 PDB entries	true
+Q71DI3:K38	pdb_protein	at_residue	protein	P55201	BRPF1	PDBe-KB	2x4x; 2x4y			2 PDB entries	true
+Q71DI3:K38	pdb_protein	at_residue	protein	P59997		PDBe-KB	7uva			1 PDB entries	true
+Q71DI3:K38	pdb_protein	at_residue	protein	Q9BYW2	SETD2	PDBe-KB	9gw2; 9rzc; 9rze; 9s0u			4 PDB entries	true
+Q71DI3:K38	pdb_protein	at_residue	protein	Q9UBC3	DNMT3B	PDBe-KB	5ciu			1 PDB entries	true
+Q71DI3:K38	pdb_protein	at_residue	protein	Q9Y2K7	KDM2A	PDBe-KB	7uv9			1 PDB entries	true
+Q71DI3:K38	pdb_dna	at_residue	dna			PDBe-KB	3av1; 6t7a; 6t7c; 6x5a; 6xjd; 7pet; 7peu; 7pev; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7xd0; 7yrd; 8grq; 8ol1; 8vmj; 8vmn; 8x7i; 9e00; 9e05; 9e09; 9e3d; 9e3r; 9e49; 9ipu; 9nqu			41 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	3av1; 5b0y; 5b0z; 5b40; 6t79; 6t7a; 6t7c; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7xcr; 7xct; 7xd0; 8grq; 8hqy; 8hr1; 8jlb; 8jld; 8x7i; 8x7j; 8x7k; 8zjr; 8zjt; 9gw2; 9ipu; 9rzc; 9rze; 9s0u; 9s3g; 9u5u			48 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	P06897		PDBe-KB	8aag; 9nfz			2 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	P0C0S5	H2AZ1	PDBe-KB	7yrd; 9ogr; 9ogs; 9ogz; 9oh0; 9oh1; 9oh2			7 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	10xz; 10ya; 10yb; 10yc; 10yd; 10ye; 10yg; 6x59; 6x5a; 6xjd; 7u50; 7u51; 7u52; 7u53; 8atf; 8vob; 8vws; 8vwu; 8vwv; 9dwf; 9dwg; 9dwh; 9dwi; 9dwj; 9dwl; 9e05; 9e09; 9e3d; 9e3r; 9e49; 9nqu; 9y47			32 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	Q16385	SSX2	PDBe-KB	8hqy			1 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	Q16777	H2AC20	PDBe-KB	6y5e			1 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	Q6AZJ8		PDBe-KB	8vmj; 8vmn; 8vo0			3 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	6y5d; 7jzv; 9d3n; 9d3o; 9d3p; 9d3q; 9d3r; 9d3s; 9d3t; 9gmk			10 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	Q96KK5	H2AC12	PDBe-KB	10yf; 10yh; 10yi			3 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	Q9BYW2	SETD2	PDBe-KB	9gw2; 9rzc; 9rze; 9s0u			4 PDB entries	true
+Q71DI3:K57	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	9s3g			1 PDB entries	true
+Q71DI3:K57	pdb_dna	at_residue	dna			PDBe-KB	3av1; 5b0z; 5b40; 6t79; 6x59; 6x5a; 6xjd; 6y5d; 7jzv; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7u51; 7u52; 7u53; 7xcr; 7xct; 7yrd; 8jld; 8vob; 8vws; 8x7j; 8x7k; 8zjr; 8zjt; 9be5; 9d3p; 9dwf; 9dwj; 9e49; 9gmr; 9gw2; 9ipu; 9ogz; 9oh1; 9oh2; 9rzc			55 PDB entries	true
+Q71DI3:K65	pdb_protein	at_residue	protein	P49736	MCM2	PDBe-KB	5bo0			1 PDB entries	true
+Q71DI3:K65	pdb_dna	at_residue	dna			PDBe-KB	10xz; 10ya; 10yb; 10yc; 10yd; 10ye; 10yf; 10yg; 10yh; 10yi; 3av1; 5b0y; 5b0z; 5b40; 6t79; 6t7a; 6t7c; 6x59; 6x5a; 6xjd; 6y5d; 6y5e; 7jo9; 7joa; 7jzv; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7u50; 7u51; 7u52; 7u53; 7uv9; 7xcr; 7xct; 7xd0; 7yrd; 8atf; 8grq; 8hqy; 8hr1; 8jlb; 8jld; 8ol1; 8vmj; 8vmn; 8vo0; 8vob; 8vws; 8vwu; 8vwv; 8x7i; 8x7j; 8x7k; 8zjr; 8zjt; 9be5; 9d3n; 9d3o; 9d3p; 9d3q; 9d3r; 9d3s; 9d3t; 9dwf; 9dwg; 9dwh; 9dwi; 9dwj; 9dwl; 9e00; 9e05; 9e09; 9e3d; 9e3r; 9e3u; 9e49; 9gmk; 9gmr; 9gw2; 9ipu; 9nfz; 9nqu; 9ogr; 9ogs; 9ogz; 9oh0; 9oh1; 9oh2; 9rzc; 9rze; 9s0u; 9s3g; 9u5u; 9y46; 9y47			115 PDB entries	true
+Q71DI3:K80	pdb_protein	at_residue	protein	A0A9J8D176		PDBe-KB	9be5			1 PDB entries	true
+Q71DI3:K80	pdb_protein	at_residue	protein	O60814	H2BC12	PDBe-KB	7pf0; 7pf2; 7pf6			3 PDB entries	true
+Q71DI3:K80	pdb_protein	at_residue	protein	P62799		PDBe-KB	9nfz			1 PDB entries	true
+Q71DI3:K80	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	10xz; 10ya; 10yb; 10yc; 10yd; 10ye; 10yf; 10yg; 10yh; 10yi; 3av1; 5b0y; 5b0z; 5b40; 5bo0; 6t79; 6t7a; 6t7c; 6x59; 6x5a; 6xjd; 6y5d; 6y5e; 7jo9; 7joa; 7jzv; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7u50; 7u51; 7u52; 7u53; 7uv9; 7xcr; 7xct; 7xd0; 7yrd; 8aag; 8atf; 8hqy; 8hr1; 8jlb; 8jld; 8ol1; 8vmj; 8vmn; 8vob; 8vws; 8vwu; 8vwv; 8x7i; 8x7j; 8x7k; 8zjr; 8zjt; 9d3n; 9d3o; 9d3p; 9d3q; 9d3r; 9d3s; 9d3t; 9dwf; 9dwg; 9dwh; 9dwi; 9dwj; 9dwl; 9e00; 9e05; 9e09; 9e3d; 9e3r; 9e3u; 9e49; 9gmk; 9gmr; 9gw2; 9ipu; 9nqu; 9ogr; 9ogs; 9ogz; 9oh1; 9oh2; 9rzc; 9rze; 9s0u; 9s3g; 9u5u; 9y46; 9y47			112 PDB entries	true
+Q71DI3:K80	pdb_protein	at_residue	protein	Q8TEK3	DOT1L	PDBe-KB	7xcr; 7xct			2 PDB entries	true
+Q71DI3:K123	pdb_protein	at_residue	protein	Q92560	BAP1	PDBe-KB	9u5u			1 PDB entries	true
+Q71DI3:K123	pdb_protein	at_residue	protein	Q9NVP2	ASF1B	PDBe-KB	5bo0			1 PDB entries	true
+Q71DI3:K123	pdb_protein	at_residue	protein	Q9NXA8	SIRT5	PDBe-KB	6ace			1 PDB entries	true
+Q71DI3:K123	pdb_protein	at_residue	protein	Q9Y294	ASF1A	PDBe-KB	2iij			1 PDB entries	true
+Q71DI3:K123	pdb_protein	at_residue	protein	Q9Y5B9	SUPT16H	PDBe-KB	9s3g			1 PDB entries	true
+Q71DI3:K123	pdb_dna	at_residue	dna			PDBe-KB	10yc; 5b40; 6t7a; 6t7c; 6y5d; 7pet; 7peu; 7pev; 7pew; 7pey; 7pf0; 7pf3; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pfu; 8atf; 8vws; 9be5; 9d3n; 9rzc; 9s3g			25 PDB entries	true
+Q71DI3:K123	pdb_self	at_residue	self			PDBe-KB	10xz; 10ya; 10yb; 10yc; 10yd; 10ye; 10yf; 10yg; 10yh; 10yi; 3av1; 5b0y; 5b0z; 5b40; 6t79; 6t7a; 6t7c; 6xjd; 6y5d; 6y5e; 7jzv; 7pet; 7peu; 7pev; 7pew; 7pex; 7pey; 7pez; 7pf0; 7pf2; 7pf3; 7pf4; 7pf6; 7pfa; 7pfc; 7pfd; 7pfe; 7pff; 7pft; 7pfu; 7pfv; 7pfw; 7pfx; 7u50; 7u51; 7u52; 7u53; 7uv9; 7xcr; 7xct; 7xd0; 7yrd; 8aag; 8hqy; 8hr1; 8jlb; 8jld; 8vmj; 8vo0; 8vob; 8vws; 8vwu; 8vwv; 8x7i; 8x7j; 8x7k; 8zjt; 9be5; 9d3n; 9d3o; 9d3p; 9d3q; 9d3r; 9d3s; 9d3t; 9dwf; 9dwg; 9dwh; 9dwi; 9dwj; 9dwl; 9e00; 9e05; 9e09; 9e3d; 9e3r; 9e3u; 9e49; 9gmk; 9gmr; 9gw2; 9ipu; 9nfz; 9nqu; 9ogr; 9oh0; 9rzc; 9rze; 9s0u; 9s3g; 9u5u; 9y46; 9y47			103 PDB entries	true
+Q71U36:K280	pdb_protein	at_residue	protein	P68371	TUBB4B	PDBe-KB	7un1			1 PDB entries	true
+Q71U36:K280	pdb_self	at_residue	self			PDBe-KB	6wsl; 7un1; 9ox7			3 PDB entries	true
+Q7KZF4:K71	capri_adj_peptide	in_fragment	rna			CAPRI				26-71 MVLSGCAIIVRGQPRGGPPPERQINLSNIRAGNLARRAAATQPDAK	true
+Q7L0Y3:K153	pdb_rna	at_residue	rna			PDBe-KB	8cbm; 8rr1; 8rr3; 8rr4; 9ey0; 9gch			6 PDB entries	true
+Q7L1W4:K806	pdb_self	at_residue	self			PDBe-KB	6m04			1 PDB entries	true
+Q7Z2G1:K107	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	8jcc			1 PDB entries	true
+Q86SE5:K34	capri_xl_peptide	in_peptide	rna			CAPRI				23-34 VFIGNLNTAIVK	true
+Q86TI2:K828	pdb_self	at_residue	self			PDBe-KB	6eoq; 6eor; 6qzv; 6x6a; 6x6c; 7a3f; 7jkq; 7jn7; 7svl; 7svn; 7zxs; 9goc; 9god; 9gon			14 PDB entries	true
+Q86TM6:K26	pdb_protein	at_residue	protein	Q9UBV2	SEL1L	PDBe-KB	8ket			1 PDB entries	true
+Q86V81:K235	rna_crosslink	candidate_residue	rna			pRBS-ID				NS[K]QQLSAEELDAQLDAYNAR at 235 (226.0594 Da)	true
+Q86V81:K235	capri_adj_peptide	in_fragment	rna			CAPRI				165-235 QYNGVPLDGRPMNIQLVTSQIDAQRRPAQSVNRGGMTRNRGAGGFGGGGGTRRGTRGGARGRGRGAGRNSK	true
+Q86VM9:K639	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 639-651 KPAPPPAPPQATK (lower case: the residues the crosslink may sit on)	false
+Q86XI2:K248	pdb_protein	at_residue	protein	Q6IBW4	NCAPH2	PDBe-KB	9f5w; 9tsz; 9tuu			3 PDB entries	true
+Q8IUF8:K323	pdb_self	at_residue	self			PDBe-KB	2xdv; 4bu2; 4bxf			3 PDB entries	true
+Q8IX15:K361	dna_binding_region	in_region	dna			UniProt					false
+Q8IY51:K39	dna_binding_region	in_region	dna			UniProt					false
+Q8IY67:K535	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+Q8IY67:K535	rbrid_residue	at_residue	rna			RBR-ID				508-535 AIGSSPLGSGEGLLGLSPGPNGHSHLLK (log2 +4SU/-4SU -0.88, p 0.00048)	true
+Q8N163:K123	rna_crosslink	within_3	rna			pepR-MS_focused				a crosslinked residue within 3 residues	false
+Q8N257:K86	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 59-86 AMGIMNSFVNDIFERIASEAsrlahynK (lower case: the residues the crosslink may sit on)	false
+Q8N5J4:K156	dna_binding_region	in_region	dna			UniProt					false
+Q8N7X1:K63	capri_xl_peptide	in_peptide	rna			CAPRI				50-63 GFAFVTFESPADAK	true
+Q8NB90:K780	pdb_protein	at_residue	protein	Q9BVQ7	AFG2B	PDBe-KB	8rhn			1 PDB entries	true
+Q8NB90:K780	pdb_self	at_residue	self			PDBe-KB	8rhn; 9lgo			2 PDB entries	true
+Q8NI27:K197	pdb_protein	at_residue	protein	Q96FV9	THOC1	PDBe-KB	7znk; 7znl			2 PDB entries	true
+Q8TCJ2:K805	pdb_protein	at_residue	protein	P39656	DDOST	PDBe-KB	6s7t			1 PDB entries	true
+Q8WVM8:K515	rbrid_residue	at_residue	rna			RBR-ID				502-522 MASAPASYGSTTTKPMGLLSR (log2 +4SU/-4SU -0.57, p 0.00053)	true
+Q8WXF1:K519	rbrid_residue	at_residue	rna			RBR-ID				508-520 GSQGGNFEGPNKR (log2 +4SU/-4SU -0.35, p 0.00042)	true
+Q92522:K143	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 128-145 RGAPAAATAPAPtahkAK, 128-145 RGAPAAATAPAPtahkaK, 128-145 RGAPAAATAPAptahkAK, 129-146 GAPAAATAPAPTAhKAKK, 129-146 GAPAAATAPAPTAhkAKK, 129-146 GAPAAATAPAPTahKAKK, 129-146 GAPAAATAPAPTahkAKK, 129-146 GAPAAATAPAPTahkaKK, 129-146 GAPAAATAPAPTahkakK, 129-146 GAPAAATAPAPtahkakK, 129-146 GAPAAATAPAptahKAKK, 129-146 GAPAAATAPAptahkaKK, 129-146 GAPAAATAPAptahkakK (lower case: the residues the crosslink may sit on)	true
+Q92522:K143	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 128-145 RGAPAAATAPAPtahkAK, 128-145 RGAPAAATAPAPtahkaK, 128-145 RGAPAAATAPAptahkAK, 129-146 GAPAAATAPAPTAhKAKK, 129-146 GAPAAATAPAPTAhkAKK, 129-146 GAPAAATAPAPTahKAKK, 129-146 GAPAAATAPAPTahkAKK, 129-146 GAPAAATAPAPTahkaKK, 129-146 GAPAAATAPAPTahkakK, 129-146 GAPAAATAPAPtahkakK, 129-146 GAPAAATAPAptahKAKK, 129-146 GAPAAATAPAptahkaKK, 129-146 GAPAAATAPAptahkakK (lower case: the residues the crosslink may sit on)	false
+Q92541:K587	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 578-596 ALVAEshNMKNQQMDPFTR (lower case: the residues the crosslink may sit on)	false
+Q92541:K587	pdb_protein	at_residue	protein	A0A4X1TVZ5		PDBe-KB	7unc			1 PDB entries	true
+Q92793:K1831	pdb_protein	at_residue	protein	P03255		PDBe-KB	2kje			1 PDB entries	true
+Q92878:K520	rbrid_residue	at_residue	rna			RBR-ID				520-535 KLDQEMEQLNHHTTTR (log2 +4SU/-4SU -0.86, p 9e-05)	true
+Q92922:K856	rbrid_residue	at_residue	rna			RBR-ID				856-880 KVEHEISEGNVATAAAAALASAATK (log2 +4SU/-4SU -0.67, p 0.0029)	true
+Q92922:K880	rbrid_residue	at_residue	rna			RBR-ID				856-880 KVEHEISEGNVATAAAAALASAATK (log2 +4SU/-4SU -0.67, p 0.0029)	true
+Q93079:K58	pdb_protein	at_residue	protein	Q96KK5	H2AC12	PDBe-KB	8ol1			1 PDB entries	true
+Q93079:K86	pdb_dna	at_residue	dna			PDBe-KB	8ol1			1 PDB entries	true
+Q969S3:K467	pdb_protein	at_residue	protein	P36578	RPL4	PDBe-KB	6lsr; 9gmo			2 PDB entries	true
+Q969S3:K467	pdb_rna	at_residue	rna			PDBe-KB	6lqm; 6lsr; 9gmo			3 PDB entries	true
+Q96A08:K59	pdb_protein	at_residue	protein	P04908	H2AC4	PDBe-KB	3wkj; 8vlr			2 PDB entries	true
+Q96A08:K59	pdb_protein	at_residue	protein	Q96QV6	H2AC1	PDBe-KB	5gsu			1 PDB entries	true
+Q96A08:K87	pdb_dna	at_residue	dna			PDBe-KB	3wkj; 5gsu			2 PDB entries	true
+Q96EK5:K26	pdb_protein	at_residue	protein	Q9NS87	KIF15	PDBe-KB	6zph			1 PDB entries	true
+Q96KQ7:K185	pdb_protein	at_residue	protein	Q13185	CBX3	PDBe-KB	3dm1			1 PDB entries	true
+Q96NM4:K274	dna_binding_region	in_region	dna			UniProt					false
+Q96NM4:K301	dna_binding_region	in_region	dna			UniProt					false
+Q96QZ7:K499	pdb_protein	at_residue	protein	P03126		PDBe-KB	2kpl			1 PDB entries	true
+Q96QZ7:K499	pdb_protein	at_residue	protein	P27228		PDBe-KB	7p71			1 PDB entries	true
+Q96QZ7:K499	pdb_protein	at_residue	protein	Q15418	RPS6KA1	PDBe-KB	5n7d; 5n7f; 5n7g; 6twy			4 PDB entries	true
+Q96RQ3:K51	pdb_self	at_residue	self			PDBe-KB	8jaw; 8xl6; 8xl7; 8xl8			4 PDB entries	true
+Q99575:K198	pdb_rna	at_residue	rna			PDBe-KB	6ahu; 9uh7; 9uha			3 PDB entries	true
+Q99741:K208	pdb_protein	at_residue	protein	Q13415	ORC1	PDBe-KB	8s0e			1 PDB entries	true
+Q99832:K55	pdb_protein	at_residue	protein	P60709	ACTB	PDBe-KB	8ib8			1 PDB entries	true
+Q99832:K67	pdb_protein	at_residue	protein	P60709	ACTB	PDBe-KB	8ib8			1 PDB entries	true
+Q99832:K77	pdb_protein	at_residue	protein	P50990	CCT8	PDBe-KB	6nr8; 6nra; 6nrc; 6nrd; 6qb8; 7lum; 7lup; 7nvo; 7x3j; 8ib8; 8sfe; 8sff; 8sgq; 8she; 8shg; 8shn; 9noo; 9noq; 9nrg; 9q0v; 9q1x; 9s72			22 PDB entries	true
+Q99832:K84	pdb_protein	at_residue	protein	P50990	CCT8	PDBe-KB	7x6q; 8sha; 8shq; 9s72			4 PDB entries	true
+Q99848:K157	pdb_rna	at_residue	rna			PDBe-KB	8fkp; 8fkq; 8fkr; 8fks; 8fkt; 8fku; 8fkv; 8fkw; 8fkx; 8fky			10 PDB entries	true
+Q99871:K257	pdb_protein	at_residue	protein	Q9NVX0	HAUS2	PDBe-KB	7sqk			1 PDB entries	true
+Q99879:K47	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 45-58 VLKQVhPDTGISSK, 45-58 VLKQvHPDTGISSK, 45-73 vlkqvhpdtgisskamGIMNSFVNDIFER (lower case: the residues the crosslink may sit on)	true
+Q99879:K47	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 45-58 VLKQVhPDTGISSK, 45-58 VLKQvHPDTGISSK, 45-73 vlkqvhpdtgisskamGIMNSFVNDIFER (lower case: the residues the crosslink may sit on)	false
+Q99879:K58	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 45-58 VLKQVhPDTGISSK, 45-58 VLKQvHPDTGISSK, 45-73 vlkqvhpdtgisskamGIMNSFVNDIFER, 48-73 QVhpdtgisskamgiMNSFVNDIFER (lower case: the residues the crosslink may sit on)	true
+Q99879:K58	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 45-58 VLKQVhPDTGISSK, 45-58 VLKQvHPDTGISSK, 45-73 vlkqvhpdtgisskamGIMNSFVNDIFER, 48-73 QVhpdtgisskamgiMNSFVNDIFER (lower case: the residues the crosslink may sit on)	false
+Q99879:K58	pdb_protein	at_residue	protein	P0C0S8	H2AC11	PDBe-KB	10ye; 10yg			2 PDB entries	true
+Q99879:K58	pdb_protein	at_residue	protein	P62805	H4C1	PDBe-KB	9d3p; 9d3q; 9d3s			3 PDB entries	true
+Q99879:K58	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	9d3n; 9d3o; 9d3p; 9d3q; 9d3s; 9d3t			6 PDB entries	true
+Q99879:K58	pdb_protein	at_residue	protein	Q96KK5	H2AC12	PDBe-KB	10yh; 10yi			2 PDB entries	true
+Q99879:K86	pdb_protein	at_residue	protein	Q6FI13	H2AC18	PDBe-KB	9d3n			1 PDB entries	true
+Q99879:K86	pdb_dna	at_residue	dna			PDBe-KB	10yg			1 PDB entries	true
+Q99879:K109	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 101-117 LLLPGELAKhAVSEGTK, 101-117 LLLPGELAKhaVSEGTK, 101-117 LLLPGELAkhAVSEGTK, 101-117 LLLPGELAkhaVSEGTK, 101-117 LLLPGELAkhavSEGTK, 101-117 LLLPGELakhAVSEGTK (lower case: the residues the crosslink may sit on)	true
+Q99879:K109	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 101-117 LLLPGELAKhAVSEGTK, 101-117 LLLPGELAKhaVSEGTK, 101-117 LLLPGELAkhAVSEGTK, 101-117 LLLPGELAkhaVSEGTK, 101-117 LLLPGELAkhavSEGTK, 101-117 LLLPGELakhAVSEGTK (lower case: the residues the crosslink may sit on)	false
+Q99879:K117	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 101-117 LLLPGELAKhAVSEGTK, 101-117 LLLPGELAKhaVSEGTK, 101-117 LLLPGELAkhAVSEGTK, 101-117 LLLPGELAkhaVSEGTK, 101-117 LLLPGELAkhavSEGTK, 101-117 LLLPGELakhAVSEGTK (lower case: the residues the crosslink may sit on)	false
+Q99962:K39	pdb_self	at_residue	self			PDBe-KB	1x03; 1x04			2 PDB entries	true
+Q9BPX3:K218	pdb_protein	at_residue	protein	Q15003	NCAPH	PDBe-KB	6igx			1 PDB entries	true
+Q9BTZ2:K194	pdb_self	at_residue	self			PDBe-KB	3o4r			1 PDB entries	true
+Q9BW61:K70	pdb_protein	at_residue	protein	Q66K64	DCAF15	PDBe-KB	6q0v; 6q0w; 6ud7			3 PDB entries	true
+Q9BXJ0:K109	pdb_self	at_residue	self			PDBe-KB	4f3j; 4nn0			2 PDB entries	true
+Q9BYD1:K105	capri_adj_peptide	in_fragment	rna			CAPRI				76-105 VYSSHTGYPGGFRQVTAAQLHLRDPVAIVK	true
+Q9BYG3:K179	rna_crosslink	candidate_residue	rna			RBS-ID				[K]GIDYDFPSLILQK at 179 (112.0273 Da)	true
+Q9BYG3:K179	pdb_protein	at_residue	protein	O76021	RSL1D1	PDBe-KB	8fkq; 8fkr; 8fkt; 8fkv; 8fkw; 8fkx; 8fl2; 8fl6; 8fla; 8fld			10 PDB entries	true
+Q9BYG3:K179	pdb_rna	at_residue	rna			PDBe-KB	8fkp; 8fkq; 8fkr; 8fks; 8fkt; 8fku; 8fkw; 8fkx; 8fky; 8fl2; 8fld			11 PDB entries	true
+Q9BZI1:K138	dna_binding_region	in_region	dna			UniProt					false
+Q9BZI1:K155	dna_binding_region	in_region	dna			UniProt					false
+Q9C0C9:K1038	pdb_protein	at_residue	protein	P22314	UBA1	PDBe-KB	9mc5; 9mc7; 9wd0			3 PDB entries	true
+Q9GZR2:K87	rbrid_residue	at_residue	rna			RBR-ID				82-97 SQAPEKPLVISQMGSK (log2 +4SU/-4SU -1.09, p 2.4e-05)	true
+Q9GZT9:K350	pdb_self	at_residue	self			PDBe-KB	5a3u; 5las			2 PDB entries	true
+Q9H0U6:K100	pdb_protein	at_residue	protein	Q96DV4	MRPL38	PDBe-KB	3j7y; 7of2; 7oi7; 7oia; 7oic; 7qh6; 8xt1; 8xt3; 9cn3			9 PDB entries	true
+Q9H1E3:K206	dna_crosslink	candidate_residue	dna			Trendel2025				peptide 202-219 TPSPkeedeePESPPEKK (lower case: the residues the crosslink may sit on)	true
+Q9H1E3:K206	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 202-219 TPSPkeedeePESPPEKK (lower case: the residues the crosslink may sit on)	false
+Q9H3R5:K171	pdb_protein	at_residue	protein	Q9BS16	CENPK	PDBe-KB	7pkn; 7r5s; 7r5v; 7xhn; 7xho; 7ywx; 7yyh; 9taw; 9tax			9 PDB entries	true
+Q9H845:K600	pdb_self	at_residue	self			PDBe-KB	8phe; 8phf			2 PDB entries	true
+Q9H8H0:K346	rbrid_residue	at_residue	rna			RBR-ID				345-379 LKHSQDPGTHVVSHFVNWETPQGCGLGFQNSEQSR (log2 +4SU/-4SU -1.24, p 0.00079)	true
+Q9HBM0:K558	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. K[D]DFYYLSQEDKER at 559 (651.0727 Da), KD[D]FYYLSQEDKER at 560 (651.0727 Da)	false
+Q9NS61:K235	pdb_protein	at_residue	protein	Q9NZV8	KCND2	PDBe-KB	7ukh			1 PDB entries	true
+Q9NS61:K235	pdb_protein	at_residue	protein	Q9UK17	KCND3	PDBe-KB	7w6s			1 PDB entries	true
+Q9NSN8:K73	pdb_protein	at_residue	protein	P60484	PTEN	PDBe-KB	7pc7			1 PDB entries	true
+Q9NSN8:K73	pdb_protein	at_residue	protein	Q15418	RPS6KA1	PDBe-KB	7pc8			1 PDB entries	true
+Q9NSN8:K73	pdb_protein	at_residue	protein	Q8NET8	TRPV3	PDBe-KB	7qqn			1 PDB entries	true
+Q9NSN8:K86	pdb_protein	at_residue	protein	P60484	PTEN	PDBe-KB	7pc7			1 PDB entries	true
+Q9NTI5:K1295	dna_binding_region	in_region	dna			UniProt					false
+Q9NV06:K295	pdb_protein	at_residue	protein	Q9BVJ6	UTP14A	PDBe-KB	7mq9			1 PDB entries	true
+Q9NVC6:K123	pdb_protein	at_residue	protein	Q96G25	MED8	PDBe-KB	7emf; 7enj; 8trh			3 PDB entries	true
+Q9NVC6:K149	pdb_protein	at_residue	protein	Q15528	MED22	PDBe-KB	7emf; 7enj; 7lbm; 7nvr; 8tqw; 8trh			6 PDB entries	true
+Q9NVC6:K149	pdb_protein	at_residue	protein	Q9P086	MED11	PDBe-KB	8trh			1 PDB entries	true
+Q9NVI1:K791	pdb_dna	at_residue	dna			PDBe-KB	6vae; 6vaf			2 PDB entries	true
+Q9NVU7:K151	pdb_rna	at_residue	rna			PDBe-KB	8ink; 8ipy			2 PDB entries	true
+Q9NVX2:K176	pdb_protein	at_residue	protein	O95478	NSA2	PDBe-KB	8fl0; 8fl2; 8fl3; 8fl4; 8ir1; 8ir3; 8rl2; 9qer; 9qet			9 PDB entries	true
+Q9NW64:K185	pdb_protein	at_residue	protein	O60508	CDC40	PDBe-KB	5xjc; 6icz; 6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8ro2			9 PDB entries	true
+Q9NYK5:K64	pdb_protein	at_residue	protein	Q9BRJ2	MRPL45	PDBe-KB	7a5j; 7odr; 7ods; 7of0; 7of2; 7of3; 7of4; 7of5; 7of6; 7oi7; 7oi8; 7oi9; 7oia; 7oib; 7oic; 7oid; 7oie; 7po4; 7qh6; 7qh7; 8k2b; 8xt1; 8xt3; 9pra			24 PDB entries	true
+Q9NYK5:K68	pdb_protein	at_residue	protein	Q9BRJ2	MRPL45	PDBe-KB	7of5			1 PDB entries	true
+Q9NZ32:K349	pdb_protein	at_residue	protein	Q9UJW0	DCTN4	PDBe-KB	9b7j; 9b85			2 PDB entries	true
+Q9NZM5:K11	rbrid_residue	at_residue	rna			RBR-ID				2-12 AAGGSGVGGKR (log2 +4SU/-4SU -0.79, p 8.6e-05)	true
+Q9P086:K39	pdb_protein	at_residue	protein	Q96G25	MED8	PDBe-KB	7nvr; 8tqw; 8trh			3 PDB entries	true
+Q9P2R7:K205	pdb_protein	at_residue	protein	P53597	SUCLG1	PDBe-KB	9swj			1 PDB entries	true
+Q9UBL9:K207	pdb_self	at_residue	self			PDBe-KB	9ddv			1 PDB entries	true
+Q9UDR5:K883	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 873-893 TVGlptaMAAKMLLDGEIGAK (lower case: the residues the crosslink may sit on)	false
+Q9UDR5:K893	dna_crosslink	in_peptide	dna			Trendel2025				inside a DNA-crosslinked peptide. peptide 873-893 TVGlptaMAAKMLLDGEIGAK (lower case: the residues the crosslink may sit on)	false
+Q9UDY2:K330	pdb_self	at_residue	self			PDBe-KB	2osg; 3e17			2 PDB entries	true
+Q9UEE9:K219	pdb_protein	at_residue	protein	O96019	ACTL6A	PDBe-KB	9y3f; 9y3g; 9y3h			3 PDB entries	true
+Q9UET6:K28	pdb_rna	at_residue	rna			PDBe-KB	8y2o			1 PDB entries	true
+Q9UF56:K380	pdb_protein	at_residue	protein	P63208	SKP1	PDBe-KB	8ubt; 8ubu			2 PDB entries	true
+Q9UHD8:K338	rbrid_residue	at_residue	rna			RBR-ID				327-338 SVQPTSEERIPK (log2 +4SU/-4SU -0.76, p 3.7e-05)	true
+Q9UHD8:K549	rbrid_residue	at_residue	rna			RBR-ID				543-561 THMQNIKDITSSIHFEAYR (log2 +4SU/-4SU -0.80, p 0.0031)	true
+Q9UJS0:K260	pdb_self	at_residue	self			PDBe-KB	4p5w			1 PDB entries	true
+Q9UJX3:K65	pdb_self	at_residue	self			PDBe-KB	6q6h			1 PDB entries	true
+Q9UJX5:K312	pdb_protein	at_residue	protein	Q12834	CDC20	PDBe-KB	5lcw; 6tlj			2 PDB entries	true
+Q9UJX5:K312	pdb_protein	at_residue	protein	Q9UJX4	ANAPC5	PDBe-KB	5g04; 5g05; 6q6h; 6tlj; 8pkp			5 PDB entries	true
+Q9UK73:K594	pdb_protein	at_residue	protein	Q15369	ELOC	PDBe-KB	8ij1; 8je1; 9j78; 9j79			4 PDB entries	true
+Q9UKK6:K7	pdb_protein	at_residue	protein	Q9UBU9	NXF1	PDBe-KB	1jkg; 1jn5; 4wyk; 6e5u; 9i8a			5 PDB entries	true
+Q9UNE7:K30	pdb_protein	at_residue	protein	P0DMV8	HSPA1A	PDBe-KB	9dya			1 PDB entries	true
+Q9UNE7:K30	pdb_protein	at_residue	protein	P10636	MAPT	PDBe-KB	8fyu; 8gck			2 PDB entries	true
+Q9UNE7:K30	pdb_protein	at_residue	protein	P11142	HSPA8	PDBe-KB	4kbq			1 PDB entries	true
+Q9UNE7:K30	pdb_protein	at_residue	protein	Q9UKJ5	CHIC2	PDBe-KB	8suv			1 PDB entries	true
+Q9UNM6:K329	pdb_protein	at_residue	protein	O00232	PSMD12	PDBe-KB	5t0h; 5t0i; 5t0j; 5vfp; 5vfr; 5vft; 5vfu; 6wjn; 7qy7; 7qya; 9e8o; 9u3l			12 PDB entries	true
+Q9UNX4:K149	pdb_rna	at_residue	rna			PDBe-KB	7mq9			1 PDB entries	true
+Q9UNZ5:K60	pdb_protein	at_residue	protein	Q96EY4	TMA16	PDBe-KB	8fla; 8flb; 8flc; 8idt; 8idy; 8ine; 8inf			7 PDB entries	true
+Q9UNZ5:K68	pdb_protein	at_residue	protein	Q9BZE4	GTPBP4	PDBe-KB	8fla; 8flb; 8idt; 8inf			4 PDB entries	true
+Q9UNZ5:K68	pdb_protein	at_residue	protein	Q9NVU7	SDAD1	PDBe-KB	8idy; 8inf			2 PDB entries	true
+Q9UQM7:K56	pdb_protein	at_residue	protein	Q13224	GRIN2B	PDBe-KB	7kl0; 7ujp; 7ujq; 7ujr; 7ujs			5 PDB entries	true
+Q9UQM7:K56	pdb_self	at_residue	self			PDBe-KB	6w4o			1 PDB entries	true
+Q9UQM7:K300	pdb_self	at_residue	self			PDBe-KB	6w4o			1 PDB entries	true
+Q9Y265:K22	pdb_protein	at_residue	protein	Q9UEE9	CFDP1	PDBe-KB	9nfw; 9nfx; 9nfy; 9y3g			4 PDB entries	true
+Q9Y281:K44	pdb_protein	at_residue	protein	P68135		PDBe-KB	7u8k			1 PDB entries	true
+Q9Y2M0:K406	pdb_dna	at_residue	dna			PDBe-KB	4rea			1 PDB entries	true
+Q9Y2U9:K117	pdb_self	at_residue	self			PDBe-KB	8sh2			1 PDB entries	true
+Q9Y2X3:K415	pdb_protein	at_residue	protein	Q9H583	HEATR1	PDBe-KB	7mq9			1 PDB entries	true
+Q9Y2X3:K415	pdb_rna	at_residue	rna			PDBe-KB	7mq9			1 PDB entries	true
+Q9Y2X3:K418	pdb_rna	at_residue	rna			PDBe-KB	7mq9			1 PDB entries	true
+Q9Y3A2:K228	pdb_rna	at_residue	rna			PDBe-KB	7mq9			1 PDB entries	true
+Q9Y3D5:K131	rna_crosslink	within_3	rna			pepR-MS				a crosslinked residue within 3 residues. AQIMGFMPVTYKDPAYLKD[P]K at 133 (306.0253 Da)	false
+Q9Y5J1:K283	pdb_protein	at_residue	protein	Q15061	WDR43	PDBe-KB	7mq9			1 PDB entries	true
+Q9Y5N6:K70	pdb_protein	at_residue	protein	P49736	MCM2	PDBe-KB	8s0b; 8s0d			2 PDB entries	true
+Q9Y5U2:K217	pdb_protein	at_residue	protein	O75643	SNRNP200	PDBe-KB	7px3			1 PDB entries	true

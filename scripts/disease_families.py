@@ -123,3 +123,47 @@ def classify(name: str) -> tuple[str, str, str, str, str]:
 AUDITED_FAMILIES = [fam for fam, _ in FAMILY_RULES]
 ADDITIONAL_FAMILIES = [fam for fam, _ in ADDITIONAL_FAMILY_RULES]
 ALL_FAMILIES = AUDITED_FAMILIES + ADDITIONAL_FAMILIES
+
+
+# ClinVar condition names (release v1.8.0 on): classify() was written for DisGeNET term names, and on ClinVar's condition
+# names some of its rules misfire (Lynch and Li-Fraumeni syndromes match "syndrom" before any cancer word; "dyskinesia"
+# matches "skin"; "encephalopathy" matches "cephal"; "malignant hyperthermia" matches "malignan"; retinal dystrophies match
+# "dystroph"). These rules are tried first on a ClinVar name; a name none of them matches falls back to classify().
+# classify() itself is unchanged, so the DisGeNET analyses of earlier releases stay reproducible.
+CLINVAR_RULES = [
+    ("Cancer / neoplasia", r"lynch|li-fraumeni|cowden|von hippel|polyposis|pheochromocytoma|paraganglioma|retinoblastoma"
+                           r"|gorlin|basal cell nev|multiple endocrine neoplasia|hamartoma|peutz-jeghers|tumou?r predisposition"
+                           r"|cancer-predisposing|bap1|dicer1|wilms|neuroblastoma|hereditary diffuse gastric"),
+    ("Myopathy / muscle / cardiomyopathy", r"malignant hyperthermia|king denborough|central core"),
+    ("Epilepsy and seizures", r"epilep|seizure|\bdee\b|dravet|infantile spasms"),
+    ("Eye and ear", r"retin(?!oblastoma)|macular|amaurosis|cone-rod|rod-cone|cone dystrophy|usher|achromatopsia|stargardt"
+                    r"|choroideremia|glaucoma|optic atrophy|keratoconus|corneal|night blindness|leber|deaf|hearing|pendred"),
+    ("Kidney, urinary and reproductive", r"nephronophthisis|alport|nephrotic|polycystic kidney|cystinosis|renal|kidney|vas deferens"
+                                         r"|androgen resistance|androgen insensitivity|hypogonad|nephrogenic|insipidus"),
+    ("Respiratory", r"ciliary dyskinesia|cystic fibrosis|cftr|bronchiectasis|surfactant|interstitial lung|alpha-1-antitrypsin"),
+    ("Cardiovascular", r"long qt|brugada|short qt|catecholaminergic|arrhythmogenic right ventricular|aortic|marfan|loeys-dietz"
+                       r"|pulmonary (?:arterial )?hypertension|hereditary hemorrhagic telangiectasia|telangiectasia, hereditary hemorrhagic"),
+    ("Metabolic and mitochondrial", r"acidemia|acidaemia|aciduria|storage disease|mucopolysaccharid|gaucher|fabry|wilson disease"
+                                    r"|galactos|citrullin|urea cycle|carbamoyl|homocystin|maple syrup|tyrosinemia|porphyria|hypophosphatasia"
+                                    r"|peroxisom|zellweger|diabetes|maturity-onset|hypercholesterol|hyperlipid|lipoprotein|lipodystrophy"
+                                    r"|acyl-coa dehydrogenase|carnitine|oxidation defect|pompe|mitochondrial|leigh"),
+    ("Blood and haematological", r"factor (?:v|vii|viii|ix|x|xi|xiii) deficiency|hemophilia|haemophilia|thrombasthenia|thalass"
+                                 r"|sickle|g6pd|hemolytic|haemolytic|polycythemia|thrombocytopeni|von willebrand|spherocytosis|diamond-blackfan"),
+    ("Immune / inflammatory", r"immunodeficien|\bscid\b|hemophagocytic|histiocytic medullary|agammaglobulin|chronic granulomatous"
+                              r"|autoinflammat|periodic fever"),
+    ("Neurodegeneration and neuromuscular (other)", r"ceroid lipofuscinosis|leukodystroph|niemann-pick"),
+    ("Craniofacial, skeletal and limb features", r"thoracic dystrophy|jeune|skeletal dysplasia|osteogenesis imperfecta|exostos"
+                                                 r"|achondroplasia|chondrodysplasia|spondylo"),
+    ("Skin, hair and nails", r"epidermolysis bullosa|ichthyosis|pseudoxanthoma"),
+    ("Digestive and liver", r"pancreatitis|cholestasis|hirschsprung"),
+    ("Neurodevelopmental and behavioural", r"neurodevelopmental"),
+]
+CLINVAR_FAMILIES = [fam for fam, _ in CLINVAR_RULES if fam not in ALL_FAMILIES]
+
+
+def classify_clinvar(name: str) -> tuple[str, str, str, str, str]:
+    """classify() for a ClinVar condition name: the ClinVar rules first (first match wins), then classify()."""
+    matches = [fam for fam, pat in CLINVAR_RULES if re.search(pat, name, re.I)]
+    if matches:
+        return matches[0], "included", "clinvar_rule", f"First matching ClinVar rule ({matches[0]}).", " | ".join(dict.fromkeys(matches[1:]))
+    return classify(name)

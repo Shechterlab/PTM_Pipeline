@@ -349,7 +349,8 @@ def test_crosscheck_column(tmp_path):
                                   '57_stage_berryhill_lys_methylation.py', '58_stage_ochoa_phosphosites.py', '59_stage_iptmnet_scores.py',
                                   '60_stage_hendriks2017_sumo_sites.py', '61_stage_akimov2018_ubiquitination_sites.py', 'window_sites.py',
                                   '66_stage_cancer_changes.py', '67_stage_clinvar.py', '68_release_cancer_changes.py',
-                                  '69_stage_gnomad.py', '70_stage_propensity.py', '71_release_propensity.py', 'propensity.py'])
+                                  '69_stage_gnomad.py', '70_stage_propensity.py', '71_release_propensity.py', 'propensity.py',
+                                  '72_stage_alphamissense.py', '73_release_site_annotations.py', 'disease_families.py'])
 def test_scripts_use_american_spelling_and_no_banned_words(name):
     text = (ROOT / 'scripts' / name).read_text(encoding='utf-8')
     text = text.replace("'licence'", '').replace('exclusive licence', '')     # the MANIFEST column keeps its name; the publisher's words
